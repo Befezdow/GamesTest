@@ -17,11 +17,15 @@ protected:
     virtual void paintGL();
     virtual void keyPressEvent(QKeyEvent * event);
 private:
-    int rectWidth;
-    int x;
-    int y;
-    int ystep;
-    int xstep;
+    float xleft;
+    float xright;
+    float ytop;
+    float ybot;
+    float rectWidth;
+    float x;
+    float y;
+    float ystep;
+    float xstep;
 
 };
 
