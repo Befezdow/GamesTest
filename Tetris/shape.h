@@ -6,12 +6,12 @@
 class Shape
 {
 protected:
-    int height;
-    int width;
-    QVector<QPoint> parts;
-    bool rotation;
+    int height;             //высота фигуры
+    int width;              //ширина фигуры
+    QVector<QPoint> parts;  //координаты верхних левых углов квадратов, из которых состоит фигура
+    bool rotation;          //возможность поворота фигуры
 public:
-    virtual ~Shape()=0;
+    virtual ~Shape()=0;     //хотел абстрактный класс
     int getHeight() const
     {
         return height;
