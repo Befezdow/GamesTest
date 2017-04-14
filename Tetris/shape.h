@@ -5,6 +5,7 @@
 
 class Shape
 {
+protected:
     int height;
     int width;
     QVector<QPoint> parts;
@@ -29,8 +30,15 @@ public:
     }
 };
 
-class Square:public Shape
+class Square : public Shape
 {
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 1 1 0 0
+        0 1 1 0 0
+        0 0 0 0 0
+    */
 public:
     Square()
     {
@@ -44,8 +52,15 @@ public:
     }
 };
 
-class LittleSquare:public Shape
+class LittleSquare : public Shape
 {
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 1 0 0
+        0 0 0 0 0
+        0 0 0 0 0
+    */
 public:
     LittleSquare()
     {
@@ -56,8 +71,15 @@ public:
     }
 };
 
-class BigSquare:public Shape
+/*class BigSquare : public Shape
 {
+//
+//        0 0 0 0 0
+//        0 1 1 1 0
+//        0 1 1 1 0
+//        0 1 1 1 0
+//        0 0 0 0 0
+//
 public:
     BigSquare()
     {
@@ -74,10 +96,17 @@ public:
        parts.push_back(QPoint(1,1));
        parts.push_back(QPoint(1,2));
     }
-};
+};*/
 
-class Stick:public Shape
+class Stick : public Shape
 {
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        1 1 1 1 0
+        0 0 0 0 0
+        0 0 0 0 0
+    */
 public:
     Stick()
     {
@@ -91,6 +120,113 @@ public:
     }
 };
 
-class
+class TShape : public Shape
+{
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 1 1 1 0
+        0 0 1 0 0
+        0 0 0 0 0
+    */
+public:
+    TShape()
+    {
+        height=2;
+        width=3;
+        rotation=true;
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(-1,1));
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(1,0));
+    }
+};
+
+class ZShape : public Shape
+{
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 1 1 0 0
+        0 0 1 1 0
+        0 0 0 0 0
+    */
+public:
+    ZShape()
+    {
+        height=2;
+        width=3;
+        rotation=true;
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(-1,1));
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(1,0));
+    }
+};
+
+class SShape : public Shape
+{
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 1 1 0
+        0 1 1 0 0
+        0 0 0 0 0
+    */
+public:
+    SShape()
+    {
+        height=2;
+        width=3;
+        rotation=true;
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(1,1));
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(-1,0));
+    }
+};
+
+class JShape : public Shape
+{
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 1 1 1 0
+        0 0 0 1 0
+        0 0 0 0 0
+    */
+public:
+    JShape()
+    {
+        height=2;
+        width=3;
+        rotation=true;
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(-1,1));
+        parts.push_back(QPoint(1,1));
+        parts.push_back(QPoint(1,0));
+    }
+};
+
+class LShape : public Shape
+{
+    /*
+        0 0 0 0 0
+        0 0 0 0 0
+        0 1 1 1 0
+        0 1 0 0 0
+        0 0 0 0 0
+    */
+    LShape()
+    {
+        height=2;
+        width=3;
+        rotation=true;
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(-1,1));
+        parts.push_back(QPoint(1,1));
+        parts.push_back(QPoint(-1,0));
+    }
+};
 
 #endif // SHAPE_H
