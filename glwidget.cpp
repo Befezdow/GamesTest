@@ -52,7 +52,7 @@ GlWidget::addRectangle(float x, float y)//, float size)
         {
             if(rec->x == x && rec->y == y)
             {
-                qDebug()<<"already exist";
+                qDebug()<<"already exist!";
                 return;
             }
         }
