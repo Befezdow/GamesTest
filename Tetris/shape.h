@@ -5,10 +5,7 @@
 
 class Shape
 {
-<<<<<<< HEAD
 protected:
-=======
->>>>>>> 0439562b79dfdfe7f819caf99607f75e8b77a066
     int height;
     int width;
     QVector<QPoint> parts;
@@ -33,7 +30,6 @@ public:
     }
 };
 
-<<<<<<< HEAD
 class Square : public Shape
 {
     /*
@@ -43,10 +39,6 @@ class Square : public Shape
         0 1 1 0 0
         0 0 0 0 0
     */
-=======
-class Square:public Shape
-{
->>>>>>> 0439562b79dfdfe7f819caf99607f75e8b77a066
 public:
     Square()
     {
@@ -60,7 +52,6 @@ public:
     }
 };
 
-<<<<<<< HEAD
 class LittleSquare : public Shape
 {
     /*
@@ -70,10 +61,6 @@ class LittleSquare : public Shape
         0 0 0 0 0
         0 0 0 0 0
     */
-=======
-class LittleSquare:public Shape
-{
->>>>>>> 0439562b79dfdfe7f819caf99607f75e8b77a066
 public:
     LittleSquare()
     {
@@ -84,7 +71,6 @@ public:
     }
 };
 
-<<<<<<< HEAD
 /*class BigSquare : public Shape
 {
 //
@@ -94,10 +80,6 @@ public:
 //        0 1 1 1 0
 //        0 0 0 0 0
 //
-=======
-class BigSquare:public Shape
-{
->>>>>>> 0439562b79dfdfe7f819caf99607f75e8b77a066
 public:
     BigSquare()
     {
@@ -114,7 +96,6 @@ public:
        parts.push_back(QPoint(1,1));
        parts.push_back(QPoint(1,2));
     }
-<<<<<<< HEAD
 };*/
 
 class Stick : public Shape
@@ -126,12 +107,6 @@ class Stick : public Shape
         0 0 0 0 0
         0 0 0 0 0
     */
-=======
-};
-
-class Stick:public Shape
-{
->>>>>>> 0439562b79dfdfe7f819caf99607f75e8b77a066
 public:
     Stick()
     {
@@ -145,7 +120,6 @@ public:
     }
 };
 
-<<<<<<< HEAD
 class TShape : public Shape
 {
     /*
@@ -254,8 +228,5 @@ class LShape : public Shape
         parts.push_back(QPoint(-1,0));
     }
 };
-=======
-class
->>>>>>> 0439562b79dfdfe7f819caf99607f75e8b77a066
 
 #endif // SHAPE_H
