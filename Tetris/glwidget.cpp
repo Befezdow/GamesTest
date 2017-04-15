@@ -27,18 +27,17 @@ Shape* generateShape(int typeOfShape)       //генерирует объект 
 }
 
 void
-GLWidget::initStartShape()
+GLWidget::initShape()
 {
+    if (currentShape)
+        delete currentShape;
     //задаем начальное положение центра движ. фигуры
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
 
-    int seed=QCursor::pos().x()*QCursor::pos().y();         //генерация семени
-    //////////////////тут нужно придумать другую генерацию, ибо эта кал
-    int colorSeed=seed%6;                   //генерируем начальный цвет движ. фигуры
+    int colorSeed=qrand()%6;                //генерируем начальный цвет движ. фигуры
     currentColor=colors.at(colorSeed);      //ставим его
 
-    qsrand(seed);
     int shapeSeed=qrand()%8;                //генерируем начальную фигуру
     currentShape=generateShape(shapeSeed);  //ставим её
 
@@ -49,6 +48,11 @@ GLWidget::initStartShape()
         int y=currentY+vec.at(i).y();                       //в абсолютные
         if (x<areaWidth && x>=0 && y<areaHeight && y>=0)    //если деталь в области
         {
+            if (area.at(x).at(y).isVisible())
+            {
+                emit gameOver(currentScore);
+                return;
+            }
             area[x][y].setColor(currentColor);              //ставим её цвет
             area[x][y].show();              //говорим, что нужно её рисовать
         }
@@ -56,7 +60,7 @@ GLWidget::initStartShape()
 }
 
 GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(parent),
-    squareSide(side),areaWidth(width),areaHeight(height)
+    squareSide(side),areaWidth(width),areaHeight(height),currentShape(Q_NULLPTR)
 {
     //инициализируем пустое поле
     for (int i=0;i<areaWidth;++i)           //идем по столбцам
@@ -76,8 +80,6 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
     colors.push_back(Qt::yellow);
     colors.push_back(Qt::green);
     colors.push_back(Qt::magenta);
-
-    this->initStartShape();                 //инициализируем первую фигуру
 
     timerId=0;                              //инициализируем id таймера
     currentScore=0;                         //инициализируем счет
@@ -106,6 +108,11 @@ void
 GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    qglColor(Qt::gray);
+    glBegin(GL_LINE_STRIP);
+        glVertex2i(0,squareSide*(areaHeight-1));
+        glVertex2i(squareSide*(areaWidth),squareSide*(areaHeight-1));
+    glEnd();
     for (int i=0;i<area.size();++i)
     {
         for (int j=0;j<area.at(i).size();++j)
@@ -246,18 +253,8 @@ GLWidget::timerEvent(QTimerEvent *event)
     {
         if (!this->moveCurrentShapeDown())
         {
-            QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
-            for (int i=0;i<vec.size();++i)                  //проверяем, лежит ли деталь в верхней линии
-            {
-                int y=currentY+vec.at(i).y();               //в абсолютные
-                if (y>=areaHeight-1)
-                {
-                    emit gameOver(currentScore);            //завершаем игру
-                }
-            }
-
             //проверить на удаление линий + проверить счет
-            this->initStartShape();         //инициализируем новую фигуру
+            this->initShape();         //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
         }
     }
@@ -332,9 +329,10 @@ GLWidget::keyPressEvent(QKeyEvent *event)
 void
 GLWidget::start()
 {
-    if (this->timerId)                                          //если таймер существует
-        this->killTimer(timerId);                               //убиваем его
-    timerId=this->startTimer(500);                              //запускаем новый
+    if (this->timerId)                 //если таймер существует
+        this->killTimer(timerId);      //убиваем его
+    this->initShape();                 //инициализируем первую фигуру
+    timerId=this->startTimer(500);     //запускаем новый
 }
 
 void
@@ -347,11 +345,12 @@ GLWidget::endGame(int score)
     {
         for (int i=0;i<areaWidth;++i)           //очищаем игровую область
             for (int j=0;j<areaHeight;++j)
+            {
+                area[i][j].setColor(Qt::white);
                 area[i][j].hide();
+            }
 
-        this->initStartShape();                 //инициализируем первую фигуру
-
-        currentScore=0;                         //инициализируем счет
+        this->start();
     }
     else                                        //если не хочет
         qApp->quit();

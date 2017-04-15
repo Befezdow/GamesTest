@@ -27,7 +27,7 @@ class GLWidget: public QGLWidget
     QVector<QColor> colors;     //цвета фигур
     QColor currentColor;        //цвет движущейся фигуры
 
-    void initStartShape();
+    void initShape();
 
     void showCurrentShape();
     void hideCurrentShape();
