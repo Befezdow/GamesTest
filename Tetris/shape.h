@@ -10,8 +10,11 @@ protected:
     int width;              //ширина фигуры
     QVector<QPoint> parts;  //координаты верхних левых углов квадратов, из которых состоит фигура
     bool rotation;          //возможность поворота фигуры
+
+    Shape() {}              //хотел абстрактный класс
 public:
-    virtual ~Shape()=0;     //хотел абстрактный класс
+    enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
+
     int getHeight() const
     {
         return height;
@@ -45,10 +48,10 @@ public:
         height=2;
         width=2;
         rotation=false;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(-1,1));
-        parts.push_back(QPoint(-1,0));
         parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(-1,-1));
+        parts.push_back(QPoint(0,-1));
     }
 };
 
@@ -67,7 +70,7 @@ public:
         height=1;
         width=1;
         rotation=false;
-        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(0,0));
     }
 };
 
@@ -86,15 +89,15 @@ public:
        height=3;
        width=3;
        rotation=false;
+       parts.push_back(QPoint(0,0));
        parts.push_back(QPoint(0,1));
-       parts.push_back(QPoint(0,2));
-       parts.push_back(QPoint(-1,2));
        parts.push_back(QPoint(-1,1));
        parts.push_back(QPoint(-1,0));
-       parts.push_back(QPoint(0,0));
+       parts.push_back(QPoint(-1,-1));
+       parts.push_back(QPoint(0,-1));
+       parts.push_back(QPoint(1,-1));
        parts.push_back(QPoint(1,0));
        parts.push_back(QPoint(1,1));
-       parts.push_back(QPoint(1,2));
     }
 };*/
 
@@ -103,7 +106,7 @@ class Stick : public Shape
     /*
         0 0 0 0 0
         0 0 0 0 0
-        1 1 1 1 0
+        0 1 1 1 1
         0 0 0 0 0
         0 0 0 0 0
     */
@@ -113,10 +116,10 @@ public:
         height=1;
         width=4;
         rotation=true;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(1,1));
-        parts.push_back(QPoint(-1,1));
-        parts.push_back(QPoint(-2,1));
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(2,0));
+        parts.push_back(QPoint(-1,0));
     }
 };
 
@@ -135,9 +138,9 @@ public:
         height=2;
         width=3;
         rotation=true;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(-1,1));
         parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(0,-1));
         parts.push_back(QPoint(1,0));
     }
 };
@@ -157,10 +160,10 @@ public:
         height=2;
         width=3;
         rotation=true;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(-1,1));
         parts.push_back(QPoint(0,0));
-        parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(0,-1));
+        parts.push_back(QPoint(1,-1));
     }
 };
 
@@ -179,10 +182,10 @@ public:
         height=2;
         width=3;
         rotation=true;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(1,1));
         parts.push_back(QPoint(0,0));
-        parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(0,-1));
+        parts.push_back(QPoint(-1,-1));
     }
 };
 
@@ -201,10 +204,10 @@ public:
         height=2;
         width=3;
         rotation=true;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(-1,1));
-        parts.push_back(QPoint(1,1));
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(-1,0));
         parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(1,-1));
     }
 };
 
@@ -217,15 +220,16 @@ class LShape : public Shape
         0 1 0 0 0
         0 0 0 0 0
     */
+public:
     LShape()
     {
         height=2;
         width=3;
         rotation=true;
-        parts.push_back(QPoint(0,1));
-        parts.push_back(QPoint(-1,1));
-        parts.push_back(QPoint(1,1));
+        parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(-1,-1));
     }
 };
 

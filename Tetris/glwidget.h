@@ -10,13 +10,13 @@ class GLWidget: public QGLWidget
 {
     Q_OBJECT
     QVector<QVector<Primitive>> area;  //само игровое поле
-    //в этот вектор нужно засунуть еще цвет каждого блока, ибо хочется красок
 
     int squareSide;             //сторона примитивного квадрата
 
     int areaWidth;              //ширина поля в этих квадратах
     int areaHeight;             //высота поля в этих квадратах
 
+    Shape* currentShape;        //текущая фигура
     int currentX;               //текущее положение по X движущейся фигуры
     int currentY;               //текущее положение по Y движущейся фигуры
 
@@ -26,6 +26,14 @@ class GLWidget: public QGLWidget
 
     QVector<QColor> colors;     //цвета фигур
     QColor currentColor;        //цвет движущейся фигуры
+
+    void initStartShape();
+
+    void showCurrentShape();
+    void hideCurrentShape();
+    bool moveCurrentShapeDown();
+    bool moveCurrentShapeLeft();
+    bool moveCurrentShapeRight();
 public:
     GLWidget(int side,int width,int height,QWidget* parent=Q_NULLPTR);
 protected:
@@ -41,6 +49,7 @@ protected:
 
 public slots:
     void start();               //запустить игру (запуск таймера)
+
     void endGame(int score);    //завершить игру и вывести счет
 signals:
     void gameOver(int);         //сигнал проигрыша

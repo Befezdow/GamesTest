@@ -1,13 +1,67 @@
 #include "glwidget.h"
 #include <iostream>
 
+Shape* generateShape(int typeOfShape)       //генерирует объект фигуры
+{                                           //нужно куда-то это засунуть!
+    switch(typeOfShape)
+    {
+    case Shape::Square:
+        return new Square;
+    case Shape::LittleSquare:
+        return new LittleSquare;
+    case Shape::Stick:
+        return new Stick;
+    case Shape::TShape:
+        return new TShape;
+    case Shape::ZShape:
+        return new ZShape;
+    case Shape::SShape:
+        return new SShape;
+    case Shape::JShape:
+        return new JShape;
+    case Shape::LShape:
+        return new LShape;
+    default:
+        return Q_NULLPTR;
+    }
+}
+
+void
+GLWidget::initStartShape()
+{
+    //задаем начальное положение центра движ. фигуры
+    currentX=(areaWidth-1)/2;               //задаем X
+    currentY=areaHeight-1;                  //задаем Y
+
+    int seed=QCursor::pos().x()*QCursor::pos().y();         //генерация семени
+    //////////////////тут нужно придумать другую генерацию, ибо эта кал
+    int colorSeed=seed%6;                   //генерируем начальный цвет движ. фигуры
+    currentColor=colors.at(colorSeed);      //ставим его
+
+    qsrand(seed);
+    int shapeSeed=qrand()%8;                //генерируем начальную фигуру
+    currentShape=generateShape(shapeSeed);  //ставим её
+
+    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        if (x<areaWidth && x>=0 && y<areaHeight && y>=0)    //если деталь в области
+        {
+            area[x][y].setColor(currentColor);              //ставим её цвет
+            area[x][y].show();              //говорим, что нужно её рисовать
+        }
+    }
+}
+
 GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(parent),
     squareSide(side),areaWidth(width),areaHeight(height)
 {
-                                            //инициализируем пустое поле
+    //инициализируем пустое поле
     for (int i=0;i<areaWidth;++i)           //идем по столбцам
     {
-        QVector<Primitive> vec;    //столбец
+        QVector<Primitive> vec;             //создаем столбец
         for (int j=1;j<=areaHeight;++j)     //идем по строкам столбца
         {
             vec.push_back(Primitive(QPoint(i*squareSide,j*squareSide),Qt::white));
@@ -15,8 +69,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
         }
         area.push_back(vec);                //добавили столбец
     }
-
-                                            //добавляем цвета для раскраски фигур
+    //добавляем цвета для раскраски фигур
     colors.push_back(Qt::red);
     colors.push_back(Qt::blue);
     colors.push_back(Qt::cyan);
@@ -24,13 +77,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
     colors.push_back(Qt::green);
     colors.push_back(Qt::magenta);
 
-                                            //задаем начальное положение движ. фигуры
-    currentX=(areaWidth-1)/2;               //задаем X
-    currentY=areaHeight-1;                  //задаем Y
-    int seed=qrand()%6;                     //генерируем начальный цвет движ. фигуры
-    currentColor=colors.at(seed);           //ставим его
-    area[currentX][currentY].setColor(currentColor);
-    area[currentX][currentY].show();        //говорим, что нужно её рисовать по таким координатам
+    this->initStartShape();                 //инициализируем первую фигуру
 
     timerId=0;                              //инициализируем id таймера
     currentScore=0;                         //инициализируем счет
@@ -40,12 +87,14 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
 }
 
-void GLWidget::initializeGL()
+void
+GLWidget::initializeGL()
 {
     qglClearColor(Qt::white);               //задаем цвет фона
 }
 
-void GLWidget::resizeGL(int w, int h)
+void
+GLWidget::resizeGL(int w, int h)
 {
     glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
     glLoadIdentity();                       //инициализируем её единичной матрицей
@@ -53,7 +102,8 @@ void GLWidget::resizeGL(int w, int h)
     glOrtho(0,w,0,h,-1,1);                  //устанавливаем начало координат в (0,0)
 }
 
-void GLWidget::paintGL()
+void
+GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for (int i=0;i<area.size();++i)
@@ -83,11 +133,135 @@ void GLWidget::paintGL()
     }
 }
 
-void GLWidget::timerEvent(QTimerEvent *event)
+void GLWidget::showCurrentShape()
 {
-    if (event->timerId()==this->timerId)                        //проверяем, тот ли это таймер
+    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                          //показываем фигуру
     {
-        if (currentY==0 || area[currentX][currentY-1].isVisible())   //если фигура уперлась вниз
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        area[x][y].show();
+    }
+}
+
+void GLWidget::hideCurrentShape()
+{
+    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                          //скрываем фигуру
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        area[x][y].hide();
+    }
+}
+
+bool
+GLWidget::moveCurrentShapeDown()
+{
+    this->hideCurrentShape();                               //скрываем текущую фигуру
+
+    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                          //проверяем, можем ли двигать
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        if (y-1<0 || area.at(x).at(y-1).isVisible())
+        {
+            this->showCurrentShape();
+            return false;
+        }
+    }
+    currentY--;
+    for (int i=0;i<vec.size();++i)                          //двигаем вниз
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        area[x][y].setColor(currentColor);
+        area[x][y].show();
+    }
+    this->updateGL();               //обновляем картинку
+    return true;
+}
+
+bool
+GLWidget::moveCurrentShapeLeft()
+{
+    this->hideCurrentShape();                               //скрываем текущую фигуру
+
+    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                          //проверяем, можем ли двигать
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        if (x-1<0 || area.at(x-1).at(y).isVisible())
+        {
+            this->showCurrentShape();
+            return false;
+        }
+    }
+    currentX--;
+    for (int i=0;i<vec.size();++i)                          //двигаем влево
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        area[x][y].setColor(currentColor);
+        area[x][y].show();
+    }
+    this->updateGL();               //обновляем картинку
+    return true;
+}
+
+bool
+GLWidget::moveCurrentShapeRight()
+{
+    this->hideCurrentShape();                               //скрываем текущую фигуру
+
+    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                          //проверяем, можем ли двигать
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        if (x+1>=areaWidth || area.at(x+1).at(y).isVisible())
+        {
+            this->showCurrentShape();
+            return false;
+        }
+    }
+    currentX++;
+    for (int i=0;i<vec.size();++i)                          //двигаем вправо
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        area[x][y].setColor(currentColor);
+        area[x][y].show();
+    }
+    this->updateGL();               //обновляем картинку
+    return true;
+}
+
+void
+GLWidget::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId()==this->timerId)                    //проверяем, тот ли это таймер
+    {
+        if (!this->moveCurrentShapeDown())
+        {
+            QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
+            for (int i=0;i<vec.size();++i)                  //проверяем, лежит ли деталь в верхней линии
+            {
+                int y=currentY+vec.at(i).y();               //в абсолютные
+                if (y>=areaHeight-1)
+                {
+                    emit gameOver(currentScore);            //завершаем игру
+                }
+            }
+
+            //проверить на удаление линий + проверить счет
+            this->initStartShape();         //инициализируем новую фигуру
+            this->updateGL();               //обновляем картинку
+        }
+    }
+        /*if (currentY==0 || area[currentX][currentY-1].isVisible())   //если фигура уперлась вниз
         {
             if (currentY==areaHeight-1)                         //если это верх области
             {
@@ -129,38 +303,22 @@ void GLWidget::timerEvent(QTimerEvent *event)
         }
     }
     this->updateGL();                                           //обновляем картинку
+    */
 }
 
-void GLWidget::keyPressEvent(QKeyEvent *event)
+void
+GLWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())                                       //смотрим кнопку
     {
     case Qt::Key_Left:                                          //если влево
-        if (!(currentX<=0 || area[currentX-1][currentY].isVisible()))    //если можем двигать влево
-        {
-            area[currentX][currentY].hide();              //двигаем влево
-            currentX--;
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();
-        }
+        this->moveCurrentShapeLeft();
         break;
     case Qt::Key_Right:                                         //если вправо
-        if (!(currentX>=areaWidth-1 || area[currentX+1][currentY].isVisible()))  //если можем двигать вправо
-        {
-            area[currentX][currentY].hide();              //двигаем вправо
-            currentX++;
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();
-        }
+        this->moveCurrentShapeRight();
         break;
     case Qt::Key_Down:                                          //если вниз
-        if (!(currentY==0 || area[currentX][currentY-1].isVisible()))    //если можем двигать вниз
-        {
-            area[currentX][currentY].hide();              //двигаем вниз
-            currentY--;
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();
-        }
+        this->moveCurrentShapeDown();
         break;
     default:
         qDebug()<<"Unknown key";                                //иначе не знаем кнопку
@@ -171,24 +329,30 @@ void GLWidget::keyPressEvent(QKeyEvent *event)
     QGLWidget::keyPressEvent(event);                            //кидаем кнопку родителю, а то мало ли
 }
 
-void GLWidget::start()
+void
+GLWidget::start()
 {
     if (this->timerId)                                          //если таймер существует
         this->killTimer(timerId);                               //убиваем его
     timerId=this->startTimer(500);                              //запускаем новый
 }
 
-void GLWidget::endGame(int score)
+void
+GLWidget::endGame(int score)
 {
     QString info="Your score: "+QString::number(score)+"\n Play more?";
     int i=QMessageBox::information(this,"Game Over",info,QMessageBox::Yes,QMessageBox::No);
 
-    if (i==QMessageBox::Yes)                                    //если хочет играть еще
+    if (i==QMessageBox::Yes)                    //если хочет играть еще
     {
-        //TO DO
-        //нужно вынести инициализацию в отдельную функцию, и написать её в конструкторе и здесь
-        //перезапуск
+        for (int i=0;i<areaWidth;++i)           //очищаем игровую область
+            for (int j=0;j<areaHeight;++j)
+                area[i][j].hide();
+
+        this->initStartShape();                 //инициализируем первую фигуру
+
+        currentScore=0;                         //инициализируем счет
     }
-    else                                                        //если не хочет
+    else                                        //если не хочет
         qApp->quit();
 }
