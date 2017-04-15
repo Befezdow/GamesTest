@@ -4,11 +4,12 @@
 #include <QGLWidget>
 #include <QtWidgets>
 #include "shape.h"
+#include "primitive.h"
 
 class GLWidget: public QGLWidget
 {
     Q_OBJECT
-    QVector<QVector<QPair<QPoint,bool>>> area;  //само игровое поле
+    QVector<QVector<Primitive>> area;  //само игровое поле
     //в этот вектор нужно засунуть еще цвет каждого блока, ибо хочется красок
 
     int squareSide;             //сторона примитивного квадрата

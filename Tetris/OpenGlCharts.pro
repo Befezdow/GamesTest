@@ -28,4 +28,5 @@ SOURCES += main.cpp \
 
 HEADERS  += \
     glwidget.h \
-    shape.h
+    shape.h \
+    primitive.h

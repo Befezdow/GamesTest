@@ -3,7 +3,7 @@
 
 #include <QtWidgets>
 
-class Shape
+class Shape                 //базовый класс всех фигур
 {
 protected:
     int height;             //высота фигуры
