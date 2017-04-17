@@ -24,6 +24,9 @@ class GLWidget: public QGLWidget
 
     int currentScore;           //текущий счет игрока
 
+    int nextFigure;
+    int nextColor;
+
     QVector<QColor> colors;     //цвета фигур
     QColor currentColor;        //цвет движущейся фигуры
 
@@ -34,6 +37,7 @@ class GLWidget: public QGLWidget
     bool moveCurrentShapeDown();
     bool moveCurrentShapeLeft();
     bool moveCurrentShapeRight();
+    void randomize();
 public:
     GLWidget(int side,int width,int height,QWidget* parent=Q_NULLPTR);
 protected:
@@ -52,6 +56,7 @@ public slots:
 
     void endGame(int score);    //завершить игру и вывести счет
 signals:
+    void scoreChanged(int);
     void gameOver(int);         //сигнал проигрыша
 };
 

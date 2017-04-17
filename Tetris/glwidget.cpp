@@ -25,6 +25,15 @@ Shape* generateShape(int typeOfShape)       //генерирует объект 
         return Q_NULLPTR;
     }
 }
+void
+GLWidget::randomize()
+{
+//    qsrand(time(0));
+    nextColor=qrand()%6;
+    nextFigure=qrand()%8;
+    qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
+    //emit сменить фигурку в маленьком окне
+}
 
 void
 GLWidget::initShape()
@@ -35,12 +44,12 @@ GLWidget::initShape()
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
 
-    qsrand(time(0));//Делаем рандом трушным.
+//    qsrand(time(0));//Делаем рандом трушным.
 
-    int colorSeed=qrand()%6;                //генерируем начальный цвет движ. фигуры
+    int colorSeed=nextColor;//qrand()%6;                //генерируем начальный цвет движ. фигуры
     currentColor=colors.at(colorSeed);      //ставим его
 
-    int shapeSeed=qrand()%8;                //генерируем начальную фигуру
+    int shapeSeed=nextFigure;//qrand()%8;                //генерируем начальную фигуру
     currentShape=generateShape(shapeSeed);  //ставим её
 
     QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
@@ -262,6 +271,7 @@ GLWidget::rotateCurrentShape()
         {
             qDebug()<<"Ты пидор";
             rotate = false;
+            showCurrentShape();
             return;
         }
     }
@@ -290,8 +300,11 @@ GLWidget::timerEvent(QTimerEvent *event)
         if (!this->moveCurrentShapeDown())
         {
             //проверить на удаление линий + проверить счет
+
             this->initShape();         //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
+            randomize();//Получаем данные следующей
+
         }
     }
         /*if (currentY==0 || area[currentX][currentY-1].isVisible())   //если фигура уперлась вниз
@@ -370,8 +383,13 @@ GLWidget::start()
 {
     if (this->timerId)                 //если таймер существует
         this->killTimer(timerId);      //убиваем его
+    qsrand(time(0));
+    randomize();                       //Получаем цвет и фигуру следующую
     this->initShape();                 //инициализируем первую фигуру
+
     timerId=this->startTimer(500);     //запускаем новый
+
+    randomize();//Рандомим следующую
 }
 
 void
