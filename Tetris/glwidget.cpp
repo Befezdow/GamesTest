@@ -2,7 +2,7 @@
 #include <iostream>
 
 Shape* generateShape(int typeOfShape)       //генерирует объект фигуры
-{                                           //нужно куда-то это засунуть!
+{                                           //нужно куда-то это засунуть! сее в зад
     switch(typeOfShape)
     {
     case Shape::Square:
@@ -34,6 +34,8 @@ GLWidget::initShape()
     //задаем начальное положение центра движ. фигуры
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
+
+    qsrand(time(0));
 
     int colorSeed=qrand()%6;                //генерируем начальный цвет движ. фигуры
     currentColor=colors.at(colorSeed);      //ставим его
