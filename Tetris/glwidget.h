@@ -28,7 +28,7 @@ class GLWidget: public QGLWidget
     QColor currentColor;        //цвет движущейся фигуры
 
     void initShape();
-
+    void rotateCurrentShape();
     void showCurrentShape();
     void hideCurrentShape();
     bool moveCurrentShapeDown();

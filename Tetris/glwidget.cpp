@@ -35,7 +35,7 @@ GLWidget::initShape()
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
 
-    qsrand(time(0));
+    qsrand(time(0));//Делаем рандом трушным.
 
     int colorSeed=qrand()%6;                //генерируем начальный цвет движ. фигуры
     currentColor=colors.at(colorSeed);      //ставим его
@@ -86,7 +86,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
     timerId=0;                              //инициализируем id таймера
     currentScore=0;                         //инициализируем счет
 
-    this->setFixedSize(side*width,side*height);             //фиксируем размеры окна под игровую область
+    this->resize(side*width,side*height);             //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
 }
@@ -249,6 +249,40 @@ GLWidget::moveCurrentShapeRight()
 }
 
 void
+GLWidget::rotateCurrentShape()
+{
+    hideCurrentShape();
+    QVector<QPoint> vec(currentShape->rotateShape());
+    bool rotate=true;
+    for (int i=0;i<vec.size();++i)                          //двигаем вправо
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        if( areaWidth <= x || x < 0 || y > areaHeight - 1 || y < 0 || area.at(x).at(y).isVisible())
+        {
+            qDebug()<<"Ты пидор";
+            rotate = false;
+            return;
+        }
+    }
+    if(rotate)
+    {
+        currentShape->setParts(vec);
+        int i=0;
+        foreach (QPoint points, currentShape->getParts())
+        {
+
+            int x=currentX+points.x();
+            int y=currentY+points.y();
+            area[x][y].setColor(currentColor);
+            i++;
+        }
+        showCurrentShape();
+        updateGL();
+    }
+}
+
+void
 GLWidget::timerEvent(QTimerEvent *event)
 {
     if (event->timerId()==this->timerId)                    //проверяем, тот ли это таймер
@@ -310,6 +344,9 @@ GLWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())                                       //смотрим кнопку
     {
+    case Qt::Key_Up:
+        this->rotateCurrentShape();
+        break;
     case Qt::Key_Left:                                          //если влево
         this->moveCurrentShapeLeft();
         break;

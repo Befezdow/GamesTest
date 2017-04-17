@@ -9,7 +9,7 @@ float func(float x)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    GLWidget w(40,10,15);
+    GLWidget w(30,10,15);
 
     w.start();
     w.show();
