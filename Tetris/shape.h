@@ -6,8 +6,10 @@
 class Shape                 //базовый класс всех фигур
 {
 protected:
-    int height;             //высота фигуры
-    int width;              //ширина фигуры
+    int top;                //верхняя точка фигуры (наибольший y)
+    int bottom;             //нижняя точка фигуры (наименьший y)
+    int left;               //самая левая точка фигуры (наименьший x)
+    int right;              //самая правая точка фигуры (наибольший x)
     QVector<QPoint> parts;  //координаты верхних левых углов квадратов, из которых состоит фигура
     bool rotation;          //возможность поворота фигуры
 
@@ -15,14 +17,26 @@ protected:
 public:
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
 
-    int getHeight() const
+    int getTop() const
     {
-        return height;
+        return top;
     }
-    int getWidth() const
+
+    int getBottom() const
     {
-        return width;
+        return bottom;
     }
+
+    int getLeft() const
+    {
+        return left;
+    }
+
+    int getRight() const
+    {
+        return right;
+    }
+
     QVector<QPoint> getParts() const
     {
         return parts;
@@ -45,8 +59,10 @@ class Square : public Shape
 public:
     Square()
     {
-        height=2;
-        width=2;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=0;
         rotation=false;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -67,8 +83,10 @@ class LittleSquare : public Shape
 public:
     LittleSquare()
     {
-        height=1;
-        width=1;
+        top=0;
+        bottom=0;
+        left=0;
+        right=0;
         rotation=false;
         parts.push_back(QPoint(0,0));
     }
@@ -86,18 +104,20 @@ public:
 public:
     BigSquare()
     {
-       height=3;
-       width=3;
-       rotation=false;
-       parts.push_back(QPoint(0,0));
-       parts.push_back(QPoint(0,1));
-       parts.push_back(QPoint(-1,1));
-       parts.push_back(QPoint(-1,0));
-       parts.push_back(QPoint(-1,-1));
-       parts.push_back(QPoint(0,-1));
-       parts.push_back(QPoint(1,-1));
-       parts.push_back(QPoint(1,0));
-       parts.push_back(QPoint(1,1));
+        top=1;
+        bottom=-1;
+        left=-1;
+        right=1;
+        rotation=false;
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(-1,1));
+        parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(-1,-1));
+        parts.push_back(QPoint(0,-1));
+        parts.push_back(QPoint(1,-1));
+        parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(1,1));
     }
 };*/
 
@@ -113,8 +133,10 @@ class Stick : public Shape
 public:
     Stick()
     {
-        height=1;
-        width=4;
+        top=0;
+        bottom=0;
+        left=-1;
+        right=2;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(1,0));
@@ -135,8 +157,10 @@ class TShape : public Shape
 public:
     TShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -157,8 +181,10 @@ class ZShape : public Shape
 public:
     ZShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -179,8 +205,10 @@ class SShape : public Shape
 public:
     SShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(1,0));
@@ -201,8 +229,10 @@ class JShape : public Shape
 public:
     JShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -223,8 +253,10 @@ class LShape : public Shape
 public:
     LShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));

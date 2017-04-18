@@ -34,7 +34,7 @@ GLWidget::initShape()
     //задаем начальное положение центра движ. фигуры
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
-
+    /////////////плохая генерация, ПЕРЕДЕЛАТЬ!!!!!!
     int colorSeed=qrand()%6;                //генерируем начальный цвет движ. фигуры
     currentColor=colors.at(colorSeed);      //ставим его
 
@@ -253,8 +253,57 @@ GLWidget::timerEvent(QTimerEvent *event)
     {
         if (!this->moveCurrentShapeDown())
         {
-            //проверить на удаление линий + проверить счет
-            this->initShape();         //инициализируем новую фигуру
+            int topLine=currentY+currentShape->getTop();
+            int bottomLine=currentY+currentShape->getBottom();
+            int deletedLines=0;
+            while (topLine>=bottomLine)
+            {
+                bool needEraseLine=true;                            //проверяем, нужно ли очистить линию
+                for (int i=0;i<areaWidth;++i)
+                    needEraseLine=needEraseLine && area.at(i).at(bottomLine).isVisible();
+
+                if (needEraseLine)                                  //если строку нужно очистить
+                {
+                    for (int i=0;i<areaWidth;++i)                   //сдвигаем все на 1 клетку вниз
+                        for (int j=bottomLine;j<areaHeight-1;++j)
+                        {
+                            if(area[i][j+1].isVisible())
+                            {
+                                area[i][j].setColor(area[i][j+1].getColor());
+                                area[i][j].show();
+                            }
+                            else
+                                area[i][j].hide();
+                        }
+                    topLine--;
+                    deletedLines++;
+                }
+                else
+                {
+                    bottomLine++;
+                }
+            }
+            for (int i=0;i<areaWidth;++i)                   //очищаем deletedLines верхних линий
+                for (int j=areaHeight-deletedLines;j<areaHeight;++j)
+                    area[i][j].hide();
+
+            switch (deletedLines)                           //добавление очков
+            {
+            case 1:
+                currentScore+=100;
+                break;
+            case 2:
+                currentScore+=500;
+                break;
+            case 3:
+                currentScore+=1000;
+                break;
+            case 4:
+                currentScore+=1500;
+                break;
+            }
+
+            this->initShape();              //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
         }
     }
