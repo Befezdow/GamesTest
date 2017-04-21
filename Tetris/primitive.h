@@ -5,9 +5,9 @@
 
 class Primitive
 {
-    QPoint pos;
-    QColor color;
-    bool visible;
+    QPoint pos;         //координаты клетки
+    QColor color;       //цвет клетки
+    bool visible;       //видимость клетки
 public:
     Primitive():pos(QPoint(0,0)),color(Qt::white),visible(false) {}
     Primitive(QPoint p,QColor c):pos(p),color(c),visible(false) {}

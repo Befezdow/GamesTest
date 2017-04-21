@@ -8,26 +8,28 @@
 class Shape                 //базовый класс всех фигур
 {
 protected:
-    int height;             //высота фигуры
-    int width;              //ширина фигуры
+    int top;                //верхняя точка фигуры (наибольший y)
+    int bottom;             //нижняя точка фигуры (наименьший y)
+    int left;               //самая левая точка фигуры (наименьший x)
+    int right;              //самая правая точка фигуры (наибольший x)
     QVector<QPoint> parts;  //координаты верхних левых углов квадратов, из которых состоит фигура
     bool rotation;          //возможность поворота фигуры
 
     Shape() {}              //хотел абстрактный класс
 public:
 
-    QVector<QPoint> rotateShape()
+    QVector<QPoint> rotatedParts()          //возвращает относительные координаты повернутых частей
     {
-        if(!this->canRotate())
+        if(!this->canRotate())              //если нельзя поворачивать
             return this->parts;
-        else
+        else                                //если можно
         {
-            QVector<QPoint> rotatedPoints;
+            QVector<QPoint> rotatedPoints;  //новые координаты повернутых частей
             foreach (QPoint point, this->parts)
             {
-                QPoint rPoint; //Повернутая точка
-                rPoint.setX(-point.y());
-                rPoint.setY(point.x());
+                QPoint rPoint;              //Повернутая точка
+                rPoint.setX(-point.y());    //поставили новый x
+                rPoint.setY(point.x());     //поставили новый y
                 rotatedPoints.push_back(rPoint);
             }
             return rotatedPoints;
@@ -36,14 +38,41 @@ public:
 
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
 
-    int getHeight() const
+    int getTop() const
     {
-        return height;
+        return top;
     }
-    int getWidth() const
+
+    int getBottom() const
     {
-        return width;
+        return bottom;
     }
+
+    void rotateSides()                      //поворачивает стороны l,r,t,b, если это возможно
+    {
+        if (!rotation)                      //если нельзя поворачивать
+            return;
+        int tempT=top;                      //запоминаем исходные
+        int tempB=bottom;
+        int tempL=left;
+        int tempR=right;
+        ////////////
+        qDebug()<<"   "<<top;
+        qDebug()<<left<<"     "<<right;
+        qDebug()<<"   "<<bottom;
+        ////////////
+        top=tempR;                      //поворачиваем
+        right=-tempB;
+        bottom=tempL;
+        left=-tempT;
+        ////////////
+        qDebug()<<"Стало:";
+        qDebug()<<"   "<<top;
+        qDebug()<<left<<"     "<<right;
+        qDebug()<<"   "<<bottom;
+        ////////////
+    }
+	
     void setParts(QVector<QPoint> parts)
     {
         this->parts=parts;
@@ -71,8 +100,10 @@ class Square : public Shape
 public:
     Square()
     {
-        height=2;
-        width=2;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=0;
         rotation=false;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -93,8 +124,10 @@ class LittleSquare : public Shape
 public:
     LittleSquare()
     {
-        height=1;
-        width=1;
+        top=0;
+        bottom=0;
+        left=0;
+        right=0;
         rotation=false;
         parts.push_back(QPoint(0,0));
     }
@@ -112,18 +145,20 @@ public:
 public:
     BigSquare()
     {
-       height=3;
-       width=3;
-       rotation=false;
-       parts.push_back(QPoint(0,0));
-       parts.push_back(QPoint(0,1));
-       parts.push_back(QPoint(-1,1));
-       parts.push_back(QPoint(-1,0));
-       parts.push_back(QPoint(-1,-1));
-       parts.push_back(QPoint(0,-1));
-       parts.push_back(QPoint(1,-1));
-       parts.push_back(QPoint(1,0));
-       parts.push_back(QPoint(1,1));
+        top=1;
+        bottom=-1;
+        left=-1;
+        right=1;
+        rotation=false;
+        parts.push_back(QPoint(0,0));
+        parts.push_back(QPoint(0,1));
+        parts.push_back(QPoint(-1,1));
+        parts.push_back(QPoint(-1,0));
+        parts.push_back(QPoint(-1,-1));
+        parts.push_back(QPoint(0,-1));
+        parts.push_back(QPoint(1,-1));
+        parts.push_back(QPoint(1,0));
+        parts.push_back(QPoint(1,1));
     }
 };*/
 
@@ -139,8 +174,10 @@ class Stick : public Shape
 public:
     Stick()
     {
-        height=1;
-        width=4;
+        top=0;
+        bottom=0;
+        left=-1;
+        right=2;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(1,0));
@@ -161,8 +198,10 @@ class TShape : public Shape
 public:
     TShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -183,8 +222,10 @@ class ZShape : public Shape
 public:
     ZShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -205,8 +246,10 @@ class SShape : public Shape
 public:
     SShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(1,0));
@@ -227,8 +270,10 @@ class JShape : public Shape
 public:
     JShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));
@@ -249,8 +294,10 @@ class LShape : public Shape
 public:
     LShape()
     {
-        height=2;
-        width=3;
+        top=0;
+        bottom=-1;
+        left=-1;
+        right=1;
         rotation=true;
         parts.push_back(QPoint(0,0));
         parts.push_back(QPoint(-1,0));

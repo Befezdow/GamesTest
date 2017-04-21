@@ -1,11 +1,9 @@
 #include "glwidget.h"
 #include <iostream>
 
-
 void
 GLWidget::randomize()
 {
-//    qsrand(time(0));
     nextColor=qrand()%6;
     nextFigure=qrand()%8;
     qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
@@ -18,17 +16,16 @@ GLWidget::initShape()
 {
     if (currentShape)
         delete currentShape;
+
     //задаем начальное положение центра движ. фигуры
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
 
-//    qsrand(time(0));//Делаем рандом трушным.
+    int colorSeed=nextColor;                    //генерируем начальный цвет движ. фигуры
+    currentColor=colors.at(colorSeed);          //ставим его
 
-    int colorSeed=nextColor;//qrand()%6;                //генерируем начальный цвет движ. фигуры
-    currentColor=colors.at(colorSeed);      //ставим его
-
-    int shapeSeed=nextFigure;//qrand()%8;                //генерируем начальную фигуру
-    currentShape=generateShape(shapeSeed);  //ставим её
+    int shapeSeed=nextFigure;                   //генерируем начальную фигуру
+    currentShape=generateShape(shapeSeed);      //ставим её
 
     QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
     for (int i=0;i<vec.size();++i)
@@ -43,17 +40,20 @@ GLWidget::initShape()
                 return;
             }
             area[x][y].setColor(currentColor);              //ставим её цвет
-            area[x][y].show();              //говорим, что нужно её рисовать
+            area[x][y].show();                              //говорим, что нужно её рисовать
         }
     }
 }
+
 
 GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
     QGLWidget(parent),
     squareSide(side),
     areaWidth(width),
     areaHeight(height),
+    currentScore(0),
     currentShape(Q_NULLPTR)
+
 {
     //инициализируем пустое поле
     for (int i=0;i<areaWidth;++i)           //идем по столбцам
@@ -66,6 +66,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
         }
         area.push_back(vec);                //добавили столбец
     }
+
     //добавляем цвета для раскраски фигур
     colors.push_back(Qt::red);
     colors.push_back(Qt::blue);
@@ -74,10 +75,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
     colors.push_back(Qt::green);
     colors.push_back(Qt::magenta);
 
-    timerId=0;                              //инициализируем id таймера
-    currentScore=0;                         //инициализируем счет
-
-    this->resize(side*width,side*height);             //фиксируем размеры окна под игровую область
+    this->resize(side*width,side*height);                   //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
 
@@ -126,29 +124,29 @@ GLWidget::resizeGL(int w, int h)
 void
 GLWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    qglColor(Qt::gray);
-    glBegin(GL_LINE_STRIP);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
+    qglColor(Qt::gray);                                     //ставим серый цвет
+    glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
         glVertex2i(0,squareSide*(areaHeight-1));
         glVertex2i(squareSide*(areaWidth),squareSide*(areaHeight-1));
     glEnd();
-    for (int i=0;i<area.size();++i)
+    for (int i=0;i<area.size();++i)                         //отрисовываем все поле по клеткам
     {
         for (int j=0;j<area.at(i).size();++j)
         {
-            Primitive prim=area.at(i).at(j);
-            if (prim.isVisible())
+            Primitive prim=area.at(i).at(j);                //получаем клетку
+            if (prim.isVisible())                           //если её нужно рисовать
             {
-                QPoint p=prim.getPos();
-                int x1=p.x();
+                QPoint p=prim.getPos();                     //получаем её координаты
+                int x1=p.x();                               //получаем верхний левый угол
                 int y1=p.y();
-                int x2=x1+squareSide;
+                int x2=x1+squareSide;                       //получаем правый нижний угол
                 int y2=y1-squareSide;
-                qglColor(prim.getColor());
-                glRecti(x1,y1,x2,y2);
-                qglColor(Qt::black);
-                glLineWidth(2);
-                glBegin(GL_LINE_LOOP);
+                qglColor(prim.getColor());                  //ставим клетке её цвет
+                glRecti(x1,y1,x2,y2);                       //рисуем клетку
+                qglColor(Qt::black);                        //ставим черный цвет
+                glLineWidth(2);                             //ставим ширину линии 2
+                glBegin(GL_LINE_LOOP);                      //рисуем обводку
                     glVertex2i(x1,y1);
                     glVertex2i(x1,y2);
                     glVertex2i(x2,y2);
@@ -205,7 +203,7 @@ GLWidget::moveCurrentShapeDown()
         area[x][y].setColor(currentColor);
         area[x][y].show();
     }
-    this->updateGL();               //обновляем картинку
+    this->updateGL();                                       //обновляем картинку
     return true;
 }
 
@@ -233,7 +231,7 @@ GLWidget::moveCurrentShapeLeft()
         area[x][y].setColor(currentColor);
         area[x][y].show();
     }
-    this->updateGL();               //обновляем картинку
+    this->updateGL();                                       //обновляем картинку
     return true;
 }
 
@@ -261,7 +259,7 @@ GLWidget::moveCurrentShapeRight()
         area[x][y].setColor(currentColor);
         area[x][y].show();
     }
-    this->updateGL();               //обновляем картинку
+    this->updateGL();                                       //обновляем картинку
     return true;
 }
 
@@ -269,7 +267,7 @@ void
 GLWidget::rotateCurrentShape()
 {
     hideCurrentShape();
-    QVector<QPoint> vec(currentShape->rotateShape());
+    QVector<QPoint> vec(currentShape->rotatedParts());
     bool rotate=true;
     for (int i=0;i<vec.size();++i)                          //двигаем вправо
     {
@@ -277,7 +275,7 @@ GLWidget::rotateCurrentShape()
         int y=currentY+vec.at(i).y();                       //в абсолютные
         if( areaWidth <= x || x < 0 || y > areaHeight - 1 || y < 0 || area.at(x).at(y).isVisible())
         {
-            qDebug()<<"Ты пидор";
+            qDebug()<<"Нельзя повернуть";
             rotate = false;
             showCurrentShape();
             return;
@@ -286,6 +284,7 @@ GLWidget::rotateCurrentShape()
     if(rotate)
     {
         currentShape->setParts(vec);
+        currentShape->rotateSides();
         int i=0;
         foreach (QPoint points, currentShape->getParts())
         {
@@ -303,61 +302,67 @@ GLWidget::rotateCurrentShape()
 void
 GLWidget::timerEvent(QTimerEvent *event)
 {
-    if (event->timerId()==this->timerId)                    //проверяем, тот ли это таймер
+    if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
         if (!this->moveCurrentShapeDown())
         {
-            //проверить на удаление линий + проверить счет
+            int topLine=currentY+currentShape->getTop();
+            int bottomLine=currentY+currentShape->getBottom();
+            int deletedLines=0;
+            while (topLine>=bottomLine)
+            {
+                bool needEraseLine=true;                            //проверяем, нужно ли очистить линию
+                for (int i=0;i<areaWidth;++i)
+                    needEraseLine=needEraseLine && area.at(i).at(bottomLine).isVisible();
 
-            this->initShape();         //инициализируем новую фигуру
+                if (needEraseLine)                                  //если строку нужно очистить
+                {
+                    qDebug()<<"Очищаем линию";
+                    for (int i=0;i<areaWidth;++i)                   //сдвигаем все на 1 клетку вниз
+                        for (int j=bottomLine;j<areaHeight-1;++j)
+                        {
+                            if(area[i][j+1].isVisible())
+                            {
+                                area[i][j].setColor(area[i][j+1].getColor());
+                                area[i][j].show();
+                            }
+                            else
+                                area[i][j].hide();
+                        }
+                    topLine--;
+                    deletedLines++;
+                }
+                else
+                {
+                    bottomLine++;
+                }
+            }
+            for (int i=0;i<areaWidth;++i)                   //очищаем deletedLines верхних линий
+                for (int j=areaHeight-deletedLines;j<areaHeight;++j)
+                    area[i][j].hide();
+
+            switch (deletedLines)                           //добавление очков
+            {
+            case 1:
+                currentScore+=100;
+                break;
+            case 2:
+                currentScore+=500;
+                break;
+            case 3:
+                currentScore+=1000;
+                break;
+            case 4:
+                currentScore+=1500;
+                break;
+            }
+            emit scoreChanged(currentScore);
+            this->initShape();              //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
-            randomize();//Получаем данные следующей
+            randomize();                    //Получаем данные следующей фигуры
 
         }
     }
-        /*if (currentY==0 || area[currentX][currentY-1].isVisible())   //если фигура уперлась вниз
-        {
-            if (currentY==areaHeight-1)                         //если это верх области
-            {
-                emit gameOver(currentScore);                    //завершаем игру
-            }
-
-            bool needEraseLine=true;                            //проверяем, нужно ли очистить линию
-            for (int i=0;i<areaWidth;++i)
-                needEraseLine=needEraseLine && area.at(i).at(currentY).isVisible();
-
-            if (needEraseLine)                                  //если нужно
-            {
-                for (int i=0;i<areaWidth;++i)                   //сдвигаем все на 1 клетку вниз
-                    for (int j=currentY;j<areaHeight-1;++j)
-                        if(area[i][j+1].isVisible())
-                            area[i][j].show();
-                        else
-                            area[i][j].hide();
-
-                for (int i=0;i<areaWidth;++i)                   //верхнюю линию очищаем
-                    area[i][areaHeight-1].hide();
-
-                currentScore+=this->areaWidth;                  //добавляем счет на кол-во уничтоженных блоков
-            }
-                                                                //задаем исходное положение фигуре
-            currentX=(areaWidth-1)/2;                           //задаем X
-            currentY=areaHeight-1;                              //задаем Y
-            int seed=qrand()%6;                                 //генерируем цвет новой фигуры
-            currentColor=colors.at(seed);                       //устанавливаем его
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();                    //говорим, что нужно её рисовать по таким координатам
-        }
-        else                                                    //если не уперлась
-        {
-            area[currentX][currentY].hide();                    //то двигаем её вниз
-            currentY--;
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();
-        }
-    }
-    this->updateGL();                                           //обновляем картинку
-    */
 }
 
 void
@@ -397,7 +402,7 @@ GLWidget::start()
 
     timerId=this->startTimer(500);     //запускаем новый
 
-    randomize();//Рандомим следующую
+    randomize();                       //Рандомим следующую
 }
 
 void
