@@ -1,8 +1,8 @@
 #include "scoretable.h"
 
-Scoretable::Scoretable(int side, int labelwidth, int labelheight, QWidget *parent) :
-    window(new GLScores(side,5,5,parent)),
-    QWidget(parent)
+Scoretable::Scoretable(int side, QWidget *parent) :
+    QWidget(parent),
+    window(new GLScores(side,5,5,parent))
 {
     QVBoxLayout *vertical=new QVBoxLayout();
     window=new GLScores(side,5,5,parent);

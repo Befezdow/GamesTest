@@ -50,7 +50,6 @@ GLWidget::initShape()
 
 GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
     QGLWidget(parent),
-    scores(side,100,100,parent),
     squareSide(side),
     areaWidth(width),
     areaHeight(height),
@@ -81,9 +80,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
     this->resize(side*width,side*height);             //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
-    QObject::connect(this,SIGNAL(scoreChanged(int)),&scores,SLOT(changeScore(int)));
-    QObject::connect(this,SIGNAL(throwNextFigure(int,QColor)),&scores,SLOT(setNextFigure(int,QColor)));
-    scores.show();
+
 }
 
 Shape *GLWidget::generateShape(int typeOfShape)

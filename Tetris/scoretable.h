@@ -64,7 +64,7 @@ class Scoretable : public QWidget
     GLScores *window;
     QLabel *scores;
 public:
-    explicit Scoretable(int side, int labelwidth, int labelheight,QWidget *parent = 0);
+    explicit Scoretable(int side, QWidget *parent = 0);
 
 signals:
 

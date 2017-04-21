@@ -5,13 +5,11 @@
 #include <QtWidgets>
 #include "shape.h"
 #include "primitive.h"
-#include "scoretable.h"
 
 class GLWidget: public QGLWidget
 {
     Q_OBJECT
     QVector<QVector<Primitive>> area;  //само игровое поле
-    Scoretable scores;
     int squareSide;             //сторона примитивного квадрата
 
     int areaWidth;              //ширина поля в этих квадратах
