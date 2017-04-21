@@ -15,18 +15,18 @@ protected:
 
     Shape() {}              //хотел абстрактный класс
 public:
-    QVector<QPoint> rotateShape()
+    QVector<QPoint> rotatedParts()          //возвращает относительные координаты повернутых частей
     {
-        if(!this->canRotate())
+        if(!this->canRotate())              //если нельзя поворачивать
             return this->parts;
-        else
+        else                                //если можно
         {
-            QVector<QPoint> rotatedPoints;
+            QVector<QPoint> rotatedPoints;  //новые координаты повернутых частей
             foreach (QPoint point, this->parts)
             {
-                QPoint rPoint; //Повернутая точка
-                rPoint.setX(-point.y());
-                rPoint.setY(point.x());
+                QPoint rPoint;              //Повернутая точка
+                rPoint.setX(-point.y());    //поставили новый x
+                rPoint.setY(point.x());     //поставили новый y
                 rotatedPoints.push_back(rPoint);
             }
             return rotatedPoints;
@@ -45,15 +45,30 @@ public:
         return bottom;
     }
 
-    int getLeft() const
+    void rotateSides()                      //поворачивает стороны l,r,t,b, если это возможно
     {
-        return left;
+        if (!rotation)                      //если нельзя поворачивать
+            return;
+        int tempT=top;                      //запоминаем исходные
+        int tempB=bottom;
+        int tempL=left;
+        int tempR=right;
+        ////////////
+        qDebug()<<"   "<<top;
+        qDebug()<<left<<"     "<<right;
+        qDebug()<<"   "<<bottom;
+        ////////////
+        top=tempR;                      //поворачиваем
+        right=-tempB;
+        bottom=tempL;
+        left=-tempT;
+        ////////////
+        qDebug()<<"Стало:";
+        qDebug()<<"   "<<top;
+        qDebug()<<left<<"     "<<right;
+        qDebug()<<"   "<<bottom;
+        ////////////
     }
-
-    int getRight() const
-    {
-        return right;
-	}
 	
     void setParts(QVector<QPoint> parts)
     {

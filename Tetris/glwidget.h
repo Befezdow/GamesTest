@@ -24,23 +24,29 @@ class GLWidget: public QGLWidget
 
     int currentScore;           //текущий счет игрока
 
-    int nextFigure;
-    int nextColor;
+    int nextFigure;             //тип следующей фигуры
+    int nextColor;              //цвет следующей фигуры
 
     QVector<QColor> colors;     //цвета фигур
     QColor currentColor;        //цвет движущейся фигуры
 
-    void initShape();
-    void rotateCurrentShape();
-    void showCurrentShape();
-    void hideCurrentShape();
-    bool moveCurrentShapeDown();
-    bool moveCurrentShapeLeft();
-    bool moveCurrentShapeRight();
-    void randomize();
+    void initShape();               //инициализирует новую фигуру
+    void rotateCurrentShape();      //текущую фигуру, если это возможно
+    void showCurrentShape();        //показать текущую фигуру
+    void hideCurrentShape();        //скрыть текущую фигуру
+    bool moveCurrentShapeDown();    //переместить текущую фигуру на одну клетку вниз
+    bool moveCurrentShapeLeft();    //переместить текущую фигуру на одну клетку влево
+    bool moveCurrentShapeRight();   //переместить текущую фигуру на одну клетку вправо
+    void randomize();               //сгенерировать следующую фигуру
+
+    Shape* generateShape(int typeOfShape);  //фабрика фигур
+
 public:
+
     GLWidget(int side,int width,int height,QWidget* parent=Q_NULLPTR);
+
 protected:
+
     virtual void initializeGL();
 
     virtual void resizeGL(int w, int h);
@@ -56,7 +62,7 @@ public slots:
 
     void endGame(int score);    //завершить игру и вывести счет
 signals:
-    void scoreChanged(int);
+    void scoreChanged(int);     //сигнал изменения счета
     void gameOver(int);         //сигнал проигрыша
 };
 
