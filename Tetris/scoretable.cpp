@@ -12,28 +12,17 @@ Scoretable::Scoretable(int side, QWidget *parent) :
     this->setLayout(vertical);
 }
 
-void GLScores::paintFigure()
+void
+Scoretable::changeScore(int score)
 {
+    scores->setText("Your score : "+QString::number(score));
+}
 
-    Shape * figure = GLWidget::generateShape(indexOfFigure);
-    QVector<QPoint> points = figure->getParts();
-    delete figure;
-    foreach (QPoint point, points)
-    {
-        int x = point.x()*side;
-        int y = point.y()*side;
-        int x1 = x + side;
-        int y1 = y - side;
-        qglColor(color);
-        glRecti(x,y,x1,y1);
-        qglColor(Qt::black);
-        glBegin(GL_LINE_LOOP);
-            glVertex2i(x,y);
-            glVertex2i(x,y1);
-            glVertex2i(x1,y1);
-            glVertex2i(x1,y);
-        glEnd();
-
-    }
-
+void
+Scoretable::setNextFigure(int figureNum, QColor color)
+{
+    qDebug()<<"Поймал "<<figureNum<<" "<<color;
+    window->setIndexOfFigure(figureNum);
+    window->setColorOfFigure(color);
+    window->update();
 }

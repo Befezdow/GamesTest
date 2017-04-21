@@ -24,11 +24,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp \
-    glwidget.cpp \
-    scoretable.cpp
+    scoretable.cpp \
+    shape.cpp \
+    glscores.cpp \
+    gamearea.cpp
 
 HEADERS  += \
-    glwidget.h \
     shape.h \
     primitive.h \
-    scoretable.h
+    scoretable.h \
+    glscores.h \
+    gamearea.h

@@ -6,7 +6,7 @@
 #include "shape.h"
 #include "primitive.h"
 
-class GLWidget: public QGLWidget
+class GameArea: public QGLWidget
 {
     Q_OBJECT
     QVector<QVector<Primitive>> area;  //само игровое поле
@@ -38,34 +38,25 @@ class GLWidget: public QGLWidget
     bool moveCurrentShapeRight();   //переместить текущую фигуру на одну клетку вправо
     void randomize();               //сгенерировать следующую фигуру
 
-
 public:
-
-    GLWidget(int side,int width,int height,QWidget* parent=Q_NULLPTR);
+    GameArea(int side,int width,int height,QWidget* parent=Q_NULLPTR);
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
 
 protected:
-
     virtual void initializeGL();
-
     virtual void resizeGL(int w, int h);
-
     virtual void paintGL();
-
     virtual void timerEvent(QTimerEvent *event);
-
     virtual void keyPressEvent(QKeyEvent *event);
 
 public slots:
     void start();               //запустить игру (запуск таймера)
-
     void endGame(int score);    //завершить игру и вывести счет
+
 signals:
     void throwNextFigure(int, QColor);
     void scoreChanged(int);     //сигнал изменения счета
     void gameOver(int);         //сигнал проигрыша
 };
-
-
 
 #endif // GLWIDGET_H

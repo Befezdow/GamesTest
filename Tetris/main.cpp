@@ -1,16 +1,16 @@
-#include "glwidget.h"
+#include "gamearea.h"
 #include <QApplication>
 #include "scoretable.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    GLWidget w(30,10,15);
+    GameArea gameArea(30,10,15);
     Scoretable scores(30);
-    QObject::connect(&w,SIGNAL(scoreChanged(int)),&scores,SLOT(changeScore(int)));
-    QObject::connect(&w,SIGNAL(throwNextFigure(int,QColor)),&scores,SLOT(setNextFigure(int,QColor)));
+    QObject::connect(&gameArea,SIGNAL(scoreChanged(int)),&scores,SLOT(changeScore(int)));
+    QObject::connect(&gameArea,SIGNAL(throwNextFigure(int,QColor)),&scores,SLOT(setNextFigure(int,QColor)));
+    gameArea.show();
     scores.show();
-    w.start();
-    w.show();
+    gameArea.start();
     return a.exec();
 }

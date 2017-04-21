@@ -1,18 +1,16 @@
-#include "glwidget.h"
-#include <iostream>
+#include "gamearea.h"
 
 void
-GLWidget::randomize()
+GameArea::randomize()
 {
     nextColor=qrand()%6;
     nextFigure=qrand()%8;
     qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
     emit throwNextFigure(nextFigure,colors.at(nextColor));
-    //emit сменить фигурку в маленьком окне
 }
 
 void
-GLWidget::initShape()
+GameArea::initShape()
 {
     if (currentShape)
         delete currentShape;
@@ -46,13 +44,14 @@ GLWidget::initShape()
 }
 
 
-GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
+GameArea::GameArea(int side, int width, int height, QWidget *parent):
     QGLWidget(parent),
     squareSide(side),
     areaWidth(width),
     areaHeight(height),
-    currentScore(0),
-    currentShape(Q_NULLPTR)
+    currentShape(Q_NULLPTR),
+    timerId(0),
+    currentScore(0)
 
 {
     //инициализируем пустое поле
@@ -81,7 +80,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
 
 }
 
-Shape *GLWidget::generateShape(int typeOfShape)
+Shape *GameArea::generateShape(int typeOfShape)
 {
     switch(typeOfShape)
     {
@@ -107,13 +106,13 @@ Shape *GLWidget::generateShape(int typeOfShape)
 }
 
 void
-GLWidget::initializeGL()
+GameArea::initializeGL()
 {
     qglClearColor(Qt::white);               //задаем цвет фона
 }
 
 void
-GLWidget::resizeGL(int w, int h)
+GameArea::resizeGL(int w, int h)
 {
     glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
     glLoadIdentity();                       //инициализируем её единичной матрицей
@@ -122,7 +121,7 @@ GLWidget::resizeGL(int w, int h)
 }
 
 void
-GLWidget::paintGL()
+GameArea::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
     qglColor(Qt::gray);                                     //ставим серый цвет
@@ -157,7 +156,7 @@ GLWidget::paintGL()
     }
 }
 
-void GLWidget::showCurrentShape()
+void GameArea::showCurrentShape()
 {
     QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
     for (int i=0;i<vec.size();++i)                          //показываем фигуру
@@ -168,7 +167,7 @@ void GLWidget::showCurrentShape()
     }
 }
 
-void GLWidget::hideCurrentShape()
+void GameArea::hideCurrentShape()
 {
     QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
     for (int i=0;i<vec.size();++i)                          //скрываем фигуру
@@ -180,7 +179,7 @@ void GLWidget::hideCurrentShape()
 }
 
 bool
-GLWidget::moveCurrentShapeDown()
+GameArea::moveCurrentShapeDown()
 {
     this->hideCurrentShape();                               //скрываем текущую фигуру
 
@@ -208,7 +207,7 @@ GLWidget::moveCurrentShapeDown()
 }
 
 bool
-GLWidget::moveCurrentShapeLeft()
+GameArea::moveCurrentShapeLeft()
 {
     this->hideCurrentShape();                               //скрываем текущую фигуру
 
@@ -236,7 +235,7 @@ GLWidget::moveCurrentShapeLeft()
 }
 
 bool
-GLWidget::moveCurrentShapeRight()
+GameArea::moveCurrentShapeRight()
 {
     this->hideCurrentShape();                               //скрываем текущую фигуру
 
@@ -264,7 +263,7 @@ GLWidget::moveCurrentShapeRight()
 }
 
 void
-GLWidget::rotateCurrentShape()
+GameArea::rotateCurrentShape()
 {
     hideCurrentShape();
     QVector<QPoint> vec(currentShape->rotatedParts());
@@ -300,7 +299,7 @@ GLWidget::rotateCurrentShape()
 }
 
 void
-GLWidget::timerEvent(QTimerEvent *event)
+GameArea::timerEvent(QTimerEvent *event)
 {
     if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
@@ -366,7 +365,7 @@ GLWidget::timerEvent(QTimerEvent *event)
 }
 
 void
-GLWidget::keyPressEvent(QKeyEvent *event)
+GameArea::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())                                       //смотрим кнопку
     {
@@ -392,7 +391,7 @@ GLWidget::keyPressEvent(QKeyEvent *event)
 }
 
 void
-GLWidget::start()
+GameArea::start()
 {
     if (this->timerId)                 //если таймер существует
         this->killTimer(timerId);      //убиваем его
@@ -406,7 +405,7 @@ GLWidget::start()
 }
 
 void
-GLWidget::endGame(int score)
+GameArea::endGame(int score)
 {
     QString info="Your score: "+QString::number(score)+"\n Play more?";
     int i=QMessageBox::information(this,"Game Over",info,QMessageBox::Yes,QMessageBox::No);

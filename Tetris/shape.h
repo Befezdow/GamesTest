@@ -3,8 +3,6 @@
 
 #include <QtWidgets>
 
-
-
 class Shape                 //базовый класс всех фигур
 {
 protected:
@@ -18,74 +16,15 @@ protected:
     Shape() {}              //хотел абстрактный класс
 public:
 
-    QVector<QPoint> rotatedParts()          //возвращает относительные координаты повернутых частей
-    {
-        if(!this->canRotate())              //если нельзя поворачивать
-            return this->parts;
-        else                                //если можно
-        {
-            QVector<QPoint> rotatedPoints;  //новые координаты повернутых частей
-            foreach (QPoint point, this->parts)
-            {
-                QPoint rPoint;              //Повернутая точка
-                rPoint.setX(-point.y());    //поставили новый x
-                rPoint.setY(point.x());     //поставили новый y
-                rotatedPoints.push_back(rPoint);
-            }
-            return rotatedPoints;
-        }
-    }
-
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
 
-    int getTop() const
-    {
-        return top;
-    }
-
-    int getBottom() const
-    {
-        return bottom;
-    }
-
-    void rotateSides()                      //поворачивает стороны l,r,t,b, если это возможно
-    {
-        if (!rotation)                      //если нельзя поворачивать
-            return;
-        int tempT=top;                      //запоминаем исходные
-        int tempB=bottom;
-        int tempL=left;
-        int tempR=right;
-        ////////////
-        qDebug()<<"   "<<top;
-        qDebug()<<left<<"     "<<right;
-        qDebug()<<"   "<<bottom;
-        ////////////
-        top=tempR;                      //поворачиваем
-        right=-tempB;
-        bottom=tempL;
-        left=-tempT;
-        ////////////
-        qDebug()<<"Стало:";
-        qDebug()<<"   "<<top;
-        qDebug()<<left<<"     "<<right;
-        qDebug()<<"   "<<bottom;
-        ////////////
-    }
-	
-    void setParts(QVector<QPoint> parts)
-    {
-        this->parts=parts;
-    }
-
-    QVector<QPoint> getParts() const
-    {
-        return parts;
-    }
-    bool canRotate() const
-    {
-        return rotation;
-    }
+    QVector<QPoint> rotatedParts();         //возвращает относительные координаты повернутых частей
+    int getTop() const;
+    int getBottom() const;
+    void rotateSides();                     //поворачивает стороны l,r,t,b, если это возможно
+    void setParts(QVector<QPoint> parts);
+    QVector<QPoint> getParts() const;
+    bool canRotate() const;
 };
 
 class Square : public Shape
