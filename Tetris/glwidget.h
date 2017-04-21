@@ -5,12 +5,13 @@
 #include <QtWidgets>
 #include "shape.h"
 #include "primitive.h"
+#include "scoretable.h"
 
 class GLWidget: public QGLWidget
 {
     Q_OBJECT
     QVector<QVector<Primitive>> area;  //само игровое поле
-
+    Scoretable scores;
     int squareSide;             //сторона примитивного квадрата
 
     int areaWidth;              //ширина поля в этих квадратах
@@ -40,6 +41,8 @@ class GLWidget: public QGLWidget
     void randomize();
 public:
     GLWidget(int side,int width,int height,QWidget* parent=Q_NULLPTR);
+    static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
+
 protected:
     virtual void initializeGL();
 
@@ -56,8 +59,11 @@ public slots:
 
     void endGame(int score);    //завершить игру и вывести счет
 signals:
+    void throwNextFigure(int, QColor);
     void scoreChanged(int);
     void gameOver(int);         //сигнал проигрыша
 };
+
+
 
 #endif // GLWIDGET_H

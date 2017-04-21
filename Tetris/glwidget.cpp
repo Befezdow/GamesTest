@@ -1,30 +1,7 @@
 #include "glwidget.h"
 #include <iostream>
 
-Shape* generateShape(int typeOfShape)       //генерирует объект фигуры
-{                                           //нужно куда-то это засунуть! сее в зад
-    switch(typeOfShape)
-    {
-    case Shape::Square:
-        return new Square;
-    case Shape::LittleSquare:
-        return new LittleSquare;
-    case Shape::Stick:
-        return new Stick;
-    case Shape::TShape:
-        return new TShape;
-    case Shape::ZShape:
-        return new ZShape;
-    case Shape::SShape:
-        return new SShape;
-    case Shape::JShape:
-        return new JShape;
-    case Shape::LShape:
-        return new LShape;
-    default:
-        return Q_NULLPTR;
-    }
-}
+
 void
 GLWidget::randomize()
 {
@@ -32,6 +9,7 @@ GLWidget::randomize()
     nextColor=qrand()%6;
     nextFigure=qrand()%8;
     qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
+    emit throwNextFigure(nextFigure,colors.at(nextColor));
     //emit сменить фигурку в маленьком окне
 }
 
@@ -70,8 +48,13 @@ GLWidget::initShape()
     }
 }
 
-GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(parent),
-    squareSide(side),areaWidth(width),areaHeight(height),currentShape(Q_NULLPTR)
+GLWidget::GLWidget(int side, int width, int height, QWidget *parent):
+    QGLWidget(parent),
+    scores(side,100,100,parent),
+    squareSide(side),
+    areaWidth(width),
+    areaHeight(height),
+    currentShape(Q_NULLPTR)
 {
     //инициализируем пустое поле
     for (int i=0;i<areaWidth;++i)           //идем по столбцам
@@ -98,6 +81,34 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
     this->resize(side*width,side*height);             //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
+    QObject::connect(this,SIGNAL(scoreChanged(int)),&scores,SLOT(changeScore(int)));
+    QObject::connect(this,SIGNAL(throwNextFigure(int,QColor)),&scores,SLOT(setNextFigure(int,QColor)));
+    scores.show();
+}
+
+Shape *GLWidget::generateShape(int typeOfShape)
+{
+    switch(typeOfShape)
+    {
+    case Shape::Square:
+        return new Square;
+    case Shape::LittleSquare:
+        return new LittleSquare;
+    case Shape::Stick:
+        return new Stick;
+    case Shape::TShape:
+        return new TShape;
+    case Shape::ZShape:
+        return new ZShape;
+    case Shape::SShape:
+        return new SShape;
+    case Shape::JShape:
+        return new JShape;
+    case Shape::LShape:
+        return new LShape;
+    default:
+        return Q_NULLPTR;
+    }
 }
 
 void

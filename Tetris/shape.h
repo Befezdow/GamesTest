@@ -3,6 +3,8 @@
 
 #include <QtWidgets>
 
+
+
 class Shape                 //базовый класс всех фигур
 {
 protected:
@@ -13,6 +15,7 @@ protected:
 
     Shape() {}              //хотел абстрактный класс
 public:
+
     QVector<QPoint> rotateShape()
     {
         if(!this->canRotate())
