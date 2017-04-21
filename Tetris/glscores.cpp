@@ -9,8 +9,8 @@ GLScores::paintFigure()
     delete figure;
     foreach (QPoint point, points)
     {
-        int x = point.x()*side;
-        int y = point.y()*side;
+        int x = (point.x()-1)*side;
+        int y = (point.y()+1)*side;
         int x1 = x + side;
         int y1 = y - side;
         qglColor(color);
