@@ -15,6 +15,24 @@ protected:
 
     Shape() {}              //хотел абстрактный класс
 public:
+    QVector<QPoint> rotateShape()
+    {
+        if(!this->canRotate())
+            return this->parts;
+        else
+        {
+            QVector<QPoint> rotatedPoints;
+            foreach (QPoint point, this->parts)
+            {
+                QPoint rPoint; //Повернутая точка
+                rPoint.setX(-point.y());
+                rPoint.setY(point.x());
+                rotatedPoints.push_back(rPoint);
+            }
+            return rotatedPoints;
+        }
+    }
+
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
 
     int getTop() const
@@ -35,6 +53,11 @@ public:
     int getRight() const
     {
         return right;
+	}
+	
+    void setParts(QVector<QPoint> parts)
+    {
+        this->parts=parts;
     }
 
     QVector<QPoint> getParts() const

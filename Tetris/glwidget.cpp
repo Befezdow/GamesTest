@@ -2,7 +2,7 @@
 #include <iostream>
 
 Shape* generateShape(int typeOfShape)       //генерирует объект фигуры
-{                                           //нужно куда-то это засунуть!
+{                                           //нужно куда-то это засунуть! сее в зад
     switch(typeOfShape)
     {
     case Shape::Square:
@@ -25,6 +25,15 @@ Shape* generateShape(int typeOfShape)       //генерирует объект 
         return Q_NULLPTR;
     }
 }
+void
+GLWidget::randomize()
+{
+//    qsrand(time(0));
+    nextColor=qrand()%6;
+    nextFigure=qrand()%8;
+    qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
+    //emit сменить фигурку в маленьком окне
+}
 
 void
 GLWidget::initShape()
@@ -34,11 +43,13 @@ GLWidget::initShape()
     //задаем начальное положение центра движ. фигуры
     currentX=(areaWidth-1)/2;               //задаем X
     currentY=areaHeight-1;                  //задаем Y
-    /////////////плохая генерация, ПЕРЕДЕЛАТЬ!!!!!!
-    int colorSeed=qrand()%6;                //генерируем начальный цвет движ. фигуры
+
+//    qsrand(time(0));//Делаем рандом трушным.
+
+    int colorSeed=nextColor;//qrand()%6;                //генерируем начальный цвет движ. фигуры
     currentColor=colors.at(colorSeed);      //ставим его
 
-    int shapeSeed=qrand()%8;                //генерируем начальную фигуру
+    int shapeSeed=nextFigure;//qrand()%8;                //генерируем начальную фигуру
     currentShape=generateShape(shapeSeed);  //ставим её
 
     QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
@@ -84,7 +95,7 @@ GLWidget::GLWidget(int side, int width, int height, QWidget *parent):QGLWidget(p
     timerId=0;                              //инициализируем id таймера
     currentScore=0;                         //инициализируем счет
 
-    this->setFixedSize(side*width,side*height);             //фиксируем размеры окна под игровую область
+    this->resize(side*width,side*height);             //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
 }
@@ -247,6 +258,41 @@ GLWidget::moveCurrentShapeRight()
 }
 
 void
+GLWidget::rotateCurrentShape()
+{
+    hideCurrentShape();
+    QVector<QPoint> vec(currentShape->rotateShape());
+    bool rotate=true;
+    for (int i=0;i<vec.size();++i)                          //двигаем вправо
+    {
+        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                       //в абсолютные
+        if( areaWidth <= x || x < 0 || y > areaHeight - 1 || y < 0 || area.at(x).at(y).isVisible())
+        {
+            qDebug()<<"Ты пидор";
+            rotate = false;
+            showCurrentShape();
+            return;
+        }
+    }
+    if(rotate)
+    {
+        currentShape->setParts(vec);
+        int i=0;
+        foreach (QPoint points, currentShape->getParts())
+        {
+
+            int x=currentX+points.x();
+            int y=currentY+points.y();
+            area[x][y].setColor(currentColor);
+            i++;
+        }
+        showCurrentShape();
+        updateGL();
+    }
+}
+
+void
 GLWidget::timerEvent(QTimerEvent *event)
 {
     if (event->timerId()==this->timerId)                    //проверяем, тот ли это таймер
@@ -305,51 +351,10 @@ GLWidget::timerEvent(QTimerEvent *event)
 
             this->initShape();              //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
+            randomize();//Получаем данные следующей
+
         }
     }
-        /*if (currentY==0 || area[currentX][currentY-1].isVisible())   //если фигура уперлась вниз
-        {
-            if (currentY==areaHeight-1)                         //если это верх области
-            {
-                emit gameOver(currentScore);                    //завершаем игру
-            }
-
-            bool needEraseLine=true;                            //проверяем, нужно ли очистить линию
-            for (int i=0;i<areaWidth;++i)
-                needEraseLine=needEraseLine && area.at(i).at(currentY).isVisible();
-
-            if (needEraseLine)                                  //если нужно
-            {
-                for (int i=0;i<areaWidth;++i)                   //сдвигаем все на 1 клетку вниз
-                    for (int j=currentY;j<areaHeight-1;++j)
-                        if(area[i][j+1].isVisible())
-                            area[i][j].show();
-                        else
-                            area[i][j].hide();
-
-                for (int i=0;i<areaWidth;++i)                   //верхнюю линию очищаем
-                    area[i][areaHeight-1].hide();
-
-                currentScore+=this->areaWidth;                  //добавляем счет на кол-во уничтоженных блоков
-            }
-                                                                //задаем исходное положение фигуре
-            currentX=(areaWidth-1)/2;                           //задаем X
-            currentY=areaHeight-1;                              //задаем Y
-            int seed=qrand()%6;                                 //генерируем цвет новой фигуры
-            currentColor=colors.at(seed);                       //устанавливаем его
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();                    //говорим, что нужно её рисовать по таким координатам
-        }
-        else                                                    //если не уперлась
-        {
-            area[currentX][currentY].hide();                    //то двигаем её вниз
-            currentY--;
-            area[currentX][currentY].setColor(currentColor);
-            area[currentX][currentY].show();
-        }
-    }
-    this->updateGL();                                           //обновляем картинку
-    */
 }
 
 void
@@ -357,6 +362,9 @@ GLWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())                                       //смотрим кнопку
     {
+    case Qt::Key_Up:
+        this->rotateCurrentShape();
+        break;
     case Qt::Key_Left:                                          //если влево
         this->moveCurrentShapeLeft();
         break;
@@ -380,8 +388,13 @@ GLWidget::start()
 {
     if (this->timerId)                 //если таймер существует
         this->killTimer(timerId);      //убиваем его
+    qsrand(time(0));
+    randomize();                       //Получаем цвет и фигуру следующую
     this->initShape();                 //инициализируем первую фигуру
+
     timerId=this->startTimer(500);     //запускаем новый
+
+    randomize();//Рандомим следующую
 }
 
 void

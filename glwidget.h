@@ -3,6 +3,18 @@
 
 #include <QtWidgets>
 #include <QGLWidget>
+#define X_TILE_COUNT 10
+#define Y_TILE_COUNT 10
+namespace myFigure
+{
+    struct Rectnagle
+    {
+        float x;
+        float y;
+        float size;
+    };
+}
+
 
 class GlWidget : public QGLWidget
 {
@@ -17,11 +29,19 @@ protected:
     virtual void paintGL();
     virtual void keyPressEvent(QKeyEvent * event);
 private:
-    int rectWidth;
-    int x;
-    int y;
-    int ystep;
-    int xstep;
+    void addRectangle(float x, float y);//, float size);
+    void eraseRectangle(float x, float y);
+    QList<myFigure::Rectnagle*> rectangles;
+    bool tiles[X_TILE_COUNT][Y_TILE_COUNT];
+    float xleft;
+    float xright;
+    float ytop;
+    float ybot;
+    float sizeOfSide;
+    float x;
+    float y;
+    float ystep;
+    float xstep;
 
 };
 
