@@ -40,6 +40,14 @@ class GameArea: public QGLWidget
 
 public:
     GameArea(int side,int width,int height,QWidget* parent=Q_NULLPTR);
+    ~GameArea()
+    {
+        qDebug()<<"туц";
+        delete currentShape;
+        QGLWidget::destroy();
+        killTimer(timerId);
+    }
+
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
 
 protected:

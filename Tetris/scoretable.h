@@ -14,6 +14,12 @@ class Scoretable : public QWidget
 
 public:
     explicit Scoretable(int side, QWidget *parent = 0);
+    ~Scoretable()
+    {
+        qDebug()<<"Таблица в минус";
+        delete window;
+        delete scores;
+    }
 
 public slots:
     void changeScore(int score);
