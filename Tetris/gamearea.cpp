@@ -74,7 +74,7 @@ GameArea::GameArea(int side, int width, int height, QWidget *parent):
     colors.push_back(Qt::green);
     colors.push_back(Qt::magenta);
 
-    this->resize(side*width,side*height);                   //фиксируем размеры окна под игровую область
+    this->setFixedSize(side*width+6,side*height+4);             //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
 
@@ -114,21 +114,28 @@ GameArea::initializeGL()
 void
 GameArea::resizeGL(int w, int h)
 {
+    float lineWidth=squareSide/15+1;
+    qDebug()<<lineWidth;
     glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
     glLoadIdentity();                       //инициализируем её единичной матрицей
     glViewport(0,0,w,h);                    //устанавливаем все окно вьюпортом
-    glOrtho(0,w,0,h,-1,1);                  //устанавливаем начало координат в (0,0)
+    glOrtho(-lineWidth,w-lineWidth,-lineWidth,h-lineWidth,-1,1);                  //устанавливаем начало координат в (0,0)
 }
 
 void
 GameArea::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
+
+    float lineWidth=squareSide/15;                            //определяем толщину линий
+
     qglColor(Qt::gray);                                     //ставим серый цвет
+    glLineWidth(lineWidth);                                 //ставим ширину линии
     glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
-        glVertex2i(0,squareSide*(areaHeight-1));
-        glVertex2i(squareSide*(areaWidth),squareSide*(areaHeight-1));
+        glVertex2i(-lineWidth,squareSide*(areaHeight-1));
+        glVertex2i(squareSide*(areaWidth)+lineWidth,squareSide*(areaHeight-1));
     glEnd();
+
     for (int i=0;i<area.size();++i)                         //отрисовываем все поле по клеткам
     {
         for (int j=0;j<area.at(i).size();++j)
@@ -144,7 +151,6 @@ GameArea::paintGL()
                 qglColor(prim.getColor());                  //ставим клетке её цвет
                 glRecti(x1,y1,x2,y2);                       //рисуем клетку
                 qglColor(Qt::black);                        //ставим черный цвет
-                glLineWidth(2);                             //ставим ширину линии 2
                 glBegin(GL_LINE_LOOP);                      //рисуем обводку
                     glVertex2i(x1,y1);
                     glVertex2i(x1,y2);
@@ -154,6 +160,13 @@ GameArea::paintGL()
             }
         }
     }
+    qglColor(Qt::gray);                                     //ставим серый цвет
+    glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
+        glVertex2i(-lineWidth,squareSide*areaHeight+lineWidth);
+        glVertex2i(-lineWidth,-lineWidth);
+        glVertex2i(squareSide*(areaWidth)+lineWidth,-lineWidth);
+        glVertex2i(squareSide*(areaWidth)+lineWidth,squareSide*areaHeight+lineWidth);
+    glEnd();
 }
 
 void GameArea::showCurrentShape()
