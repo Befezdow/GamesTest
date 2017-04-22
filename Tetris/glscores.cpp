@@ -17,7 +17,7 @@ GLScores::paintFigure()
         glRecti(x,y,x1,y1);
         qglColor(Qt::black);
         glBegin(GL_LINE_LOOP);
-            glVertex2i(x,y);
+            glVertex2i(x-1,y);
             glVertex2i(x,y1);
             glVertex2i(x1,y1);
             glVertex2i(x1,y);
