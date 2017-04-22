@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     scoretable.cpp \
     shape.cpp \
     glscores.cpp \
-    gamearea.cpp
+    gamearea.cpp \
+    primitive.cpp
 
 HEADERS  += \
     shape.h \
