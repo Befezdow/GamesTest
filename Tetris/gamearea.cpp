@@ -377,7 +377,6 @@ GameArea::timerEvent(QTimerEvent *event)
             this->initShape();              //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
             randomize();                    //Получаем данные следующей фигуры
-
         }
     }
 }
