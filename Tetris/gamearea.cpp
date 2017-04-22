@@ -404,8 +404,6 @@ GameArea::keyPressEvent(QKeyEvent *event)
     }
 
     this->updateGL();                                           //обновляем картинку
-
-//    QGLWidget::keyPressEvent(event);                            //кидаем кнопку родителю, а то мало ли
 }
 
 void
