@@ -1,7 +1,6 @@
 #ifndef GLSCORES_H
 #define GLSCORES_H
 
-#include <QtWidgets>
 #include "shape.h"
 #include "gamearea.h"
 

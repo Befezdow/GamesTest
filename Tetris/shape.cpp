@@ -1,4 +1,6 @@
 #include "shape.h"
+#include <QPoint>
+#include <QDebug>
 
 QVector<QPoint>
 Shape::rotatedParts()
@@ -73,4 +75,105 @@ bool
 Shape::canRotate() const
 {
     return rotation;
+}
+
+Square::Square()
+{
+    top=0;
+    bottom=-1;
+    left=-1;
+    right=0;
+    rotation=false;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(-1,0));
+    parts.push_back(QPoint(-1,-1));
+    parts.push_back(QPoint(0,-1));
+}
+
+LittleSquare::LittleSquare()
+{
+    top=0;
+    bottom=0;
+    left=0;
+    right=0;
+    rotation=false;
+    parts.push_back(QPoint(0,0));
+}
+
+Stick::Stick()
+{
+    top=0;
+    bottom=0;
+    left=-1;
+    right=2;
+    rotation=true;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(1,0));
+    parts.push_back(QPoint(2,0));
+    parts.push_back(QPoint(-1,0));
+}
+
+TShape::TShape()
+{
+    top=0;
+    bottom=-1;
+    left=-1;
+    right=1;
+    rotation=true;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(-1,0));
+    parts.push_back(QPoint(0,-1));
+    parts.push_back(QPoint(1,0));
+}
+
+ZShape::ZShape()
+{
+    top=0;
+    bottom=-1;
+    left=-1;
+    right=1;
+    rotation=true;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(-1,0));
+    parts.push_back(QPoint(0,-1));
+    parts.push_back(QPoint(1,-1));
+}
+
+SShape::SShape()
+{
+    top=0;
+    bottom=-1;
+    left=-1;
+    right=1;
+    rotation=true;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(1,0));
+    parts.push_back(QPoint(0,-1));
+    parts.push_back(QPoint(-1,-1));
+}
+
+JShape::JShape()
+{
+    top=0;
+    bottom=-1;
+    left=-1;
+    right=1;
+    rotation=true;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(-1,0));
+    parts.push_back(QPoint(1,0));
+    parts.push_back(QPoint(1,-1));
+}
+
+LShape::LShape()
+{
+    top=0;
+    bottom=-1;
+    left=-1;
+    right=1;
+    rotation=true;
+    parts.push_back(QPoint(0,0));
+    parts.push_back(QPoint(-1,0));
+    parts.push_back(QPoint(1,0));
+    parts.push_back(QPoint(-1,-1));
 }

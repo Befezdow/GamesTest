@@ -1,7 +1,8 @@
 #ifndef PRIMITIVE_H
 #define PRIMITIVE_H
 
-#include <QtWidgets>
+#include <QPoint>
+#include <QColor>
 
 class Primitive
 {
@@ -9,38 +10,15 @@ class Primitive
     QColor color;       //цвет клетки
     bool visible;       //видимость клетки
 public:
-    Primitive():pos(QPoint(0,0)),color(Qt::white),visible(false) {}
-    Primitive(QPoint p,QColor c):pos(p),color(c),visible(false) {}
+    Primitive();
+    Primitive(QPoint p,QColor c);
 
-    QColor getColor() const
-    {
-        return color;
-    }
-
-    bool isVisible() const
-    {
-        return visible;
-    }
-
-    QPoint getPos() const
-    {
-        return pos;
-    }
-
-    void setColor(QColor c)
-    {
-        color=c;
-    }
-
-    void show()
-    {
-        visible=true;
-    }
-
-    void hide()
-    {
-        visible=false;
-    }
+    QColor getColor() const;
+    bool isVisible() const;
+    QPoint getPos() const;
+    void setColor(QColor c);
+    void show();
+    void hide();
 };
 
 #endif // PRIMITIVE_H

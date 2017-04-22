@@ -1,10 +1,10 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include <QGLWidget>
-#include <QtWidgets>
 #include "shape.h"
 #include "primitive.h"
+#include <QGLWidget>
+#include <QDebug>
 
 class GameArea: public QGLWidget
 {

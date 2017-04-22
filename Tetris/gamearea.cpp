@@ -1,4 +1,8 @@
 #include "gamearea.h"
+#include <QTimerEvent>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QApplication>
 
 void
 GameArea::randomize()
@@ -74,7 +78,8 @@ GameArea::GameArea(int side, int width, int height, QWidget *parent):
     colors.push_back(Qt::green);
     colors.push_back(Qt::magenta);
 
-    this->setFixedSize(side*width+6,side*height+4);             //фиксируем размеры окна под игровую область
+    this->setFixedSize(side*width+squareSide/5,side*height+squareSide/7.5);
+                                                            //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
 
@@ -400,7 +405,7 @@ GameArea::keyPressEvent(QKeyEvent *event)
 
     this->updateGL();                                           //обновляем картинку
 
-    QGLWidget::keyPressEvent(event);                            //кидаем кнопку родителю, а то мало ли
+//    QGLWidget::keyPressEvent(event);                            //кидаем кнопку родителю, а то мало ли
 }
 
 void

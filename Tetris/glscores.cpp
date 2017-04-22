@@ -28,10 +28,11 @@ GLScores::paintFigure()
 }
 
 GLScores::GLScores(int side, int width, int height, QWidget *parent):
-    QGLWidget(parent)
+    QGLWidget(parent),
+    indexOfFigure(0),
+    side(side)
 {
     this->setFixedSize(side*width,side*height);
-    this->side = side;
 }
 
 void
