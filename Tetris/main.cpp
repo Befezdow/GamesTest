@@ -5,6 +5,7 @@
 #include <QString>
 #include <QDesktopWidget>
 #include <QHBoxLayout>
+#include <QIcon>
 
 void dummyOutput(QtMsgType, const QMessageLogContext&, const QString&)
 {}
@@ -36,6 +37,8 @@ int main(int argc, char *argv[])
     scores->setFocusProxy(gameArea);
     gameArea->setFocus();
 
+    wgt->setWindowTitle("Tetrix");
+    wgt->setWindowIcon(QIcon(":/res/icon.png"));
     wgt->show();
     gameArea->start();
     return a.exec();

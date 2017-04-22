@@ -8,7 +8,7 @@ QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = OpenGlCharts
+TARGET = Tetrix
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -36,3 +36,6 @@ HEADERS  += \
     scoretable.h \
     glscores.h \
     gamearea.h
+
+RESOURCES += \
+    resources.qrc
