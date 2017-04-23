@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
     int screenWidth=QApplication::desktop()->width();
 
-    GameArea * gameArea=new GameArea(screenWidth/45,10,15);
+    GameArea * gameArea=new GameArea(screenWidth/45,14,20);
     Scoretable * scores= new Scoretable(screenWidth/68);
     QWidget * wgt = new QWidget;
     QLabel* names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");

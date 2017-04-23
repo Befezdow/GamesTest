@@ -3,14 +3,25 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QApplication>
+#include <QTime>
 
 void
 GameArea::randomize()
 {
     nextColor=qrand()%6;
     nextFigure=qrand()%8;
+    if (currentShape)           //убираем повторяющиеся подряд фигуры
+    {
+        if (nextFigure==*currentShape)
+            nextFigure=(nextFigure+1)%8;
+    }
     qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
     emit throwNextFigure(nextFigure,colors.at(nextColor));
+}
+
+void GameArea::setDifficulty(int d)
+{
+    difficulty=d;
 }
 
 void
@@ -48,14 +59,18 @@ GameArea::initShape()
 }
 
 
-GameArea::GameArea(int side, int width, int height, QWidget *parent):
+GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, QWidget *parent):
     QGLWidget(parent),
     squareSide(side),
     areaWidth(width),
     areaHeight(height),
     currentShape(Q_NULLPTR),
     timerId(0),
-    currentScore(0)
+    currentScore(0),
+    shapesCount(0),
+    currentSpeed(500),
+    shapesForSpeedUp(numForSpeedUp),
+    difficulty(diff)
 
 {
     //инициализируем пустое поле
@@ -321,8 +336,9 @@ GameArea::timerEvent(QTimerEvent *event)
 {
     if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
-        if (!this->moveCurrentShapeDown())
+        if (!this->moveCurrentShapeDown())                          //если фигура уперлась
         {
+            shapesCount++;
             int topLine=currentY+currentShape->getTop();
             int bottomLine=currentY+currentShape->getBottom();
             int deletedLines=0;
@@ -377,6 +393,13 @@ GameArea::timerEvent(QTimerEvent *event)
             this->initShape();              //инициализируем новую фигуру
             this->updateGL();               //обновляем картинку
             randomize();                    //Получаем данные следующей фигуры
+
+            if (shapesCount%shapesForSpeedUp==0)    //увеличиваем скорость падения, если необходимо
+            {
+                this->killTimer(timerId);      //убиваем текущий таймер
+                currentSpeed-=50;
+                timerId=this->startTimer(currentSpeed);     //запускаем новый
+            }
         }
     }
 }
@@ -410,11 +433,13 @@ GameArea::start()
 {
     if (this->timerId)                 //если таймер существует
         this->killTimer(timerId);      //убиваем его
-    qsrand(time(0));
+    qsrand(QTime::currentTime().msec());
     randomize();                       //Получаем цвет и фигуру следующую
     this->initShape();                 //инициализируем первую фигуру
 
-    timerId=this->startTimer(500);     //запускаем новый
+    shapesCount=0;                              //обнуляем кол-во упавших фигур
+    currentSpeed=500;                           //инициализируем скорость падения
+    timerId=this->startTimer(currentSpeed);     //запускаем новый
 
     randomize();                       //Рандомим следующую
 }

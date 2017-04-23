@@ -14,8 +14,8 @@ protected:
     QVector<QPoint> parts;  //координаты верхних левых углов квадратов, из которых состоит фигура
     bool rotation;          //возможность поворота фигуры
 
-    Shape() {}              //хотел абстрактный класс
 public:
+    virtual operator int() const =0;    //это абстрактный класс
 
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
 
@@ -39,6 +39,7 @@ class Square : public Shape
     */
 public:
     Square();
+    virtual operator int() const;
 };
 
 class LittleSquare : public Shape
@@ -52,6 +53,7 @@ class LittleSquare : public Shape
     */
 public:
     LittleSquare();
+    virtual operator int() const;
 };
 
 /*class BigSquare : public Shape
@@ -94,6 +96,7 @@ class Stick : public Shape
     */
 public:
     Stick();
+    virtual operator int() const;
 };
 
 class TShape : public Shape
@@ -107,6 +110,7 @@ class TShape : public Shape
     */
 public:
     TShape();
+    virtual operator int() const;
 };
 
 class ZShape : public Shape
@@ -120,6 +124,7 @@ class ZShape : public Shape
     */
 public:
     ZShape();
+    virtual operator int() const;
 };
 
 class SShape : public Shape
@@ -133,6 +138,7 @@ class SShape : public Shape
     */
 public:
     SShape();
+    virtual operator int() const;
 };
 
 class JShape : public Shape
@@ -146,6 +152,7 @@ class JShape : public Shape
     */
 public:
     JShape();
+    virtual operator int() const;
 };
 
 class LShape : public Shape
@@ -159,6 +166,7 @@ class LShape : public Shape
     */
 public:
     LShape();
+    virtual operator int() const;
 };
 
 #endif // SHAPE_H

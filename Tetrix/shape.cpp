@@ -90,6 +90,11 @@ Square::Square()
     parts.push_back(QPoint(0,-1));
 }
 
+Square::operator int() const
+{
+    return Shape::Square;
+}
+
 LittleSquare::LittleSquare()
 {
     top=0;
@@ -98,6 +103,11 @@ LittleSquare::LittleSquare()
     right=0;
     rotation=false;
     parts.push_back(QPoint(0,0));
+}
+
+LittleSquare::operator int() const
+{
+    return Shape::LittleSquare;
 }
 
 Stick::Stick()
@@ -113,6 +123,11 @@ Stick::Stick()
     parts.push_back(QPoint(-1,0));
 }
 
+Stick::operator int() const
+{
+    return Shape::Stick;
+}
+
 TShape::TShape()
 {
     top=0;
@@ -124,6 +139,11 @@ TShape::TShape()
     parts.push_back(QPoint(-1,0));
     parts.push_back(QPoint(0,-1));
     parts.push_back(QPoint(1,0));
+}
+
+TShape::operator int() const
+{
+    return Shape::TShape;
 }
 
 ZShape::ZShape()
@@ -139,6 +159,11 @@ ZShape::ZShape()
     parts.push_back(QPoint(1,-1));
 }
 
+ZShape::operator int() const
+{
+    return Shape::ZShape;
+}
+
 SShape::SShape()
 {
     top=0;
@@ -150,6 +175,11 @@ SShape::SShape()
     parts.push_back(QPoint(1,0));
     parts.push_back(QPoint(0,-1));
     parts.push_back(QPoint(-1,-1));
+}
+
+SShape::operator int() const
+{
+    return Shape::SShape;
 }
 
 JShape::JShape()
@@ -165,6 +195,11 @@ JShape::JShape()
     parts.push_back(QPoint(1,-1));
 }
 
+JShape::operator int() const
+{
+    return Shape::JShape;
+}
+
 LShape::LShape()
 {
     top=0;
@@ -176,4 +211,9 @@ LShape::LShape()
     parts.push_back(QPoint(-1,0));
     parts.push_back(QPoint(1,0));
     parts.push_back(QPoint(-1,-1));
+}
+
+LShape::operator int() const
+{
+    return Shape::LShape;
 }
