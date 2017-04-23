@@ -21,7 +21,7 @@ GameArea::randomize()
 
 void GameArea::setDifficulty(int d)
 {
-    difficulty=d;
+    difficulty=d%5;
 }
 
 void
@@ -70,7 +70,7 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
     shapesCount(0),
     currentSpeed(500),
     shapesForSpeedUp(numForSpeedUp),
-    difficulty(diff)
+    difficulty(diff%5)
 
 {
     //инициализируем пустое поле
@@ -394,11 +394,14 @@ GameArea::timerEvent(QTimerEvent *event)
             this->updateGL();               //обновляем картинку
             randomize();                    //Получаем данные следующей фигуры
 
-            if (shapesCount%shapesForSpeedUp==0)    //увеличиваем скорость падения, если необходимо
+            if (shapesCount%shapesForSpeedUp==0)   //увеличиваем скорость падения, если необходимо
             {
-                this->killTimer(timerId);      //убиваем текущий таймер
-                currentSpeed-=50;
-                timerId=this->startTimer(currentSpeed);     //запускаем новый
+                if (difficulty!=0 && currentSpeed>20*difficulty)    //если скорость не предельная
+                {
+                    this->killTimer(timerId);                       //убиваем текущий таймер
+                    currentSpeed-=20*difficulty;
+                    timerId=this->startTimer(currentSpeed);         //запускаем новый
+                }
             }
         }
     }

@@ -2,6 +2,8 @@
 #include <QPoint>
 #include <QDebug>
 
+Shape::~Shape() {}
+
 QVector<QPoint>
 Shape::rotatedParts()
 {

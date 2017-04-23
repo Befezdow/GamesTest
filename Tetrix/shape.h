@@ -16,6 +16,7 @@ protected:
 
 public:
     virtual operator int() const =0;    //это абстрактный класс
+    virtual ~Shape();
 
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};
 

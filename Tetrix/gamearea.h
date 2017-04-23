@@ -32,7 +32,7 @@ class GameArea: public QGLWidget
     int shapesCount;            //счетчик упавших фигур (для ускорения падения)
     int currentSpeed;           //кол-во милисекунд между перемещениями вниз
     int shapesForSpeedUp;       //кол-во упавших фигур для увеличения скорости
-    int difficulty;             //сложность 0,1,2,3,4 и т.д.
+    int difficulty;             //сложность (0,1,2,3,4)
 
     void initShape();               //инициализирует новую фигуру
     void rotateCurrentShape();      //текущую фигуру, если это возможно
