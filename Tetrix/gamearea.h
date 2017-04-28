@@ -34,6 +34,8 @@ class GameArea: public QGLWidget
     int shapesForSpeedUp;       //кол-во упавших фигур для увеличения скорости
     int difficulty;             //сложность (0,1,2,3,4)
 
+    bool isPaused;
+
     void initShape();               //инициализирует новую фигуру
     void rotateCurrentShape();      //текущую фигуру, если это возможно
     void showCurrentShape();        //показать текущую фигуру
@@ -46,13 +48,7 @@ class GameArea: public QGLWidget
 
 public:
     GameArea(int side, int width, int height, int numForSpeedUp=20, int diff=1, QWidget* parent=Q_NULLPTR);
-    ~GameArea()
-    {
-        qDebug()<<"туц";
-        delete currentShape;
-        QGLWidget::destroy();
-        killTimer(timerId);
-    }
+    ~GameArea();
 
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
 
@@ -66,6 +62,7 @@ protected:
 public slots:
     void start();               //запустить игру (запуск таймера)
     void endGame(int score);    //завершить игру и вывести счет
+    void switchPause();
 
 signals:
     void throwNextFigure(int, QColor);

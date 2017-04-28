@@ -70,7 +70,8 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
     shapesCount(0),
     currentSpeed(500),
     shapesForSpeedUp(numForSpeedUp),
-    difficulty(diff%5)
+    difficulty(diff%5),
+    isPaused(false)
 
 {
     //инициализируем пустое поле
@@ -97,7 +98,13 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
                                                             //фиксируем размеры окна под игровую область
 
     connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
+}
 
+GameArea::~GameArea()
+{
+    delete currentShape;
+    QGLWidget::destroy();
+    killTimer(timerId);
 }
 
 Shape *GameArea::generateShape(int typeOfShape)
@@ -334,6 +341,8 @@ GameArea::rotateCurrentShape()
 void
 GameArea::timerEvent(QTimerEvent *event)
 {
+    if (isPaused)                                                   //если пауза, то игнорим
+        return;
     if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
         if (!this->moveCurrentShapeDown())                          //если фигура уперлась
@@ -410,6 +419,8 @@ GameArea::timerEvent(QTimerEvent *event)
 void
 GameArea::keyPressEvent(QKeyEvent *event)
 {
+    if (isPaused)                                               //если пауза то игнорим
+        return;
     switch (event->key())                                       //смотрим кнопку
     {
     case Qt::Key_Up:
@@ -434,6 +445,13 @@ GameArea::keyPressEvent(QKeyEvent *event)
 void
 GameArea::start()
 {
+    for (int i=0;i<areaWidth;++i)           //очищаем игровую область
+        for (int j=0;j<areaHeight;++j)
+        {
+            area[i][j].setColor(Qt::white);
+            area[i][j].hide();
+        }
+
     if (this->timerId)                 //если таймер существует
         this->killTimer(timerId);      //убиваем его
     qsrand(QTime::currentTime().msec());
@@ -445,6 +463,10 @@ GameArea::start()
     timerId=this->startTimer(currentSpeed);     //запускаем новый
 
     randomize();                       //Рандомим следующую
+
+    isPaused=false;
+
+    this->updateGL();
 }
 
 void
@@ -455,15 +477,13 @@ GameArea::endGame(int score)
 
     if (i==QMessageBox::Yes)                    //если хочет играть еще
     {
-        for (int i=0;i<areaWidth;++i)           //очищаем игровую область
-            for (int j=0;j<areaHeight;++j)
-            {
-                area[i][j].setColor(Qt::white);
-                area[i][j].hide();
-            }
-
         this->start();
     }
     else                                        //если не хочет
         qApp->quit();
+}
+
+void GameArea::switchPause()
+{
+    isPaused=!isPaused;
 }
