@@ -462,6 +462,9 @@ GameArea::start()
     currentSpeed=500;                           //инициализируем скорость падения
     timerId=this->startTimer(currentSpeed);     //запускаем новый
 
+    currentScore=0;
+    emit scoreChanged(currentScore);
+
     randomize();                       //Рандомим следующую
 
     isPaused=false;
