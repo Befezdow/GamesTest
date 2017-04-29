@@ -23,6 +23,8 @@ public:
     QVector<QPoint> rotatedParts();         //возвращает относительные координаты повернутых частей
     int getTop() const;
     int getBottom() const;
+    int getLeft() const;
+    int getRight() const;
     void rotateSides();                     //поворачивает стороны l,r,t,b, если это возможно
     void setParts(QVector<QPoint> parts);
     QVector<QPoint> getParts() const;

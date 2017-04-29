@@ -35,6 +35,16 @@ Shape::getBottom() const
     return bottom;
 }
 
+int Shape::getLeft() const
+{
+    return left;
+}
+
+int Shape::getRight() const
+{
+    return right;
+}
+
 void
 Shape::rotateSides()
 {

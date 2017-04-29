@@ -152,9 +152,29 @@ GameArea::resizeGL(int w, int h)
 void
 GameArea::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
-
     float lineWidth=squareSide/15;                            //определяем толщину линий
+
+    if (isPaused)                               //если пауза
+    {
+        QString str="Pause";                    //задаем текст
+
+        qglColor(Qt::black);                    //задаем цвет текста
+
+        QFont font;                             //задаем шрифт
+        font.setBold(true);
+        font.setPixelSize(squareSide*2);
+
+        QFontMetrics metrics(font);             //определяем положение
+        int width=metrics.width(str);
+        int height=metrics.height();
+        int x=(this->width()-width)/2;
+        int y=(this->height()+height)/2;
+
+        renderText(x,y,str,font);               //рисуем текст
+                                                //попробовать прикрутить сюда сглаживание!!!
+        return;
+    }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
 
     qglColor(Qt::gray);                                     //ставим серый цвет
     glLineWidth(lineWidth);                                 //ставим ширину линии
@@ -188,7 +208,7 @@ GameArea::paintGL()
         }
     }
     qglColor(Qt::gray);                                     //ставим серый цвет
-    glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
+    glBegin(GL_LINE_STRIP);                                 //рисуем контур
         glVertex2i(-lineWidth,squareSide*areaHeight+lineWidth);
         glVertex2i(-lineWidth,-lineWidth);
         glVertex2i(squareSide*(areaWidth)+lineWidth,-lineWidth);
@@ -489,4 +509,5 @@ GameArea::endGame(int score)
 void GameArea::switchPause()
 {
     isPaused=!isPaused;
+    this->updateGL();
 }
