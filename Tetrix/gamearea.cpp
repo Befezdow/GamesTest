@@ -24,6 +24,19 @@ void GameArea::setDifficulty(int d)
     difficulty=d%5;
 }
 
+void GameArea::upSpeed()
+{
+    if (difficulty!=0 && shapesCount>shapesForSpeedUp)  //увеличиваем скорость падения, если уже можно
+    {
+        if (currentSpeed>difficulty)                    //если скорость не предельная
+        {
+            this->killTimer(timerId);                   //убиваем текущий таймер
+            currentSpeed-=difficulty;                   //увеличиваем скорость падения
+            timerId=this->startTimer(currentSpeed);     //запускаем новый
+        }
+    }
+}
+
 void
 GameArea::initShape()
 {
@@ -419,19 +432,13 @@ GameArea::timerEvent(QTimerEvent *event)
                 break;
             }
             emit scoreChanged(currentScore);
-            this->initShape();              //инициализируем новую фигуру
-            this->updateGL();               //обновляем картинку
-            randomize();                    //Получаем данные следующей фигуры
 
-            if (shapesCount%shapesForSpeedUp==0)   //увеличиваем скорость падения, если необходимо
-            {
-                if (difficulty!=0 && currentSpeed>20*difficulty)    //если скорость не предельная
-                {
-                    this->killTimer(timerId);                       //убиваем текущий таймер
-                    currentSpeed-=20*difficulty;
-                    timerId=this->startTimer(currentSpeed);         //запускаем новый
-                }
-            }
+            this->initShape();              //инициализируем новую фигуру
+            this->randomize();                    //Получаем данные следующей фигуры
+
+            this->upSpeed();
+
+            this->updateGL();               //обновляем картинку
         }
     }
 }

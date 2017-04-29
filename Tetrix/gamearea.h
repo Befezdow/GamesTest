@@ -29,9 +29,9 @@ class GameArea: public QGLWidget
     QVector<QColor> colors;     //цвета фигур
     QColor currentColor;        //цвет движущейся фигуры
 
-    int shapesCount;            //счетчик упавших фигур (для ускорения падения)
+    int shapesCount;            //счетчик упавших фигур
     int currentSpeed;           //кол-во милисекунд между перемещениями вниз
-    int shapesForSpeedUp;       //кол-во упавших фигур для увеличения скорости
+    int shapesForSpeedUp;       //кол-во упавших фигур для начала увеличения скорости
     int difficulty;             //сложность (0,1,2,3,4)
 
     bool isPaused;
@@ -45,9 +45,10 @@ class GameArea: public QGLWidget
     bool moveCurrentShapeRight();   //переместить текущую фигуру на одну клетку вправо
     void randomize();               //сгенерировать следующую фигуру
     void setDifficulty(int d);      //установить сложность
+    void upSpeed();
 
 public:
-    GameArea(int side, int width, int height, int numForSpeedUp=20, int diff=1, QWidget* parent=Q_NULLPTR);
+    GameArea(int side, int width, int height, int numForSpeedUp=10, int diff=1, QWidget* parent=Q_NULLPTR);
     ~GameArea();
 
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
