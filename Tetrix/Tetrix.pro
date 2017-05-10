@@ -23,7 +23,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 #Прописывать это при компиляции под Windows
-#LIBS += -lglu32 -lopengl32
+win32
+{
+    LIBS += -lglu32 -lopengl32
+}
 
 SOURCES += main.cpp \
     scoretable.cpp \
