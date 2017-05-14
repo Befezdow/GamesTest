@@ -1,12 +1,20 @@
 #ifndef DIFFICULTYWINDOW_H
 #define DIFFICULTYWINDOW_H
 
-#include <QtWidgets>
+#include <QRadioButton>
+#include <QGroupBox>
+#include <QPushButton>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSignalMapper>
+#include <QDialog>
+#include <QWidget>
 
 class DifficultyWindow: public QDialog
 {
     Q_OBJECT
-    QRadioButton* difficulties[5];
+    QRadioButton* difficulties[5];              //кнопки сложности
     QGroupBox* group;
     QPushButton* ok;
     QPushButton* cancel;
@@ -16,11 +24,13 @@ class DifficultyWindow: public QDialog
     QHBoxLayout* hLay;
     QSignalMapper* mapper;
 
-    int currentDifficulty;
+    int currentDifficulty;                      //выбранная сложность
 
 public:
     DifficultyWindow(int initDiff,QWidget* parent=Q_NULLPTR);
+
     int getCurrentDifficulty() const;
+
 private slots:
     void changeResult(int i);
 };
