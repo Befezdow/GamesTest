@@ -30,14 +30,18 @@ SOURCES += main.cpp \
     shape.cpp \
     glscores.cpp \
     gamearea.cpp \
-    primitive.cpp
+    primitive.cpp \
+    difficultywindow.cpp \
+    optionswindow.cpp
 
 HEADERS  += \
     shape.h \
     primitive.h \
     scoretable.h \
     glscores.h \
-    gamearea.h
+    gamearea.h \
+    difficultywindow.h \
+    optionswindow.h
 
 RESOURCES += \
     resources.qrc

@@ -44,14 +44,14 @@ class GameArea: public QGLWidget
     bool moveCurrentShapeLeft();    //переместить текущую фигуру на одну клетку влево
     bool moveCurrentShapeRight();   //переместить текущую фигуру на одну клетку вправо
     void randomize();               //сгенерировать следующую фигуру
-    void setDifficulty(int d);      //установить сложность
-    void upSpeed();
+    void upSpeed();                 //увеличить скорость
 
 public:
     GameArea(int side, int width, int height, int numForSpeedUp=10, int diff=1, QWidget* parent=Q_NULLPTR);
     ~GameArea();
 
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
+    void setDifficulty(int d);      //установить сложность
 
 protected:
     virtual void initializeGL();
