@@ -1,7 +1,7 @@
-#include "scoretable.h"
+#include "nextshapeandscore.h"
 #include <QVBoxLayout>
 
-Scoretable::Scoretable(int side, QWidget *parent) :
+NextShapeAndScore::NextShapeAndScore(int side, QWidget *parent) :
     QWidget(parent)
 {
     QVBoxLayout* vertical=new QVBoxLayout();
@@ -27,14 +27,14 @@ Scoretable::Scoretable(int side, QWidget *parent) :
 }
 
 void
-Scoretable::changeScore(int score)
+NextShapeAndScore::changeScore(int score)
 {
     if (!number->checkOverflow(score))
         number->display(score);
 }
 
 void
-Scoretable::setNextFigure(int figureNum, QColor color)
+NextShapeAndScore::setNextFigure(int figureNum, QColor color)
 {
     qDebug()<<"Поймал "<<figureNum<<" "<<color;
     window->setIndexOfFigure(figureNum);

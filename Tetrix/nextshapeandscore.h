@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QLCDNumber>
 
-class Scoretable : public QWidget
+class NextShapeAndScore : public QWidget
 {
     Q_OBJECT
     GLScores* window;
@@ -14,7 +14,7 @@ class Scoretable : public QWidget
     QLCDNumber* number;
 
 public:
-    explicit Scoretable(int side, QWidget *parent = 0);
+    explicit NextShapeAndScore(int side, QWidget *parent = 0);
 
 public slots:
     void changeScore(int score);

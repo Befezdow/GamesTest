@@ -1,5 +1,5 @@
 #include "gamearea.h"
-#include "scoretable.h"
+#include "nextshapeandscore.h"
 #include "difficultywindow.h"
 #include "optionswindow.h"
 #include <QApplication>
@@ -16,7 +16,7 @@ void dummyOutput(QtMsgType, const QMessageLogContext&, const QString&)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qInstallMessageHandler(dummyOutput);
+//    qInstallMessageHandler(dummyOutput);
 
     int screenWidth=QApplication::desktop()->width();
 

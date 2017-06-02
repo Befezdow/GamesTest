@@ -27,22 +27,22 @@ win32{
 }
 
 SOURCES += main.cpp \
-    scoretable.cpp \
     shape.cpp \
     glscores.cpp \
     gamearea.cpp \
     primitive.cpp \
     difficultywindow.cpp \
-    optionswindow.cpp
+    optionswindow.cpp \
+    nextshapeandscore.cpp
 
 HEADERS  += \
     shape.h \
     primitive.h \
-    scoretable.h \
     glscores.h \
     gamearea.h \
     difficultywindow.h \
-    optionswindow.h
+    optionswindow.h \
+    nextshapeandscore.h
 
 RESOURCES += \
     resources.qrc
