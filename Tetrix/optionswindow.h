@@ -4,6 +4,7 @@
 #include "nextshapeandscore.h"
 #include "difficultywindow.h"
 #include <QTime>
+#include <QTableWidget>
 
 class OptionsWindow: public QWidget
 {
@@ -34,6 +35,45 @@ class OptionsWindow: public QWidget
         bool operator< (const ScoreTableElement& ob) const;
     };
 
+    class ScoreTable: public QDialog
+    {
+        QTableWidget* table;
+        QPushButton* ok;
+
+    public:
+        ScoreTable(QList<ScoreTableElement> scores)
+        {
+            table=new QTableWidget(scores.size(),3);
+            QStringList lst;
+            lst<<"Name"<<"Score"<<"Time";
+            table->setHorizontalHeaderLabels(lst);
+            lst.clear();
+            for (int i=1;i<=scores.size();++i)
+            {
+                lst<<QString::number(i);
+            }
+
+            table->setVerticalHeaderLabels(lst);
+
+            for (int i=0;i<scores.size();++i)
+            {
+                ScoreTableElement elem=scores.at(i);
+                QTableWidgetItem* itemName=new QTableWidgetItem(elem.playerName);
+                QTableWidgetItem* itemScore=new QTableWidgetItem(QString::number(elem.score));
+                QTableWidgetItem* itemTime=new QTableWidgetItem(elem.time.toString("hh:mm:ss dd.MM.yyyy"));
+                table->setItem(i,0,itemName);
+                table->setItem(i,1,itemScore);
+                table->setItem(i,2,itemTime);
+            }
+            ok=new QPushButton("Ok");
+
+            QVBoxLayout* lay=new QVBoxLayout;
+            lay->addWidget(table);
+            lay->addWidget(ok);
+            this->setLayout(lay);
+        }
+    };
+
     QList<ScoreTableElement> scores;      //сами рекорды
 
 public:
@@ -45,6 +85,7 @@ private slots:
     void readScores();      //прочитать рекорды из файла
     void writeScores();     //выписать рекорды в файл
     void addRecord(unsigned int score, QString player);
+    void showScoreTable();
 };
 
 #endif // OPTIONSWINDOW_H

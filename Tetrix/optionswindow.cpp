@@ -23,6 +23,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     QObject::connect(pause,SIGNAL(clicked(bool)),gameArea,SLOT(switchPause()));
     QObject::connect(restart,SIGNAL(clicked(bool)),gameArea,SLOT(start()));
     QObject::connect(difficulty,SIGNAL(clicked(bool)),this,SLOT(showDifficultyWindow()));
+    QObject::connect(highScores,SIGNAL(clicked(bool)),this,SLOT(showScoreTable()));
 
     buttonLay->addWidget(pause);
     buttonLay->addWidget(restart);
@@ -124,6 +125,19 @@ void OptionsWindow::addRecord(unsigned int score,QString player)
     {
         scores.pop_back();
     }
+}
+
+void OptionsWindow::showScoreTable()
+{
+    gameArea->switchPause();
+
+    this->addRecord(12,"Pupkin");
+    this->addRecord(13,"Pupkin");
+
+    ScoreTable table(scores);
+    table.exec();
+
+    gameArea->switchPause();
 }
 
 OptionsWindow::ScoreTableElement::ScoreTableElement():
