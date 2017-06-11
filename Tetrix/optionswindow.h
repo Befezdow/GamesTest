@@ -33,48 +33,19 @@ class OptionsWindow: public QWidget
         ScoreTableElement(QDateTime t, unsigned int s, QString p);
 
         bool operator< (const ScoreTableElement& ob) const;
+                                            //оператор сравнения, нужен для сортировки
     };
 
-    class ScoreTable: public QDialog
+    class ScoreTable: public QDialog        //класс таблицы рекордов
     {
-        QTableWidget* table;
-        QPushButton* ok;
+        QTableWidget* table;                //виджет таблицы
+        QPushButton* ok;                    //кнопка ок
 
     public:
-        ScoreTable(QList<ScoreTableElement> scores)
-        {
-            table=new QTableWidget(scores.size(),3);
-            QStringList lst;
-            lst<<"Name"<<"Score"<<"Time";
-            table->setHorizontalHeaderLabels(lst);
-            lst.clear();
-            for (int i=1;i<=scores.size();++i)
-            {
-                lst<<QString::number(i);
-            }
-
-            table->setVerticalHeaderLabels(lst);
-
-            for (int i=0;i<scores.size();++i)
-            {
-                ScoreTableElement elem=scores.at(i);
-                QTableWidgetItem* itemName=new QTableWidgetItem(elem.playerName);
-                QTableWidgetItem* itemScore=new QTableWidgetItem(QString::number(elem.score));
-                QTableWidgetItem* itemTime=new QTableWidgetItem(elem.time.toString("hh:mm:ss dd.MM.yyyy"));
-                table->setItem(i,0,itemName);
-                table->setItem(i,1,itemScore);
-                table->setItem(i,2,itemTime);
-            }
-            ok=new QPushButton("Ok");
-
-            QVBoxLayout* lay=new QVBoxLayout;
-            lay->addWidget(table);
-            lay->addWidget(ok);
-            this->setLayout(lay);
-        }
+        ScoreTable(QList<ScoreTableElement> scores);
     };
 
-    QList<ScoreTableElement> scores;      //сами рекорды
+    QList<ScoreTableElement> scores;        //сами рекорды
 
 public:
     OptionsWindow(GameArea * area,int initDifficulty,int screenWidth,QWidget* parent=Q_NULLPTR);
@@ -82,10 +53,10 @@ public:
 
 private slots:
     void showDifficultyWindow();            //показать окно с выбором сложности
-    void readScores();      //прочитать рекорды из файла
-    void writeScores();     //выписать рекорды в файл
-    void addRecord(unsigned int score, QString player);
-    void showScoreTable();
+    void readScores();                      //прочитать рекорды из файла
+    void writeScores();                     //выписать рекорды в файл
+    void addRecord(unsigned int score, QString player); //добавить рекорд
+    void showScoreTable();                  //показать таблицу рекордов
 };
 
 #endif // OPTIONSWINDOW_H
