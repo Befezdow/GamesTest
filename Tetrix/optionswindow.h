@@ -9,20 +9,8 @@
 class OptionsWindow: public QWidget
 {
     Q_OBJECT
-    NextShapeAndScore * shapeScore;         //виджеты очков и следующей фигуры
-    QLabel* names;                          //имена разработчиков
-    QPushButton* pause;                     //кнопка паузы
-    QPushButton* restart;                   //кнопка рестарта
-    QPushButton* difficulty;                //кнопка сложности
-    QPushButton* highScores;                //кнопка вывода таблицы очков
-    QVBoxLayout* vlay;
-    QVBoxLayout* buttonLay;
 
-    GameArea* gameArea;                     //указатель на игровую зону, можно без него, но придется переопределять слоты
-    int currentDifficulty;                  //текущая сложность игры
-    QString fileName;                       //имя файла с рекордами
-
-    class ScoreTableElement                //класс рекорда
+    class ScoreTableElement                 //класс рекорда
     {
     public:
         QDateTime time;                     //время
@@ -38,19 +26,34 @@ class OptionsWindow: public QWidget
 
     class ScoreTable: public QDialog        //класс таблицы рекордов
     {
-        QTableWidget* table;                //виджет таблицы
+        QTableWidget* table[5];             //виджет таблицы
         QPushButton* ok;                    //кнопка ок
 
     public:
-        ScoreTable(QList<ScoreTableElement> scores);
+        ScoreTable();
+        void updateInfo(unsigned int dif, QList<ScoreTableElement> scoreList);
     };
 
-    QList<ScoreTableElement> scores;        //сами рекорды
+    NextShapeAndScore * shapeScore;         //виджеты очков и следующей фигуры
+    ScoreTable* scoresView;
+    QLabel* names;                          //имена разработчиков
+    QPushButton* pause;                     //кнопка паузы
+    QPushButton* restart;                   //кнопка рестарта
+    QPushButton* difficulty;                //кнопка сложности
+    QPushButton* highScores;                //кнопка вывода таблицы очков
+    QVBoxLayout* vlay;
+    QVBoxLayout* buttonLay;
+
+    GameArea* gameArea;                     //указатель на игровую зону, можно без него, но придется переопределять слоты
+    unsigned int currentDifficulty;         //текущая сложность игры
+    QString fileName[5];                    //имя файла с рекордами
+
+    QList<ScoreTableElement> scores[5];     //сами рекорды
 
 public:
     OptionsWindow(GameArea * area,int initDifficulty,int screenWidth,QWidget* parent=Q_NULLPTR);
-    void attachFile(QString fileName);      //прикрепить файл с рекордами
-
+    void attachFile(unsigned int dif, QString fileName);
+                                            //прикрепить файл с рекордами
 private slots:
     void showDifficultyWindow();            //показать окно с выбором сложности
     void readScores();                      //прочитать рекорды из файла

@@ -5,8 +5,7 @@
 
 OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth, QWidget *parent):
     QWidget(parent),
-    currentDifficulty(initDifficulty),
-    fileName("")
+    currentDifficulty(initDifficulty)
 {
     shapeScore= new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
@@ -46,13 +45,20 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     highScores->setFocusProxy(gameArea);
     this->setFocusProxy(gameArea);
 
-    this->attachFile("scores.svs");
+    scoresView = new ScoreTable;
+
+    this->attachFile(0,"saves0.svs");
+    this->attachFile(1,"saves1.svs");
+    this->attachFile(2,"saves2.svs");
+    this->attachFile(3,"saves3.svs");
+    this->attachFile(4,"saves4.svs");
+
     this->readScores();
 }
 
-void OptionsWindow::attachFile(QString fileName)
+void OptionsWindow::attachFile(unsigned int dif, QString fileName)
 {
-    this->fileName=fileName;
+    this->fileName[dif%5]=fileName;
 }
 
 void OptionsWindow::showDifficultyWindow()
@@ -74,74 +80,86 @@ void OptionsWindow::showDifficultyWindow()
 
 void OptionsWindow::readScores()
 {
-    QFile file(fileName);                               //сам файл
-    if (!file.open(QIODevice::ReadOnly))                //открываем его
+    for (int i=0; i<5; ++i)
     {
-        scores.push_back(ScoreTableElement(QDateTime::currentDateTime(),1000,"The Good"));
-        scores.push_back(ScoreTableElement(QDateTime::currentDateTime(),500,"The Bad"));
-        scores.push_back(ScoreTableElement(QDateTime::currentDateTime(),100,"The Ugly"));
-        return;
-    }
+        scores[i].clear();                                  //очищаем текущие рекорды
 
-    scores.clear();                                     //очищаем текущие рекорды
-
-    QDataStream out(&file);                             //открываем поток для файла
-    while (true)                                        //читаем рекорды
-    {
-        QDateTime t;
-        unsigned int s;
-        QString p;
-        out>>t>>s>>p;                                   //читаем данные
-
-        if (out.atEnd())                                //если поток закончился
+        QFile file(fileName[i]);                            //сам файл
+        if (!file.open(QIODevice::ReadOnly))                //открываем его
         {
-            break;                                      //отваливаемся
-        }
-        else                                            //иначе
-        {
-            scores.push_back(ScoreTableElement(t,s,p)); //закидываем данные в рекорды
-        }
-    }
+            scores[i].push_back(ScoreTableElement(QDateTime::currentDateTime(),1000,"The Good"));
+            scores[i].push_back(ScoreTableElement(QDateTime::currentDateTime(),500,"The Bad"));
+            scores[i].push_back(ScoreTableElement(QDateTime::currentDateTime(),100,"The Ugly"));
 
-    file.close();                                       //закрываем файл
+            scoresView->updateInfo(i,scores[i]);
+
+            continue;
+        }
+
+        QDataStream out(&file);                             //открываем поток для файла
+        while (true)                                        //читаем рекорды
+        {
+            QDateTime t;
+            unsigned int s;
+            QString p;
+            out>>t>>s>>p;                                   //читаем данные
+
+            if (out.atEnd())                                //если поток закончился
+            {
+                break;                                      //отваливаемся
+            }
+            else                                            //иначе
+            {
+                scores[i].push_back(ScoreTableElement(t,s,p)); //закидываем данные в рекорды
+            }
+        }
+
+        scoresView->updateInfo(i,scores[i]);
+
+        file.close();                                       //закрываем файл
+    }
 }
 
 void OptionsWindow::writeScores()
 {
-    QFile file(fileName);                               //сам файл
-    if (!file.open(QIODevice::WriteOnly))               //открываем его
+    for (int i=0;i<5;++i)
     {
-        return;
+        QFile file(fileName[i]);                            //сам файл
+        if (!file.open(QIODevice::WriteOnly))               //открываем его
+        {
+            continue;
+        }
+
+        QDataStream out(&file);                             //открываем поток для файла
+
+        for (int j=0;j<scores[i].size();++j)                //идем по списку рекордов
+        {
+            ScoreTableElement e=scores[i].at(j);               //получаем элемент
+            out<<e.time<<e.score<<e.playerName;             //пишем его в файл
+        }
+
+        file.close();                                       //закрываем файл
     }
-
-    QDataStream out(&file);                             //открываем поток для файла
-
-    for (int i=0;i<scores.size();++i)                   //идем по списку рекордов
-    {
-        ScoreTableElement e=scores.at(i);               //получаем элемент
-        out<<e.time<<e.score<<e.playerName;             //пишем его в файл
-    }
-
-    file.close();                                       //закрываем файл
 }
 
 void OptionsWindow::addRecord(unsigned int score,QString player)
 {
-    scores.push_back(ScoreTableElement(QDateTime::currentDateTime(),score,player));
+    scores[currentDifficulty].push_back(ScoreTableElement(QDateTime::currentDateTime(),score,player));
                                                                 //добавляем новый рекорд
-    std::sort(scores.begin(),scores.end());                     //сортируем список рекордов
-    if (scores.size()>20)                                       //если в нем больше 20 элементов
+    std::sort(scores[currentDifficulty].begin(),scores[currentDifficulty].end());
+                                                                //сортируем список рекордов
+    if (scores[currentDifficulty].size()>20)                    //если в нем больше 20 элементов
     {
-        scores.pop_back();                                      //последний выкидываем
+        scores[currentDifficulty].pop_back();                   //последний выкидываем
     }
+    scoresView->updateInfo(currentDifficulty,scores[currentDifficulty]);
 }
 
 void OptionsWindow::showScoreTable()
 {
     gameArea->switchPause();                                    //ставим игру на паузу
 
-    ScoreTable table(scores);                                   //создаем виджет таблицы рекордов
-    table.exec();                                               //вызываем его
+    scoresView->exec();
 
     gameArea->switchPause();                                    //снимаем паузу
 }
@@ -172,19 +190,52 @@ bool OptionsWindow::ScoreTableElement::operator<(const OptionsWindow::ScoreTable
     }
 }
 
-OptionsWindow::ScoreTable::ScoreTable(QList<OptionsWindow::ScoreTableElement> scores)
+OptionsWindow::ScoreTable::ScoreTable()
 {
-    table=new QTableWidget(scores.size(),4);            //создаем виджет таблицы
-
-    QStringList lst;                                    //временный список
-    lst<<"Name"<<"Score"<<"Time"<<"Date";
-    table->setHorizontalHeaderLabels(lst);              //задаем горизонтальный заголовок
-
-    table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-                                                        //фиксируем высоту строки
-    for (int i=0;i<scores.size();++i)                   //закидываем в таблицу элементы
+    for (int i=0;i<5;++i)
     {
-        ScoreTableElement elem=scores.at(i);            //получаем элемент из списка
+        table[i]=new QTableWidget(0,4);                 //создаем виджет таблицы
+
+        QStringList lst;                                //временный список
+        lst<<"Name"<<"Score"<<"Time"<<"Date";
+        table[i]->setHorizontalHeaderLabels(lst);       //задаем горизонтальный заголовок
+
+        table[i]->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+                                                        //фиксируем высоту строки
+        table[i]->setShowGrid(false);                                                  //убираем сетку
+        table[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);                  //убираем вертикальный слайдер
+   }
+
+    ok=new QPushButton("Ok");                           //создаем кнопку и соединяем со слотом
+    QObject::connect(ok,SIGNAL(clicked(bool)),this,SLOT(accept()));
+
+    QTabWidget* tabs=new QTabWidget;
+
+    tabs->addTab(table[0],"Free");
+    tabs->addTab(table[1],"Easy");
+    tabs->addTab(table[2],"Normal");
+    tabs->addTab(table[3],"Hard");
+    tabs->addTab(table[4],"Master");
+
+    QVBoxLayout* lay=new QVBoxLayout;                   //создаем слой
+
+    lay->addWidget(tabs);                               //закидываем в него вкладки
+    lay->addWidget(ok,0,Qt::AlignHCenter | Qt::AlignBottom);
+
+    this->setLayout(lay);                               //устанавливаем этот слой
+}
+
+void OptionsWindow::ScoreTable::updateInfo(unsigned int dif, QList<OptionsWindow::ScoreTableElement> scoreList)
+{
+    unsigned int tableNumber=dif%5;
+
+    table[tableNumber]->clearContents();
+
+    table[tableNumber]->setRowCount(scoreList.size());
+
+    for (int i=0;i<scoreList.size();++i)                //закидываем в таблицу элементы
+    {
+        ScoreTableElement elem=scoreList.at(i);         //получаем элемент из списка
         QTableWidgetItem* itemName=new QTableWidgetItem(elem.playerName);                           //создаем ячейку имени
         QTableWidgetItem* itemScore=new QTableWidgetItem(QString::number(elem.score));              //создаем ячейку счета
         QTableWidgetItem* itemTime=new QTableWidgetItem(elem.time.time().toString("hh:mm:ss"));     //создаем ячейку времени
@@ -200,34 +251,26 @@ OptionsWindow::ScoreTable::ScoreTable(QList<OptionsWindow::ScoreTableElement> sc
         itemTime->setTextAlignment(Qt::AlignCenter);
         itemDate->setTextAlignment(Qt::AlignCenter);
 
-        table->setItem(i,0,itemName);                   //вставляем ячейки в таблицу в одну строчку
-        table->setItem(i,1,itemScore);
-        table->setItem(i,2,itemTime);
-        table->setItem(i,3,itemDate);
+        table[tableNumber]->setItem(i,0,itemName);      //вставляем ячейки в таблицу в одну строчку
+        table[tableNumber]->setItem(i,1,itemScore);
+        table[tableNumber]->setItem(i,2,itemTime);
+        table[tableNumber]->setItem(i,3,itemDate);
     }
 
-    table->resizeColumnsToContents();                   //изменяем размер колонок в соответствии с содержимым
+    table[tableNumber]->resizeColumnsToContents();      //изменяем размер колонок в соответствии с содержимым
 
-    int width=table->verticalHeader()->width()+table->columnWidth(0);           //считаем ширину поля
-    width+=table->columnWidth(1)+table->columnWidth(2)+table->columnWidth(3);
+    int width=table[tableNumber]->verticalHeader()->width();    //ГОВОРИТ ЧТО РАЗМЕР ЗАГОЛОВКА 0!!!!!!
 
-    int height=table->horizontalHeader()->height();                             //считаем высоту поля
-    for (int i=0;i<table->rowCount();++i)
+    for (int i=0;i<table[tableNumber]->columnCount();++i)
     {
-        height+=table->rowHeight(i);
+         width+=table[tableNumber]->columnWidth(i);           //считаем ширину поля
     }
 
-    table->setShowGrid(false);                                                  //убираем сетку
-    table->setMinimumSize(width+2,height);                                      //устанавливаем минимальный размер таблицы
-    table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);                  //убираем вертикальный слайдер
+    int height=table[tableNumber]->horizontalHeader()->height();                             //считаем высоту поля
+    for (int i=0;i<table[tableNumber]->rowCount();++i)
+    {
+        height+=table[tableNumber]->rowHeight(i);
+    }
 
-    ok=new QPushButton("Ok");                           //создаем кнопку и соединяем со слотом
-    QObject::connect(ok,SIGNAL(clicked(bool)),this,SLOT(accept()));
-
-    QVBoxLayout* lay=new QVBoxLayout;                   //создаем слой
-
-    lay->addWidget(table);                              //закидываем в него виджеты
-    lay->addWidget(ok,0,Qt::AlignHCenter | Qt::AlignBottom);
-
-    this->setLayout(lay);                               //устанавливаем этот слой
+    table[tableNumber]->setMinimumSize(width+2,height);                                      //устанавливаем минимальный размер таблицы
 }
