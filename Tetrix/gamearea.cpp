@@ -24,6 +24,11 @@ void GameArea::setDifficulty(int d)
     difficulty=d%5;
 }
 
+bool GameArea::isPaused() const
+{
+    return pause;
+}
+
 void GameArea::upSpeed()
 {
     if (difficulty!=0 && shapesCount>shapesForSpeedUp)  //увеличиваем скорость падения, если уже можно
@@ -84,7 +89,7 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
     currentSpeed(500),
     shapesForSpeedUp(numForSpeedUp),
     difficulty(diff%5),
-    isPaused(false)
+    pause(false)
 
 {
     //инициализируем пустое поле
@@ -167,7 +172,7 @@ GameArea::paintGL()
 {
     float lineWidth=squareSide/15;                            //определяем толщину линий
 
-    if (isPaused)                               //если пауза
+    if (pause)                               //если пауза
     {
         QString str="Pause";                    //задаем текст
 
@@ -374,7 +379,7 @@ GameArea::rotateCurrentShape()
 void
 GameArea::timerEvent(QTimerEvent *event)
 {
-    if (isPaused)                                                   //если пауза, то игнорим
+    if (pause)                                                   //если пауза, то игнорим
         return;
     if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
@@ -446,7 +451,7 @@ GameArea::timerEvent(QTimerEvent *event)
 void
 GameArea::keyPressEvent(QKeyEvent *event)
 {
-    if (isPaused)                                               //если пауза то игнорим
+    if (pause)                                               //если пауза то игнорим
         return;
     switch (event->key())                                       //смотрим кнопку
     {
@@ -494,7 +499,7 @@ GameArea::start()
 
     randomize();                       //Рандомим следующую
 
-    isPaused=false;
+    pause=false;
 
     this->updateGL();
 }
@@ -515,6 +520,6 @@ GameArea::endGame(int score)
 
 void GameArea::switchPause()
 {
-    isPaused=!isPaused;
+    pause=!pause;
     this->updateGL();
 }

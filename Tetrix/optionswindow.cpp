@@ -1,6 +1,8 @@
 #include "optionswindow.h"
 #include <QFile>
 #include <QHeaderView>
+#include <QApplication>
+#include <QDesktopWidget>
 
 
 OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth, QWidget *parent):
@@ -45,7 +47,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     highScores->setFocusProxy(gameArea);
     this->setFocusProxy(gameArea);
 
-    scoresView = new ScoreTable;
+    scoresView = new ScoreWidget;
 
     this->attachFile(0,"saves0.svs");
     this->attachFile(1,"saves1.svs");
@@ -63,7 +65,12 @@ void OptionsWindow::attachFile(unsigned int dif, QString fileName)
 
 void OptionsWindow::showDifficultyWindow()
 {
-    gameArea->switchPause();                            //ставим игру на паузу
+    bool unpause=false;                                 //флаг для снятия паузы
+    if (!gameArea->isPaused())                          //если игра не на паузе
+    {
+        unpause=true;                                   //говорим что нужно будет снять паузу
+        gameArea->switchPause();                        //ставим игру на паузу
+    }
     DifficultyWindow diff(currentDifficulty);           //создаем окно сложности
 
     if (diff.exec()==QDialog::Accepted)                 //вызываем его
@@ -74,7 +81,10 @@ void OptionsWindow::showDifficultyWindow()
     }
     else                                                //если нажал отмену или закрыл
     {
-        gameArea->switchPause();                        //снимаем игру с паузы
+        if (unpause)                                    //если нужно снять с паузы
+        {
+            gameArea->switchPause();                    //снимаем игру с паузы
+        }
     }
 }
 
@@ -157,11 +167,19 @@ void OptionsWindow::addRecord(unsigned int score,QString player)
 
 void OptionsWindow::showScoreTable()
 {
-    gameArea->switchPause();                                    //ставим игру на паузу
+    bool unpause=false;                                 //флаг для снятия паузы
+    if (!gameArea->isPaused())                          //если игра не на паузе
+    {
+        unpause=true;                                   //говорим что нужно будет снять паузу
+        gameArea->switchPause();                        //ставим игру на паузу
+    }
 
-    scoresView->exec();
+    scoresView->exec();                                 //вызываем окно рекордов
 
-    gameArea->switchPause();                                    //снимаем паузу
+    if (unpause)                                        //если нужно снять с паузы
+    {
+        gameArea->switchPause();                        //снимаем игру с паузы
+    }
 }
 
 OptionsWindow::ScoreTableElement::ScoreTableElement():
@@ -190,87 +208,95 @@ bool OptionsWindow::ScoreTableElement::operator<(const OptionsWindow::ScoreTable
     }
 }
 
-OptionsWindow::ScoreTable::ScoreTable()
+OptionsWindow::ScoreWidget::ScoreWidget()
 {
     for (int i=0;i<5;++i)
     {
-        table[i]=new QTableWidget(0,4);                 //создаем виджет таблицы
+        table[i]=new QTableWidget(0,4);                         //создаем виджет таблицы
 
-        QStringList lst;                                //временный список
+        QStringList lst;                                        //временный список
         lst<<"Name"<<"Score"<<"Time"<<"Date";
-        table[i]->setHorizontalHeaderLabels(lst);       //задаем горизонтальный заголовок
+        table[i]->setHorizontalHeaderLabels(lst);               //задаем горизонтальный заголовок
 
+        table[i]->verticalHeader()->resize(10,10);              //без этого говорит, что ширина заголовка 0
         table[i]->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-                                                        //фиксируем высоту строки
-        table[i]->setShowGrid(false);                                                  //убираем сетку
-        table[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);                  //убираем вертикальный слайдер
+                                                                //фиксируем высоту строки
+        table[i]->setShowGrid(false);                           //убираем сетку
+        table[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+                                                                //убираем вертикальный слайдер
+        table[i]->horizontalHeader()->setMinimumSectionSize(qApp->desktop()->screen()->width()/15);
+                                                                //устанавливаем минимальную ширину столбца
    }
 
-    ok=new QPushButton("Ok");                           //создаем кнопку и соединяем со слотом
+    ok=new QPushButton("Ok");                                   //создаем кнопку и соединяем со слотом
     QObject::connect(ok,SIGNAL(clicked(bool)),this,SLOT(accept()));
 
-    QTabWidget* tabs=new QTabWidget;
+    tabs=new QTabWidget;                                        //создаем виджет вкладок
+    tabs->setTabPosition(QTabWidget::South);                    //размещаем вкладки снизу
+    //TODO отцентрировать вкладки по горизонтали или растянуть по всеё ширине
+    tabs->tabBar()->setExpanding(true);                         //почему то не растягивает!!!
 
-    tabs->addTab(table[0],"Free");
+    tabs->addTab(table[0],"Free");                              //добавляем вкладки
     tabs->addTab(table[1],"Easy");
     tabs->addTab(table[2],"Normal");
     tabs->addTab(table[3],"Hard");
     tabs->addTab(table[4],"Master");
 
-    QVBoxLayout* lay=new QVBoxLayout;                   //создаем слой
+    QVBoxLayout* lay=new QVBoxLayout;                           //создаем слой
 
-    lay->addWidget(tabs);                               //закидываем в него вкладки
+    lay->addWidget(tabs);                                       //закидываем в него вкладки
     lay->addWidget(ok,0,Qt::AlignHCenter | Qt::AlignBottom);
 
-    this->setLayout(lay);                               //устанавливаем этот слой
+    this->setLayout(lay);                                       //устанавливаем этот слой
+    setMinimumWidth(tabs->minimumSizeHint().width());
 }
 
-void OptionsWindow::ScoreTable::updateInfo(unsigned int dif, QList<OptionsWindow::ScoreTableElement> scoreList)
+void OptionsWindow::ScoreWidget::updateInfo(unsigned int dif, QList<OptionsWindow::ScoreTableElement> scoreList)
 {
-    unsigned int tableNumber=dif%5;
+    unsigned int tableNumber=dif%5;                             //страхуемся от некорректных значений
 
-    table[tableNumber]->clearContents();
+    table[tableNumber]->clearContents();                        //очищаем таблицу
 
-    table[tableNumber]->setRowCount(scoreList.size());
+    table[tableNumber]->setRowCount(scoreList.size());          //устанавливаем нужное количество строк
 
-    for (int i=0;i<scoreList.size();++i)                //закидываем в таблицу элементы
+    for (int i=0;i<scoreList.size();++i)                        //закидываем в таблицу элементы
     {
-        ScoreTableElement elem=scoreList.at(i);         //получаем элемент из списка
+        ScoreTableElement elem=scoreList.at(i);                 //получаем элемент из списка
         QTableWidgetItem* itemName=new QTableWidgetItem(elem.playerName);                           //создаем ячейку имени
         QTableWidgetItem* itemScore=new QTableWidgetItem(QString::number(elem.score));              //создаем ячейку счета
         QTableWidgetItem* itemTime=new QTableWidgetItem(elem.time.time().toString("hh:mm:ss"));     //создаем ячейку времени
         QTableWidgetItem* itemDate=new QTableWidgetItem(elem.time.date().toString("dd.MM.yyyy"));   //создаем ячейку даты
 
-        itemName->setFlags(Qt::ItemIsEnabled);          //говорим, что ячейки не редактируемые и не выбираемые
+        itemName->setFlags(Qt::ItemIsEnabled);                  //говорим, что ячейки не редактируемые и не выбираемые
         itemScore->setFlags(Qt::ItemIsEnabled);
         itemTime->setFlags(Qt::ItemIsEnabled);
         itemDate->setFlags(Qt::ItemIsEnabled);
 
-        itemName->setTextAlignment(Qt::AlignCenter);    //устанавливаем выравнивание текста в ячейках
+        itemName->setTextAlignment(Qt::AlignCenter);            //устанавливаем выравнивание текста в ячейках
         itemScore->setTextAlignment(Qt::AlignCenter);
         itemTime->setTextAlignment(Qt::AlignCenter);
         itemDate->setTextAlignment(Qt::AlignCenter);
 
-        table[tableNumber]->setItem(i,0,itemName);      //вставляем ячейки в таблицу в одну строчку
+        table[tableNumber]->setItem(i,0,itemName);              //вставляем ячейки в таблицу в одну строчку
         table[tableNumber]->setItem(i,1,itemScore);
         table[tableNumber]->setItem(i,2,itemTime);
         table[tableNumber]->setItem(i,3,itemDate);
     }
 
-    table[tableNumber]->resizeColumnsToContents();      //изменяем размер колонок в соответствии с содержимым
+    table[tableNumber]->resizeColumnsToContents();              //изменяем размер колонок в соответствии с содержимым
 
-    int width=table[tableNumber]->verticalHeader()->width();    //ГОВОРИТ ЧТО РАЗМЕР ЗАГОЛОВКА 0!!!!!!
-
+    int width=table[tableNumber]->verticalHeader()->width();
     for (int i=0;i<table[tableNumber]->columnCount();++i)
     {
-         width+=table[tableNumber]->columnWidth(i);           //считаем ширину поля
+         width+=table[tableNumber]->columnWidth(i);             //считаем ширину поля
     }
 
-    int height=table[tableNumber]->horizontalHeader()->height();                             //считаем высоту поля
+    int height=table[tableNumber]->horizontalHeader()->height();//считаем высоту поля
     for (int i=0;i<table[tableNumber]->rowCount();++i)
     {
         height+=table[tableNumber]->rowHeight(i);
     }
 
-    table[tableNumber]->setMinimumSize(width+2,height);                                      //устанавливаем минимальный размер таблицы
+    table[tableNumber]->setMinimumSize(width+5,height);         //устанавливаем минимальный размер таблицы
+    this->setMinimumSize(tabs->minimumSize());                  //устанавливаем минимальный размер окна
 }

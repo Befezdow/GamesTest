@@ -34,7 +34,7 @@ class GameArea: public QGLWidget
     int shapesForSpeedUp;       //кол-во упавших фигур для начала увеличения скорости
     int difficulty;             //сложность (0,1,2,3,4)
 
-    bool isPaused;
+    bool pause;
 
     void initShape();               //инициализирует новую фигуру
     void rotateCurrentShape();      //текущую фигуру, если это возможно
@@ -52,6 +52,7 @@ public:
 
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
     void setDifficulty(int d);      //установить сложность
+    bool isPaused() const;
 
 protected:
     virtual void initializeGL();
