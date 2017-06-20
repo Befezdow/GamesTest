@@ -50,6 +50,9 @@ class OptionsWindow: public QWidget
 
     QList<ScoreTableElement> scores[5];                     //сами рекорды
 
+    void addRecord(unsigned int score, QString player);     //добавить рекорд
+    bool checkForAdding(unsigned int score);                //проверить на вхождение в таблицу рекордов
+
 public:
     OptionsWindow(GameArea * area,int initDifficulty,int screenWidth,QWidget* parent=Q_NULLPTR);
     void attachFile(unsigned int dif, QString fileName);    //прикрепить файл с рекордами
@@ -58,8 +61,8 @@ private slots:
     void showDifficultyWindow();                            //показать окно с выбором сложности
     void readScores();                                      //прочитать рекорды из файла
     void writeScores();                                     //выписать рекорды в файл
-    void addRecord(unsigned int score, QString player);     //добавить рекорд
     void showScoreTable();                                  //показать таблицу рекордов
+    void insertRecord(unsigned int score);                  //проверить и добавить рекорд в таблицу
 };
 
 #endif // OPTIONSWINDOW_H

@@ -17,7 +17,7 @@ public:
     explicit NextShapeAndScore(int side, QWidget *parent = 0);
 
 public slots:
-    void changeScore(int score);
+    void changeScore(unsigned int score);
     void setNextFigure(int figureNum, QColor color);
 };
 

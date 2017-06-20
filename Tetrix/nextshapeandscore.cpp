@@ -27,10 +27,10 @@ NextShapeAndScore::NextShapeAndScore(int side, QWidget *parent) :
 }
 
 void
-NextShapeAndScore::changeScore(int score)
+NextShapeAndScore::changeScore(unsigned int score)
 {
-    if (!number->checkOverflow(score))
-        number->display(score);
+    if (!number->checkOverflow((int(score))))
+        number->display(QString::number(score));
 }
 
 void

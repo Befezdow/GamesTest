@@ -35,6 +35,7 @@ class GameArea: public QGLWidget
     int difficulty;             //сложность (0,1,2,3,4)
 
     bool pause;
+    bool gameover;
 
     void initShape();               //инициализирует новую фигуру
     void rotateCurrentShape();      //текущую фигуру, если это возможно
@@ -62,14 +63,14 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event);
 
 public slots:
-    void start();               //запустить игру (запуск таймера)
-    void endGame(int score);    //завершить игру и вывести счет
+    void start();                       //запустить игру (запуск таймера)
+//    void endGame(unsigned int score);   //завершить игру и вывести счет
     void switchPause();
 
 signals:
     void throwNextFigure(int, QColor);
-    void scoreChanged(int);     //сигнал изменения счета
-    void gameOver(int);         //сигнал проигрыша
+    void scoreChanged(unsigned int);    //сигнал изменения счета
+    void gameOver(unsigned int);        //сигнал проигрыша
 };
 
 #endif // GLWIDGET_H

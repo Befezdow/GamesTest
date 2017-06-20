@@ -67,6 +67,7 @@ GameArea::initShape()
         {
             if (area.at(x).at(y).isVisible())
             {
+                gameover=true;
                 emit gameOver(currentScore);
                 return;
             }
@@ -89,7 +90,8 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
     currentSpeed(500),
     shapesForSpeedUp(numForSpeedUp),
     difficulty(diff%5),
-    pause(false)
+    pause(false),
+    gameover(false)
 
 {
     //инициализируем пустое поле
@@ -115,7 +117,7 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
     this->setFixedSize(side*width+squareSide/5,side*height+squareSide/7.5);
                                                             //фиксируем размеры окна под игровую область
 
-    connect(this,SIGNAL(gameOver(int)),SLOT(endGame(int))); //соединяем gameover с показом счета
+//    connect(this,SIGNAL(gameOver(unsigned int)),SLOT(endGame(unsigned int))); //соединяем gameover с показом счета
 }
 
 GameArea::~GameArea()
@@ -170,11 +172,17 @@ GameArea::resizeGL(int w, int h)
 void
 GameArea::paintGL()
 {
-    float lineWidth=squareSide/15;                            //определяем толщину линий
+    float lineWidth=squareSide/15;              //определяем толщину линий
 
-    if (pause)                               //если пауза
+    //TODO убрать наложение Game Over
+
+    if (pause || gameover)                      //если пауза
     {
-        QString str="Pause";                    //задаем текст
+        QString str="Game Over";
+        if (pause && !gameover)
+        {
+            str="Pause";                        //задаем текст
+        }
 
         qglColor(Qt::black);                    //задаем цвет текста
 
@@ -379,7 +387,7 @@ GameArea::rotateCurrentShape()
 void
 GameArea::timerEvent(QTimerEvent *event)
 {
-    if (pause)                                                   //если пауза, то игнорим
+    if (pause || gameover)                                          //если пауза или конец игры, то игнорим
         return;
     if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
@@ -439,7 +447,7 @@ GameArea::timerEvent(QTimerEvent *event)
             emit scoreChanged(currentScore);
 
             this->initShape();              //инициализируем новую фигуру
-            this->randomize();                    //Получаем данные следующей фигуры
+            this->randomize();              //Получаем данные следующей фигуры
 
             this->upSpeed();
 
@@ -497,15 +505,16 @@ GameArea::start()
     currentScore=0;
     emit scoreChanged(currentScore);
 
-    randomize();                       //Рандомим следующую
+    randomize();                                //рандомим следующую
 
     pause=false;
+    gameover=false;
 
     this->updateGL();
 }
-
+/*
 void
-GameArea::endGame(int score)
+GameArea::endGame(unsigned int score)
 {
     QString info="Your score: "+QString::number(score)+"\n Play more?";
     int i=QMessageBox::information(this,"Game Over",info,QMessageBox::Yes,QMessageBox::No);
@@ -516,7 +525,7 @@ GameArea::endGame(int score)
     }
     else                                        //если не хочет
         qApp->quit();
-}
+}*/
 
 void GameArea::switchPause()
 {

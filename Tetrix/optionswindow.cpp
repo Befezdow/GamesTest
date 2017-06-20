@@ -3,6 +3,7 @@
 #include <QHeaderView>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QInputDialog>
 
 
 OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth, QWidget *parent):
@@ -21,7 +22,8 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     gameArea=area;                                                          //прикрепляем игровую зону
 
     //соединяем слоты
-    QObject::connect(gameArea,SIGNAL(scoreChanged(int)),shapeScore,SLOT(changeScore(int)));
+    QObject::connect(gameArea,SIGNAL(scoreChanged(unsigned int)),shapeScore,SLOT(changeScore(unsigned int)));
+    QObject::connect(gameArea,SIGNAL(gameOver(uint)),this,SLOT(insertRecord(uint)));
     QObject::connect(gameArea,SIGNAL(throwNextFigure(int,QColor)),shapeScore,SLOT(setNextFigure(int,QColor)));
     QObject::connect(pause,SIGNAL(clicked(bool)),gameArea,SLOT(switchPause()));
     QObject::connect(restart,SIGNAL(clicked(bool)),gameArea,SLOT(start()));
@@ -158,7 +160,7 @@ void OptionsWindow::addRecord(unsigned int score,QString player)
                                                                 //добавляем новый рекорд
     std::sort(scores[currentDifficulty].begin(),scores[currentDifficulty].end());
                                                                 //сортируем список рекордов
-    if (scores[currentDifficulty].size()>20)                    //если в нем больше 20 элементов
+    if (scores[currentDifficulty].size()>10)                    //если в нем больше 10 элементов
     {
         scores[currentDifficulty].pop_back();                   //последний выкидываем
     }
@@ -180,6 +182,44 @@ void OptionsWindow::showScoreTable()
     {
         gameArea->switchPause();                        //снимаем игру с паузы
     }
+}
+
+void OptionsWindow::insertRecord(unsigned int score)
+{
+    if (score==0)
+    {
+        return;
+    }
+
+    if (!checkForAdding(score))
+    {
+        return;
+    }
+    bool check=true;
+    //TODO ограничить кол-во символов в никнейме
+    QString playerName=QInputDialog::getText(Q_NULLPTR,"Victory",
+                                             "You have entered the high score table.\nPlease enter your nickname:",
+                                             QLineEdit::Normal,"Winner",&check);
+    if (check)
+    {
+        this->addRecord(score,playerName);
+    }
+}
+
+bool OptionsWindow::checkForAdding(unsigned int score)
+{
+    if (scores[currentDifficulty].size()<10)
+    {
+        return true;
+    }
+    else
+    {
+        if (scores[currentDifficulty].back().score<score)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 OptionsWindow::ScoreTableElement::ScoreTableElement():
