@@ -42,7 +42,8 @@ HEADERS  += \
     gamearea.h \
     difficultywindow.h \
     optionswindow.h \
-    nextshapeandscore.h
+    nextshapeandscore.h \
+    mainwindow.h
 
 RESOURCES += \
     resources.qrc

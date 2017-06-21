@@ -1,7 +1,7 @@
-#include "gamearea.h"
 #include "nextshapeandscore.h"
 #include "difficultywindow.h"
 #include "optionswindow.h"
+#include "mainwindow.h"
 #include <QApplication>
 #include <QMessageLogContext>
 #include <QString>
@@ -16,13 +16,13 @@ void dummyOutput(QtMsgType, const QMessageLogContext&, const QString&)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    qInstallMessageHandler(dummyOutput);
+    qInstallMessageHandler(dummyOutput);
 
     int screenWidth=QApplication::desktop()->width();
 
     GameArea * gameArea=new GameArea(screenWidth/45,14,20,10,1);
     OptionsWindow* options=new OptionsWindow(gameArea,1,screenWidth);
-    QWidget * wgt = new QWidget;
+    MainWindow * wgt = new MainWindow(gameArea);
     QHBoxLayout* hlay = new QHBoxLayout;
 
     hlay->addWidget(gameArea,0,Qt::AlignCenter);

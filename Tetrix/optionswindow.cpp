@@ -30,6 +30,9 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     QObject::connect(difficulty,SIGNAL(clicked(bool)),this,SLOT(showDifficultyWindow()));
     QObject::connect(highScores,SIGNAL(clicked(bool)),this,SLOT(showScoreTable()));
 
+    QObject::connect(gameArea,SIGNAL(showHighScores()),this,SLOT(showScoreTable()));
+    QObject::connect(gameArea,SIGNAL(showDifficulty()),this,SLOT(showDifficultyWindow()));
+
     //собираем виджеты в слои
     buttonLay->addWidget(pause);
     buttonLay->addWidget(restart);

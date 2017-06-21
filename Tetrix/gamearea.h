@@ -54,6 +54,7 @@ public:
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
     void setDifficulty(int d);          //установить сложность
     bool isPaused() const;
+    void setGameOver();
 
 protected:
     virtual void initializeGL();
@@ -70,6 +71,8 @@ signals:
     void throwNextFigure(int, QColor);
     void scoreChanged(unsigned int);    //сигнал изменения счета
     void gameOver(unsigned int);        //сигнал проигрыша
+    void showHighScores();              //сигнал для вызова окна рекордов через key event
+    void showDifficulty();              //сигнал для вызова окна сложности через key event
 };
 
 #endif // GLWIDGET_H

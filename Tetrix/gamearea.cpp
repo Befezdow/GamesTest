@@ -29,6 +29,12 @@ bool GameArea::isPaused() const
     return pause;
 }
 
+void GameArea::setGameOver()
+{
+    gameover=true;
+    emit gameOver(this->currentScore);
+}
+
 void GameArea::upSpeed()
 {
     if (difficulty!=0 && shapesCount>shapesForSpeedUp)  //увеличиваем скорость падения, если уже можно
@@ -116,8 +122,6 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
 
     this->setFixedSize(side*width+squareSide/5,side*height+squareSide/7.5);
                                                             //фиксируем размеры окна под игровую область
-
-//    connect(this,SIGNAL(gameOver(unsigned int)),SLOT(endGame(unsigned int))); //соединяем gameover с показом счета
 }
 
 GameArea::~GameArea()
@@ -457,24 +461,45 @@ GameArea::timerEvent(QTimerEvent *event)
 void
 GameArea::keyPressEvent(QKeyEvent *event)
 {
-    if (pause)                                               //если пауза то игнорим
-        return;
-    switch (event->key())                                       //смотрим кнопку
+    switch (event->key())
     {
-    case Qt::Key_Up:
-        this->rotateCurrentShape();
+    case Qt::Key_R:
+        if (event->modifiers() & Qt::ControlModifier)
+            {
+                this->start();
+                return;
+            }
         break;
-    case Qt::Key_Left:                                          //если влево
-        this->moveCurrentShapeLeft();
-        break;
-    case Qt::Key_Right:                                         //если вправо
-        this->moveCurrentShapeRight();
-        break;
-    case Qt::Key_Down:                                          //если вниз
-        this->moveCurrentShapeDown();
-        break;
-    default:
-        qDebug()<<"Unknown key";                                //иначе не знаем кнопку
+    case Qt::Key_P:
+        this->switchPause();
+        return;
+    case Qt::Key_D:
+        emit showDifficulty();
+        return;
+    case Qt::Key_H:
+        emit showHighScores();
+        return;
+    }
+
+    if (!pause)
+    {
+        switch (event->key())                                       //смотрим кнопку
+        {
+        case Qt::Key_Up:
+            this->rotateCurrentShape();
+            break;
+        case Qt::Key_Left:                                          //если влево
+            this->moveCurrentShapeLeft();
+            break;
+        case Qt::Key_Right:                                         //если вправо
+            this->moveCurrentShapeRight();
+            break;
+        case Qt::Key_Down:                                          //если вниз
+            this->moveCurrentShapeDown();
+            break;
+        default:
+            qDebug()<<"Unknown key";                                //иначе не знаем кнопку
+        }
     }
 
     this->updateGL();                                           //обновляем картинку
