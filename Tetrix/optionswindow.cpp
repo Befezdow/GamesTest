@@ -116,13 +116,10 @@ void OptionsWindow::readScores()
             QString p;
             out>>t>>s>>p;                                   //читаем данные
 
+            scores[i].push_back(ScoreTableElement(t,s,p)); //закидываем данные в рекорды
             if (out.atEnd())                                //если поток закончился
             {
                 break;                                      //отваливаемся
-            }
-            else                                            //иначе
-            {
-                scores[i].push_back(ScoreTableElement(t,s,p)); //закидываем данные в рекорды
             }
         }
 
@@ -196,13 +193,14 @@ void OptionsWindow::insertRecord(unsigned int score)
         return;
     }
     bool check=true;
-    //TODO ограничить кол-во символов в никнейме
     QString playerName=QInputDialog::getText(Q_NULLPTR,"Victory",
                                              "You have entered the high score table.\nPlease enter your nickname:",
                                              QLineEdit::Normal,"Winner",&check);
+    playerName.truncate(30);
     if (check)
     {
         this->addRecord(score,playerName);
+        this->writeScores();
     }
 }
 
@@ -325,10 +323,25 @@ void OptionsWindow::ScoreWidget::updateInfo(unsigned int dif, QList<OptionsWindo
 
     table[tableNumber]->resizeColumnsToContents();              //изменяем размер колонок в соответствии с содержимым
 
-    int width=table[tableNumber]->verticalHeader()->width();
+    int maxNameLengthInPixels=0;                                //ширина колонок с именами
+    for (int i=0; i<5; ++i)                                     //идем по всем таблицам
+    {
+        int temp=table[i]->horizontalHeader()->sectionSize(0);  //временная переменная
+        if (temp>maxNameLengthInPixels)                         //находим максимальную ширину
+        {
+            maxNameLengthInPixels=temp;
+        }
+    }
+
+    for (int i=0; i<5; ++i)                                     //ставим её для всех таблиц
+    {
+        table[i]->horizontalHeader()->resizeSection(0,maxNameLengthInPixels);
+    }
+
+    int width=table[tableNumber]->verticalHeader()->width();    //считаем ширину поля
     for (int i=0;i<table[tableNumber]->columnCount();++i)
     {
-         width+=table[tableNumber]->columnWidth(i);             //считаем ширину поля
+         width+=table[tableNumber]->columnWidth(i);
     }
 
     int height=table[tableNumber]->horizontalHeader()->height();//считаем высоту поля

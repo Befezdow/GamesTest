@@ -174,14 +174,12 @@ GameArea::paintGL()
 {
     float lineWidth=squareSide/15;              //определяем толщину линий
 
-    //TODO убрать наложение Game Over
-
-    if (pause || gameover)                      //если пауза
+    if (pause || gameover)                      //если пауза или конец игры
     {
-        QString str="Game Over";
-        if (pause && !gameover)
+        QString str="Game Over";                //по умолчанию ставим надпись конца игры
+        if (pause && !gameover)                 //если это пауза
         {
-            str="Pause";                        //задаем текст
+            str="Pause";                        //задаем текст паузы
         }
 
         qglColor(Qt::black);                    //задаем цвет текста
@@ -197,7 +195,7 @@ GameArea::paintGL()
         int y=(this->height()+height)/2;
 
         renderText(x,y,str,font);               //рисуем текст
-                                                //попробовать прикрутить сюда сглаживание!!!
+        //TODO попробовать прикрутить сюда сглаживание!!!
         return;
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
@@ -485,18 +483,18 @@ GameArea::keyPressEvent(QKeyEvent *event)
 void
 GameArea::start()
 {
-    for (int i=0;i<areaWidth;++i)           //очищаем игровую область
+    for (int i=0;i<areaWidth;++i)               //очищаем игровую область
         for (int j=0;j<areaHeight;++j)
         {
             area[i][j].setColor(Qt::white);
             area[i][j].hide();
         }
 
-    if (this->timerId)                 //если таймер существует
-        this->killTimer(timerId);      //убиваем его
+    if (this->timerId)                          //если таймер существует
+        this->killTimer(timerId);               //убиваем его
     qsrand(QTime::currentTime().msec());
-    randomize();                       //Получаем цвет и фигуру следующую
-    this->initShape();                 //инициализируем первую фигуру
+    randomize();                                //Получаем цвет и фигуру следующую
+    this->initShape();                          //инициализируем первую фигуру
 
     shapesCount=0;                              //обнуляем кол-во упавших фигур
     currentSpeed=500;                           //инициализируем скорость падения
@@ -512,23 +510,12 @@ GameArea::start()
 
     this->updateGL();
 }
-/*
-void
-GameArea::endGame(unsigned int score)
-{
-    QString info="Your score: "+QString::number(score)+"\n Play more?";
-    int i=QMessageBox::information(this,"Game Over",info,QMessageBox::Yes,QMessageBox::No);
-
-    if (i==QMessageBox::Yes)                    //если хочет играть еще
-    {
-        this->start();
-    }
-    else                                        //если не хочет
-        qApp->quit();
-}*/
 
 void GameArea::switchPause()
 {
-    pause=!pause;
-    this->updateGL();
+    if (gameover)           //если конец игры, то игнорируем
+        return;
+
+    pause=!pause;           //меняем состояние паузы
+    this->updateGL();       //обновляем картинку
 }

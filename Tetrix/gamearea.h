@@ -52,7 +52,7 @@ public:
     ~GameArea();
 
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
-    void setDifficulty(int d);      //установить сложность
+    void setDifficulty(int d);          //установить сложность
     bool isPaused() const;
 
 protected:
@@ -64,7 +64,6 @@ protected:
 
 public slots:
     void start();                       //запустить игру (запуск таймера)
-//    void endGame(unsigned int score);   //завершить игру и вывести счет
     void switchPause();
 
 signals:
