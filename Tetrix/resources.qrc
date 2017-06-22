@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/res">
         <file>icon.png</file>
+        <file>sound.png</file>
+        <file>soundoff.png</file>
     </qresource>
 </RCC>

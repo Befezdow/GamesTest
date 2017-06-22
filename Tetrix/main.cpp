@@ -31,8 +31,9 @@ int main(int argc, char *argv[])
 
     gameArea->setFocus();
 
-    wgt->setWindowTitle("Tetrix");
+    wgt->setWindowTitle("Vitae Of Blocks");
     wgt->setWindowIcon(QIcon(":/res/icon.png"));
+
     wgt->show();
     gameArea->start();
 

@@ -3,6 +3,7 @@
 
 #include "nextshapeandscore.h"
 #include "difficultywindow.h"
+#include "soundcontroller.h"
 #include <QTime>
 #include <QTableWidget>
 
@@ -37,10 +38,12 @@ class OptionsWindow: public QWidget
     NextShapeAndScore * shapeScore;                         //виджеты очков и следующей фигуры
     ScoreWidget* scoresView;
     QLabel* names;                                          //имена разработчиков
+    SoundController* soundWidget;
     QPushButton* pause;                                     //кнопка паузы
     QPushButton* restart;                                   //кнопка рестарта
     QPushButton* difficulty;                                //кнопка сложности
     QPushButton* highScores;                                //кнопка вывода таблицы очков
+    QPushButton* about;
     QVBoxLayout* vlay;                                      //общий слой
     QVBoxLayout* buttonLay;                                 //слой с кнопками
 
@@ -63,6 +66,7 @@ private slots:
     void writeScores();                                     //выписать рекорды в файл
     void showScoreTable();                                  //показать таблицу рекордов
     void insertRecord(unsigned int score);                  //проверить и добавить рекорд в таблицу
+    void aboutProgram();
 };
 
 #endif // OPTIONSWINDOW_H

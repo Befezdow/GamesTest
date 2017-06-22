@@ -54,6 +54,7 @@ public:
     static Shape* generateShape(int typeOfShape);       //генерирует объект фигуры
     void setDifficulty(int d);          //установить сложность
     bool isPaused() const;
+    bool isGameOver() const;
     void setGameOver();
 
 protected:

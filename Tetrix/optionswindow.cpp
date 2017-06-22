@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QInputDialog>
+#include <QMessageBox>
 
 
 OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth, QWidget *parent):
@@ -12,10 +13,13 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
 {
     shapeScore= new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
+    names->setAlignment(Qt::AlignHCenter);
+    soundWidget=new SoundController;
     pause = new QPushButton("Pause");
     restart = new QPushButton("Restart");
     difficulty=new QPushButton("Difficulty");
     highScores = new QPushButton("Highscores");
+    about=new QPushButton("About");
     vlay = new QVBoxLayout;
     buttonLay = new QVBoxLayout;
 
@@ -29,6 +33,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     QObject::connect(restart,SIGNAL(clicked(bool)),gameArea,SLOT(start()));
     QObject::connect(difficulty,SIGNAL(clicked(bool)),this,SLOT(showDifficultyWindow()));
     QObject::connect(highScores,SIGNAL(clicked(bool)),this,SLOT(showScoreTable()));
+    QObject::connect(about,SIGNAL(clicked(bool)),this,SLOT(aboutProgram()));
 
     QObject::connect(gameArea,SIGNAL(showHighScores()),this,SLOT(showScoreTable()));
     QObject::connect(gameArea,SIGNAL(showDifficulty()),this,SLOT(showDifficultyWindow()));
@@ -38,10 +43,12 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     buttonLay->addWidget(restart);
     buttonLay->addWidget(difficulty);
     buttonLay->addWidget(highScores);
+    buttonLay->addWidget(about);
 
     vlay->addWidget(shapeScore,0,Qt::AlignHCenter | Qt::AlignTop);
     vlay->addLayout(buttonLay);
-    vlay->addWidget(names,0,Qt::AlignHCenter | Qt::AlignBottom);
+    vlay->addWidget(names,1,Qt::AlignHCenter | Qt::AlignBottom);
+    vlay->addWidget(soundWidget,0,Qt::AlignHCenter);
 
     this->setLayout(vlay);                  //устанавливаем слой
 
@@ -50,6 +57,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     restart->setFocusProxy(gameArea);
     difficulty->setFocusProxy(gameArea);
     highScores->setFocusProxy(gameArea);
+    soundWidget->setFocusProxy(gameArea);
     this->setFocusProxy(gameArea);
 
     scoresView = new ScoreWidget;
@@ -204,6 +212,33 @@ void OptionsWindow::insertRecord(unsigned int score)
     {
         this->addRecord(score,playerName);
         this->writeScores();
+    }
+}
+
+void OptionsWindow::aboutProgram()
+{
+    QString aboutInfo="<h2>Vitae Of Blocks</h2>"
+                      "<h4>Version 1.3</h4>"
+                      "This program was written by a couple of<br>"
+                      "students in order to test their abilities.<br>"
+                      "It uses Qt version 5.8.0.<br><br>"
+                      "<b>Developers:</b><br>#Befezdow<br>#YouCanKeepSilence<br><br>"
+                      "<b>Special thanks to:</b><br>#Kampfer<br>#Forze<br>"
+                      "#Altum Silentium<br>#Lieee.s<br>#DuMaHbl4<br><br>"
+                      "<b>Music:</b><br>";
+
+    bool unpause=false;                                 //флаг для снятия паузы
+    if (!gameArea->isPaused())                          //если игра не на паузе
+    {
+        unpause=true;                                   //говорим что нужно будет снять паузу
+        gameArea->switchPause();                        //ставим игру на паузу
+    }
+
+    QMessageBox::about(Q_NULLPTR,"About game",aboutInfo);
+
+    if (unpause)                                    //если нужно снять с паузы
+    {
+        gameArea->switchPause();                    //снимаем игру с паузы
     }
 }
 

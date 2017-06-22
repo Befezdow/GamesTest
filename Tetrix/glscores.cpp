@@ -24,20 +24,44 @@ GLScores::paintFigure()
 
     foreach (QPoint point, points)
     {
-        int x = point.x()*side-xDelta;
-        int y = (point.y()+1)*side-yDelta;
-        int x1 = x + side;
-        int y1 = y - side;
+        int x1 = point.x()*side-xDelta;
+        int y1 = (point.y()+1)*side-yDelta;
+        int x2 = x1 + side;
+        int y2 = y1 - side;
         qglColor(color);
-        glRecti(x,y,x1,y1);
+        glRecti(x1,y1,x2,y2);
         qglColor(Qt::black);
         glBegin(GL_LINE_LOOP);
-            glVertex2i(x-1,y);
-            glVertex2i(x,y1);
-            glVertex2i(x1,y1);
-            glVertex2i(x1,y);
+            glVertex2i(x1-1,y1);
+            glVertex2i(x1,y2);
+            glVertex2i(x2,y2);
+            glVertex2i(x2,y1);
         glEnd();
 
+        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        int quarter=(x2-x1)/4;
+
+        x1=x1+quarter;
+        y1=y1-quarter;
+        x2=x2-quarter;
+        y2=y2+quarter;
+
+        qglColor(QColor(0,0,0,100));
+        glRecti(x1,y1,x2,y2);
+
+        qglColor(QColor(255,255,255,150));
+        glBegin(GL_LINE_LOOP);                      //рисуем обводку
+            glVertex2i(x1-1,y1);
+            glVertex2i(x1,y2);
+            glVertex2i(x2,y2);
+            glVertex2i(x2,y1);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glDisable(GL_ALPHA_TEST);
     }
 
 }

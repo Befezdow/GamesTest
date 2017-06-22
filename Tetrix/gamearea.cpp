@@ -29,6 +29,11 @@ bool GameArea::isPaused() const
     return pause;
 }
 
+bool GameArea::isGameOver() const
+{
+    return gameover;
+}
+
 void GameArea::setGameOver()
 {
     gameover=true;
@@ -232,6 +237,31 @@ GameArea::paintGL()
                     glVertex2i(x2,y2);
                     glVertex2i(x2,y1);
                 glEnd();
+
+                glEnable(GL_ALPHA_TEST);                    //устанавливаем прозрачность
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+                int quarter=(x2-x1)/4;                      //четверть стороны квадрата
+
+                x1=x1+quarter;                              //точки нового квадрата
+                y1=y1-quarter;
+                x2=x2-quarter;
+                y2=y2+quarter;
+
+                qglColor(QColor(0,0,0,100));                //ставим черный полупрозрачный цвет
+                glRecti(x1,y1,x2,y2);                       //рисуем квадрат
+
+                qglColor(QColor(255,255,255,150));          //ставим белый полупрозрачный цвет
+                glBegin(GL_LINE_LOOP);                      //рисуем обводку
+                    glVertex2i(x1,y1);
+                    glVertex2i(x1,y2);
+                    glVertex2i(x2,y2);
+                    glVertex2i(x2,y1);
+                glEnd();
+
+                glDisable(GL_BLEND);                        //выключаем прозрачность
+                glDisable(GL_ALPHA_TEST);
             }
         }
     }
