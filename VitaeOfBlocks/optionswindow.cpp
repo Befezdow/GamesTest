@@ -1,4 +1,5 @@
 #include "optionswindow.h"
+#include "aboutwindow.h"
 #include <QFile>
 #include <QHeaderView>
 #include <QApplication>
@@ -217,15 +218,15 @@ void OptionsWindow::insertRecord(unsigned int score)
 
 void OptionsWindow::aboutProgram()
 {
-    QString aboutInfo="<h2>Vitae Of Blocks</h2>"
-                      "<h4>Version 1.3</h4>"
-                      "This program was written by a couple of<br>"
-                      "students in order to test their abilities.<br>"
-                      "It uses Qt version 5.8.0.<br><br>"
-                      "<b>Developers:</b><br>#Befezdow<br>#YouCanKeepSilence<br><br>"
-                      "<b>Special thanks to:</b><br>#Kampfer<br>#Forze<br>"
-                      "#Altum Silentium<br>#Lieee.s<br>#DuMaHbl4<br><br>"
-                      "<b>Music:</b><br>";
+//    QString aboutInfo="<h2>Vitae Of Blocks</h2>"
+//                      "<h4>Version 1.3</h4>"
+//                      "This program was written by a couple of<br>"
+//                      "students in order to test their abilities.<br>"
+//                      "It uses Qt version 5.8.0.<br><br>"
+//                      "<b>Developers:</b><br>#Befezdow<br>#YouCanKeepSilence<br><br>"
+//                      "<b>Special thanks to:</b><br>#Kampfer<br>#Forze<br>"
+//                      "#Altum Silentium<br>#Lieee.s<br>#DuMaHbl4<br><br>"
+//                      "<b>Music:</b><br>";
 
     bool unpause=false;                                 //флаг для снятия паузы
     if (!gameArea->isPaused())                          //если игра не на паузе
@@ -234,7 +235,8 @@ void OptionsWindow::aboutProgram()
         gameArea->switchPause();                        //ставим игру на паузу
     }
 
-    QMessageBox::about(Q_NULLPTR,"About game",aboutInfo);
+    AboutWindow aw;
+    aw.exec();
 
     if (unpause)                                    //если нужно снять с паузы
     {
