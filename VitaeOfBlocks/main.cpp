@@ -16,6 +16,12 @@ void dummyOutput(QtMsgType, const QMessageLogContext&, const QString&)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+//    QFile file(":/res/style.qss");
+//    file.open(QFile::ReadOnly);
+//    QString str=file.readAll();
+//    a.setStyleSheet(str);
+
 //    qInstallMessageHandler(dummyOutput);
 
     int screenWidth=QApplication::desktop()->width();
@@ -25,8 +31,8 @@ int main(int argc, char *argv[])
     MainWindow * wgt = new MainWindow(gameArea);
     QHBoxLayout* hlay = new QHBoxLayout;
 
-    hlay->addWidget(gameArea,0,Qt::AlignCenter);
-    hlay->addWidget(options);
+    hlay->addWidget(gameArea,0,Qt::AlignRight);
+    hlay->addWidget(options,0,Qt::AlignLeft);
     wgt->setLayout(hlay);
 
     gameArea->setFocus();

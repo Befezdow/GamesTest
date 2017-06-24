@@ -12,17 +12,27 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     QWidget(parent),
     currentDifficulty(initDifficulty)
 {
-    shapeScore= new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
+    shapeScore = new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
     names->setAlignment(Qt::AlignHCenter);
-    soundWidget=new SoundController;
+    names->setStyleSheet("background-color: rgb(219,157,34);"
+                         "border-radius: 25px;"
+                         "border: 3px ridge purple");
+    names->setMargin(10);
+    soundWidget = new SoundController;
     pause = new QPushButton("Pause");
     restart = new QPushButton("Restart");
-    difficulty=new QPushButton("Difficulty");
+    difficulty = new QPushButton("Difficulty");
     highScores = new QPushButton("Highscores");
-    about=new QPushButton("About");
+    about = new QPushButton("About");
     vlay = new QVBoxLayout;
     buttonLay = new QVBoxLayout;
+
+    pause->setFixedWidth(area->width()/3);
+    restart->setFixedWidth(area->width()/3);
+    difficulty->setFixedWidth(area->width()/3);
+    highScores->setFixedWidth(area->width()/3);
+    about->setFixedWidth(area->width()/3);
 
     gameArea=area;                                                          //прикрепляем игровую зону
 
@@ -40,11 +50,11 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     QObject::connect(gameArea,SIGNAL(showDifficulty()),this,SLOT(showDifficultyWindow()));
 
     //собираем виджеты в слои
-    buttonLay->addWidget(pause);
-    buttonLay->addWidget(restart);
-    buttonLay->addWidget(difficulty);
-    buttonLay->addWidget(highScores);
-    buttonLay->addWidget(about);
+    buttonLay->addWidget(pause,0,Qt::AlignHCenter);
+    buttonLay->addWidget(restart,0,Qt::AlignHCenter);
+    buttonLay->addWidget(difficulty,0,Qt::AlignHCenter);
+    buttonLay->addWidget(highScores,0,Qt::AlignHCenter);
+    buttonLay->addWidget(about,0,Qt::AlignHCenter);
 
     vlay->addWidget(shapeScore,0,Qt::AlignHCenter | Qt::AlignTop);
     vlay->addLayout(buttonLay);
