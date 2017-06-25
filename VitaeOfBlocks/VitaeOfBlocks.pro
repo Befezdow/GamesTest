@@ -26,8 +26,6 @@ win32{
     LIBS += -lglu32 -lopengl32
 }
 
-#LIBS += -L/usr/lib/ao/plugins-4/ -lpulse ВЫКИНУТЬ ЭТО ИЗ РЕЛИЗА
-
 SOURCES += main.cpp \
     shape.cpp \
     glscores.cpp \

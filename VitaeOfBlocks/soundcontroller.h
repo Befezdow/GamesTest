@@ -5,7 +5,6 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QHBoxLayout>
-#include <QDebug>
 #include <QtMultimedia/QMediaPlayer>
 #include <QtMultimedia/QMediaPlaylist>
 #include <QApplication>
@@ -21,7 +20,7 @@ class SoundController: public QWidget
     QMediaPlayer* player;
 
 public:
-    SoundController(QWidget* parent=Q_NULLPTR):QWidget(parent)
+    SoundController(int initVolume=50, bool initMuted=false, QWidget* parent=Q_NULLPTR):QWidget(parent)
     {
         button = new QPushButton;
         button->setIcon(QIcon(":/res/sound.png"));
@@ -29,7 +28,7 @@ public:
 
         slider = new QSlider(Qt::Horizontal);
         slider->setRange(0,100);
-        slider->setValue(50);
+        slider->setValue(initVolume);
 
         playlist=new QMediaPlaylist(this);
         playlist->setPlaybackMode(QMediaPlaylist::Loop);
@@ -46,7 +45,7 @@ public:
         player = new QMediaPlayer(this);
         player->setAudioRole(QAudio::GameRole);
         player->setPlaylist(playlist);
-        player->setVolume(50);
+        player->setVolume(initVolume);
 
         qsrand(QTime::currentTime().msecsSinceStartOfDay());
         playlist->shuffle();
@@ -58,15 +57,27 @@ public:
         lay->addWidget(slider,0,Qt::AlignCenter);
         this->setLayout(lay);
 
-        connect(button,SIGNAL(toggled(bool)),this,SLOT(changeIcon(bool)));
+        connect(button,SIGNAL(toggled(bool)),this,SLOT(setMuted(bool)));
         connect(slider,SIGNAL(valueChanged(int)),player,SLOT(setVolume(int)));
 
         button->setFocusProxy(this);
         slider->setFocusProxy(this);
+
+        this->setMuted(initMuted);
+    }
+
+    int getVolume() const
+    {
+        return player->volume();
+    }
+
+    bool isMuted() const
+    {
+        return player->isMuted();
     }
 
 private slots:
-    void changeIcon(bool a)
+    void setMuted(bool a)
     {
         if (a)
         {

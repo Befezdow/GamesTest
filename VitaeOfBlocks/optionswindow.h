@@ -58,6 +58,7 @@ class OptionsWindow: public QWidget
 
 public:
     OptionsWindow(GameArea * area,int initDifficulty,int screenWidth,QWidget* parent=Q_NULLPTR);
+    ~OptionsWindow();
     void attachFile(unsigned int dif, QString fileName);    //прикрепить файл с рекордами
 
 private slots:

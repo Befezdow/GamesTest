@@ -28,11 +28,12 @@ GLScores::paintFigure()
         int y1 = (point.y()+1)*side-yDelta;
         int x2 = x1 + side;
         int y2 = y1 - side;
+
         qglColor(color);
         glRecti(x1,y1,x2,y2);
         qglColor(Qt::black);
         glBegin(GL_LINE_LOOP);
-            glVertex2i(x1-1,y1);
+            glVertex2i(x1,y1);
             glVertex2i(x1,y2);
             glVertex2i(x2,y2);
             glVertex2i(x2,y1);
@@ -57,7 +58,7 @@ GLScores::paintFigure()
             glVertex2i(x1-1,y1);
             glVertex2i(x1,y2);
             glVertex2i(x2,y2);
-            glVertex2i(x2,y1);
+            glVertex2i(x2+1,y1);                    //WTF is going on with this 1?
         glEnd();
 
         glDisable(GL_BLEND);

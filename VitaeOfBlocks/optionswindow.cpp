@@ -6,12 +6,23 @@
 #include <QDesktopWidget>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QSettings>
 
 
 OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth, QWidget *parent):
     QWidget(parent),
     currentDifficulty(initDifficulty)
 {
+    gameArea=area;                                                          //прикрепляем игровую зону
+
+    QSettings settings;
+    settings.beginGroup("OptionsWindow");
+        currentDifficulty=settings.value("difficulty",QVariant(initDifficulty)).toInt();
+        gameArea->setDifficulty(currentDifficulty);
+        bool isMuted=settings.value("isMuted",QVariant(false)).toBool();
+        int volume=settings.value("volume",QVariant(50)).toInt();
+    settings.endGroup();
+
     shapeScore = new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
     names->setAlignment(Qt::AlignHCenter);
@@ -19,7 +30,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
                          "border-radius: 25px;"
                          "border: 3px ridge purple");
     names->setMargin(10);
-    soundWidget = new SoundController;
+    soundWidget = new SoundController(volume,isMuted);
     pause = new QPushButton("Pause");
     restart = new QPushButton("Restart");
     difficulty = new QPushButton("Difficulty");
@@ -33,8 +44,6 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     difficulty->setFixedWidth(area->width()/3);
     highScores->setFixedWidth(area->width()/3);
     about->setFixedWidth(area->width()/3);
-
-    gameArea=area;                                                          //прикрепляем игровую зону
 
     //соединяем слоты
     QObject::connect(gameArea,SIGNAL(scoreChanged(unsigned int)),shapeScore,SLOT(changeScore(unsigned int)));
@@ -68,6 +77,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     restart->setFocusProxy(gameArea);
     difficulty->setFocusProxy(gameArea);
     highScores->setFocusProxy(gameArea);
+    about->setFocusProxy(gameArea);
     soundWidget->setFocusProxy(gameArea);
     this->setFocusProxy(gameArea);
 
@@ -80,6 +90,16 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     this->attachFile(4,"saves4.svs");
 
     this->readScores();
+}
+
+OptionsWindow::~OptionsWindow()
+{
+    QSettings settings;
+    settings.beginGroup("OptionsWindow");
+        settings.setValue("difficulty",QVariant(currentDifficulty));
+        settings.setValue("isMuted",QVariant(soundWidget->isMuted()));
+        settings.setValue("volume",QVariant(soundWidget->getVolume()));
+    settings.endGroup();
 }
 
 void OptionsWindow::attachFile(unsigned int dif, QString fileName)

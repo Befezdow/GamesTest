@@ -16,6 +16,8 @@ void dummyOutput(QtMsgType, const QMessageLogContext&, const QString&)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setOrganizationName("GameTest");
+    a.setApplicationName("VitaeOfBlocks");
 
 //    QFile file(":/res/style.qss");
 //    file.open(QFile::ReadOnly);
@@ -27,7 +29,7 @@ int main(int argc, char *argv[])
     int screenWidth=QApplication::desktop()->width();
 
     GameArea * gameArea=new GameArea(screenWidth/45,14,20,10,1);
-    OptionsWindow* options=new OptionsWindow(gameArea,1,screenWidth);
+    OptionsWindow* options = new OptionsWindow(gameArea,1,screenWidth);
     MainWindow * wgt = new MainWindow(gameArea);
     QHBoxLayout* hlay = new QHBoxLayout;
 

@@ -47,7 +47,12 @@ public:
 
         music = new QLabel;
         music->setTextFormat(Qt::RichText);
-        music->setText("<b>Music:</b><br>");
+        music->setText("<b>Music:</b><br>"
+                       "KFAlisKA - Живой Сталкер (8-bit)<br>"
+                       "KFRock And KFAliska - My Life<br>"
+                       "Roboctopus - Slow Motion Sunset<br>"
+                       "Snork25 - Longboard<br>"
+                       "Balloonbear - Forever Online<br>");
         music->setAlignment(Qt::AlignCenter);
 
         ok=new QPushButton("Ok");
