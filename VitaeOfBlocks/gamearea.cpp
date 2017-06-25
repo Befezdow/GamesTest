@@ -189,6 +189,7 @@ GameArea::paintGL()
         if (pause && !gameover)                 //если это пауза
         {
             str="Pause";                        //задаем текст паузы
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
         }
 
         qglColor(Qt::black);                    //задаем цвет текста
@@ -207,9 +208,9 @@ GameArea::paintGL()
         //TODO попробовать прикрутить сюда сглаживание!!!
         return;
     }
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
 
-    qglColor(Qt::gray);                                     //ставим серый цвет
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
+    qglColor("#72a495");                                     //ставим серый цвет
     glLineWidth(lineWidth);                                 //ставим ширину линии
     glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
         glVertex2i(-lineWidth,squareSide*(areaHeight-1));
@@ -265,7 +266,7 @@ GameArea::paintGL()
             }
         }
     }
-    qglColor(Qt::gray);                                     //ставим серый цвет
+    qglColor("#72a495");                                     //ставим серый цвет
     glBegin(GL_LINE_STRIP);                                 //рисуем контур
         glVertex2i(-lineWidth,squareSide*areaHeight+lineWidth);
         glVertex2i(-lineWidth,-lineWidth);
@@ -420,7 +421,9 @@ void
 GameArea::timerEvent(QTimerEvent *event)
 {
     if (pause || gameover)                                          //если пауза или конец игры, то игнорим
+    {
         return;
+    }
     if (event->timerId()==this->timerId)                            //проверяем, тот ли это таймер
     {
         if (!this->moveCurrentShapeDown())                          //если фигура уперлась

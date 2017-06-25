@@ -1,0 +1,43 @@
+#MAIN
+{
+    border-image: url(:/res/mainBackground.png) center;
+}
+
+#ScoreFigure
+{
+    background-color: #e6dab1;
+    border-radius: 10px;
+    border: 3px solid #72a495;
+    font: 12px "Comic Sans MS";
+    color: #3d0c03;
+}
+
+QLabel#DevNames
+{
+    background-color: #e6dab1;
+    border-radius: 25px;
+    border: 5px solid #72a495;
+    font: 12px "Comic Sans MS";
+    color: #3d0c03;
+}
+
+QPushButton#b1
+{
+    background-color: #e6dab1;
+    border-radius: 5px;
+    border: 3px outset #72a495;
+    font: bold 15px "Comic Sans MS";
+    color: #3d0c03;
+}
+
+QPushButton#b1:hover
+{
+    background-color: white;
+
+}
+
+QPushButton#b1:pressed
+{
+
+    border: 3px inset #72a495;
+}

@@ -16,7 +16,7 @@ public:
     {
         this->setAttribute(Qt::WA_DeleteOnClose);
         this->setObjectName("MAIN");
-        this->setStyleSheet("#MAIN {border-image: url(/home/Befezdow/Desktop/eee.jpg) center;}");
+//        this->setStyleSheet("#MAIN {border-image: url(/home/Befezdow/Desktop/eee.jpg) center;}");
     }
 
 protected:

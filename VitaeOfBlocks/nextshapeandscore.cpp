@@ -16,13 +16,19 @@ NextShapeAndScore::NextShapeAndScore(int side, QWidget *parent) :
     number->setSegmentStyle(QLCDNumber::Flat);
     number->setFixedSize(5*side,2*side);
 
-    QPalette pal;
-    pal.setColor(QPalette::Background,Qt::black);
-    number->setPalette(pal);
+//    QPalette pal;
+//    pal.setColor(QPalette::Background,Qt::black);
+//    number->setPalette(pal);
+    QWidget* wgt=new QWidget;
+    QVBoxLayout* lay=new QVBoxLayout;
+    lay->addWidget(scores,0,Qt::AlignHCenter);
+    lay->addWidget(number,0,Qt::AlignHCenter);
+    wgt->setLayout(lay);
+    wgt->setObjectName("ScoreFigure");
 
-    vertical->addWidget(window);
-    vertical->addWidget(scores,0,Qt::AlignHCenter);
-    vertical->addWidget(number,0,Qt::AlignHCenter);
+    vertical->addWidget(window,0,Qt::AlignHCenter);
+    vertical->addWidget(wgt,0,Qt::AlignHCenter);
+//    vertical->addWidget(number,0,Qt::AlignHCenter);
     this->setLayout(vertical);
 }
 

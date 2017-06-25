@@ -113,6 +113,16 @@ void
 GLScores::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    qglColor("#72a495");                                     //ставим серый цвет
+    glLineWidth(4);
+    glBegin(GL_LINE_LOOP);                                 //рисуем контур
+        glVertex2i(-this->width()/2,-this->height()/2);
+        glVertex2i(this->width()/2,-this->height()/2);
+        glVertex2i(this->width()/2,this->height()/2);
+        glVertex2i(-this->width()/2,this->height()/2);
+    glEnd();
+    glLineWidth(1);
+
     paintFigure();
     return;
 }

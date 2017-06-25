@@ -3,5 +3,7 @@
         <file>icon.png</file>
         <file>sound.png</file>
         <file>soundoff.png</file>
+        <file>style.qss</file>
+        <file>mainBackground.png</file>
     </qresource>
 </RCC>

@@ -26,9 +26,10 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     shapeScore = new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
     names->setAlignment(Qt::AlignHCenter);
-    names->setStyleSheet("background-color: rgb(219,157,34);"
-                         "border-radius: 25px;"
-                         "border: 3px ridge purple");
+    names->setObjectName("DevNames");
+//    names->setStyleSheet("background-color: rgb(219,157,34);"
+//                         "border-radius: 25px;"
+//                         "border: 3px ridge purple");
     names->setMargin(10);
     soundWidget = new SoundController(volume,isMuted);
     pause = new QPushButton("Pause");
@@ -39,11 +40,16 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     vlay = new QVBoxLayout;
     buttonLay = new QVBoxLayout;
 
-    pause->setFixedWidth(area->width()/3);
-    restart->setFixedWidth(area->width()/3);
-    difficulty->setFixedWidth(area->width()/3);
-    highScores->setFixedWidth(area->width()/3);
-    about->setFixedWidth(area->width()/3);
+    pause->setFixedSize(area->width()/3,area->width()/10);
+    restart->setFixedSize(area->width()/3,area->width()/10);
+    difficulty->setFixedSize(area->width()/3,area->width()/10);
+    highScores->setFixedSize(area->width()/3,area->width()/10);
+    about->setFixedSize(area->width()/3,area->width()/10);
+    pause->setObjectName("b1");
+    restart->setObjectName("b1");
+    difficulty->setObjectName("b1");
+    highScores->setObjectName("b1");
+    about->setObjectName("b1");
 
     //соединяем слоты
     QObject::connect(gameArea,SIGNAL(scoreChanged(unsigned int)),shapeScore,SLOT(changeScore(unsigned int)));
