@@ -24,7 +24,7 @@ public:
 
         name = new QLabel;
         name->setTextFormat(Qt::RichText);
-        name->setText("<h2>Vitae Of Blocks</h2><h4>Version 1.3</h4>");
+        name->setText("<h1>Vitae Of Blocks</h1><h3>Version 1.3</h3>");
         name->setAlignment(Qt::AlignCenter);
 
         description = new QLabel;
@@ -55,6 +55,11 @@ public:
                        "Balloonbear - Forever Online<br>");
         music->setAlignment(Qt::AlignCenter);
 
+        developers->setObjectName("l1");
+        thanks->setObjectName("l1");
+        music->setObjectName("l1");
+        description->setObjectName("l2");
+
         ok=new QPushButton("Ok");
 
         QGridLayout* lay=new QGridLayout;
@@ -64,13 +69,15 @@ public:
         lay->addWidget(developers,2,0,1,2,Qt::AlignHCenter);
         lay->addWidget(thanks,3,0,1,1,Qt::AlignHCenter);
         lay->addWidget(music,3,1,1,1,Qt::AlignHCenter);
-        lay->addWidget(ok,4,0,2,2);
+        lay->addWidget(ok,4,0,2,2,Qt::AlignHCenter);
 
         this->setLayout(lay);
 
         connect(ok,SIGNAL(clicked(bool)),this,SLOT(accept()));
 
         this->setFixedSize(this->minimumSize());
+
+        this->setObjectName("About");
     }
 };
 

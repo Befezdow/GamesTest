@@ -13,6 +13,12 @@ DifficultyWindow::DifficultyWindow(int initDiff, QWidget *parent):
     difficulties[3]=new QRadioButton("Hard");
     difficulties[4]=new QRadioButton("Master");
 
+    difficulties[0]->setObjectName("r1");
+    difficulties[1]->setObjectName("r1");
+    difficulties[2]->setObjectName("r1");
+    difficulties[3]->setObjectName("r1");
+    difficulties[4]->setObjectName("r1");
+
     mapper->setMapping(difficulties[0],0);
     mapper->setMapping(difficulties[1],1);
     mapper->setMapping(difficulties[2],2);
@@ -26,29 +32,32 @@ DifficultyWindow::DifficultyWindow(int initDiff, QWidget *parent):
     connect(difficulties[4],SIGNAL(clicked(bool)),mapper,SLOT(map()));
 
     group=new QGroupBox("Game difficulty:");
+    group->setObjectName("g1");
     radioLay=new QVBoxLayout;
 
-    radioLay->addWidget(difficulties[0]);
-    radioLay->addWidget(difficulties[1]);
-    radioLay->addWidget(difficulties[2]);
-    radioLay->addWidget(difficulties[3]);
-    radioLay->addWidget(difficulties[4]);
+    radioLay->addWidget(difficulties[0],0,Qt::AlignHCenter);
+    radioLay->addWidget(difficulties[1],0,Qt::AlignHCenter);
+    radioLay->addWidget(difficulties[2],0,Qt::AlignHCenter);
+    radioLay->addWidget(difficulties[3],0,Qt::AlignHCenter);
+    radioLay->addWidget(difficulties[4],0,Qt::AlignHCenter);
 
     group->setLayout(radioLay);
 
     difficulties[initDiff % 5]->setChecked(true);
 
-    label=new QLabel("*The game will start again\nafter changing the difficulty.");
+    label=new QLabel("*The game will restart\nafter changing the difficulty.");
+    label->setAlignment(Qt::AlignCenter);
+    label->setObjectName("l2");
     ok=new QPushButton("Accept");
     cancel=new QPushButton("Cancel");
 
     hLay=new QHBoxLayout;
-    hLay->addWidget(cancel);
-    hLay->addWidget(ok);
+    hLay->addWidget(cancel,0,Qt::AlignRight);
+    hLay->addWidget(ok,0,Qt::AlignLeft);
 
     vLay=new QVBoxLayout;
-    vLay->addWidget(group);
-    vLay->addWidget(label);
+    vLay->addWidget(group,0,Qt::AlignHCenter);
+    vLay->addWidget(label,0,Qt::AlignHCenter);
     vLay->addLayout(hLay);
     this->setLayout(vLay);
 
@@ -57,6 +66,7 @@ DifficultyWindow::DifficultyWindow(int initDiff, QWidget *parent):
 
     this->setWindowTitle("Changing of difficulty");
     this->setModal(true);
+    this->setObjectName("DiffWindow");
 }
 
 int DifficultyWindow::getCurrentDifficulty() const

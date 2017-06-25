@@ -25,6 +25,8 @@ NextShapeAndScore::NextShapeAndScore(int side, QWidget *parent) :
     lay->addWidget(number,0,Qt::AlignHCenter);
     wgt->setLayout(lay);
     wgt->setObjectName("ScoreFigure");
+    scores->setObjectName("ScoreLable");
+    number->setObjectName("LCD");
 
     vertical->addWidget(window,0,Qt::AlignHCenter);
     vertical->addWidget(wgt,0,Qt::AlignHCenter);

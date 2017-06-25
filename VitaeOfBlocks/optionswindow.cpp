@@ -9,15 +9,14 @@
 #include <QSettings>
 
 
-OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth, QWidget *parent):
-    QWidget(parent),
-    currentDifficulty(initDifficulty)
+OptionsWindow::OptionsWindow(GameArea *area,unsigned int initDifficulty, int screenWidth, QWidget *parent):
+    QWidget(parent)
 {
     gameArea=area;                                                          //прикрепляем игровую зону
 
     QSettings settings;
     settings.beginGroup("OptionsWindow");
-        currentDifficulty=settings.value("difficulty",QVariant(initDifficulty)).toInt();
+        currentDifficulty=settings.value("difficulty",QVariant(initDifficulty)).toUInt()%5;
         gameArea->setDifficulty(currentDifficulty);
         bool isMuted=settings.value("isMuted",QVariant(false)).toBool();
         int volume=settings.value("volume",QVariant(50)).toInt();
@@ -27,9 +26,6 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
     names->setAlignment(Qt::AlignHCenter);
     names->setObjectName("DevNames");
-//    names->setStyleSheet("background-color: rgb(219,157,34);"
-//                         "border-radius: 25px;"
-//                         "border: 3px ridge purple");
     names->setMargin(10);
     soundWidget = new SoundController(volume,isMuted);
     pause = new QPushButton("Pause");
@@ -88,6 +84,7 @@ OptionsWindow::OptionsWindow(GameArea *area, int initDifficulty, int screenWidth
     this->setFocusProxy(gameArea);
 
     scoresView = new ScoreWidget;
+    scoresView->setWindowIcon(QIcon(":/res/icon.png"));
 
     this->attachFile(0,"saves0.svs");
     this->attachFile(1,"saves1.svs");
@@ -122,6 +119,7 @@ void OptionsWindow::showDifficultyWindow()
         gameArea->switchPause();                        //ставим игру на паузу
     }
     DifficultyWindow diff(currentDifficulty);           //создаем окно сложности
+    diff.setWindowIcon(QIcon(":/res/icon.png"));
 
     if (diff.exec()==QDialog::Accepted)                 //вызываем его
     {                                                   //если юзер нажал принять
@@ -272,6 +270,7 @@ void OptionsWindow::aboutProgram()
     }
 
     AboutWindow aw;
+    aw.setWindowIcon(QIcon(":/res/icon.png"));
     aw.exec();
 
     if (unpause)                                    //если нужно снять с паузы
@@ -340,6 +339,9 @@ OptionsWindow::ScoreWidget::ScoreWidget()
                                                                 //убираем вертикальный слайдер
         table[i]->horizontalHeader()->setMinimumSectionSize(qApp->desktop()->screen()->width()/15);
                                                                 //устанавливаем минимальную ширину столбца
+        table[i]->setObjectName("ScoreTable");
+        table[i]->verticalHeader()->setObjectName("Header");
+        table[i]->horizontalHeader()->setObjectName("Header");
    }
 
     ok=new QPushButton("Ok");                                   //создаем кнопку и соединяем со слотом
@@ -356,6 +358,8 @@ OptionsWindow::ScoreWidget::ScoreWidget()
     tabs->addTab(table[3],"Hard");
     tabs->addTab(table[4],"Master");
 
+    tabs->setObjectName("Tabs");
+
     QVBoxLayout* lay=new QVBoxLayout;                           //создаем слой
 
     lay->addWidget(tabs);                                       //закидываем в него вкладки
@@ -363,6 +367,8 @@ OptionsWindow::ScoreWidget::ScoreWidget()
 
     this->setLayout(lay);                                       //устанавливаем этот слой
     setMinimumWidth(tabs->minimumSizeHint().width());
+
+    this->setObjectName("TableWidget");
 }
 
 void OptionsWindow::ScoreWidget::updateInfo(unsigned int dif, QList<OptionsWindow::ScoreTableElement> scoreList)
@@ -414,6 +420,7 @@ void OptionsWindow::ScoreWidget::updateInfo(unsigned int dif, QList<OptionsWindo
         table[i]->horizontalHeader()->resizeSection(0,maxNameLengthInPixels);
     }
 
+    table[tableNumber]->verticalHeader()->resize(20,2);
     int width=table[tableNumber]->verticalHeader()->width();    //считаем ширину поля
     for (int i=0;i<table[tableNumber]->columnCount();++i)
     {
@@ -426,6 +433,6 @@ void OptionsWindow::ScoreWidget::updateInfo(unsigned int dif, QList<OptionsWindo
         height+=table[tableNumber]->rowHeight(i);
     }
 
-    table[tableNumber]->setMinimumSize(width+5,height);         //устанавливаем минимальный размер таблицы
+    table[tableNumber]->setMinimumSize(width,height);         //устанавливаем минимальный размер таблицы
     this->setMinimumSize(tabs->minimumSize());                  //устанавливаем минимальный размер окна
 }

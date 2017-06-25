@@ -26,9 +26,13 @@ public:
         button->setIcon(QIcon(":/res/sound.png"));
         button->setCheckable(true);
 
+        button->setObjectName("Switcher");
+
         slider = new QSlider(Qt::Horizontal);
         slider->setRange(0,100);
         slider->setValue(initVolume);
+
+        slider->setObjectName("Slider");
 
         playlist=new QMediaPlaylist(this);
         playlist->setPlaybackMode(QMediaPlaylist::Loop);

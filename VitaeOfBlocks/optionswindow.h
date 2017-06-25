@@ -32,6 +32,7 @@ class OptionsWindow: public QWidget
 
     public:
         ScoreWidget();
+
         void updateInfo(unsigned int dif, QList<ScoreTableElement> scoreList);
     };
 
@@ -57,7 +58,7 @@ class OptionsWindow: public QWidget
     bool checkForAdding(unsigned int score);                //проверить на вхождение в таблицу рекордов
 
 public:
-    OptionsWindow(GameArea * area,int initDifficulty,int screenWidth,QWidget* parent=Q_NULLPTR);
+    OptionsWindow(GameArea * area, unsigned int initDifficulty, int screenWidth, QWidget* parent=Q_NULLPTR);
     ~OptionsWindow();
     void attachFile(unsigned int dif, QString fileName);    //прикрепить файл с рекордами
 

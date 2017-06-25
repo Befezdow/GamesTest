@@ -8,8 +8,34 @@
     background-color: #e6dab1;
     border-radius: 10px;
     border: 3px solid #72a495;
-    font: 12px "Comic Sans MS";
+}
+
+QLabel#ScoreLable
+{
+    font: 18px "Comic Sans MS";
     color: #3d0c03;
+}
+
+QLCDNumber#LCD
+{
+    color: #3d0c03;
+}
+
+#About
+{
+    background-color: #e6dab1;
+}
+
+QLabel#l1
+{
+    font: 14px "Comic Sans MS";
+    color: #3d0c03;
+}
+
+QLabel#l2
+{
+    color: #3d0c03;
+    font: 14px "Sans";
 }
 
 QLabel#DevNames
@@ -40,4 +66,75 @@ QPushButton#b1:pressed
 {
 
     border: 3px inset #72a495;
+}
+
+QPushButton#Switcher
+{
+    background-color: #e6dab1;
+    border-radius: 3px;
+    border: 2px solid #72a495;
+}
+
+QPushButton#Switcher:hover
+{
+    background-color: white;
+}
+
+QSlider#Slider:Handle
+{
+    background-color: #e6dab1;
+    border: 2px solid #72a495;
+    border-radius: 3px;
+}
+
+QRadioButton#r1
+{
+    font: 15px "Comic Sans MS";
+    color: #3d0c03;
+}
+
+QRadioButton#r1::indicator:checked
+{
+    background-color: #3d0c03;
+    border: 2px solid #72a495;
+    border-radius: 5px;
+}
+
+QRadioButton#r1::indicator:unchecked
+{
+    background-color: #e6dab1;
+    border: 2px solid #72a495;
+    border-radius: 5px;
+}
+
+QGroupBox#g1
+{
+    color: #3d0c03;
+    font: bold 16px "Sans";
+}
+
+#DiffWindow
+{
+    background-color: #e6dab1;
+}
+
+QTableWidget#ScoreTable
+{
+    font: 13px "Comic Sans MS";
+    color: #3d0c03;
+}
+
+#Header
+{
+    font: 15px "Comic Sans MS";
+}
+
+QTabWidget#Tabs
+{
+    font: 14px "Comic Sans MS";
+}
+
+#TableWidget
+{
+    background-color: #e6dab1;
 }
