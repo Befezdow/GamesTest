@@ -37,6 +37,8 @@ class GameArea: public QGLWidget
     bool pause;
     bool gameover;
 
+    GLuint textureID[1];
+
     void initShape();               //инициализирует новую фигуру
     void rotateCurrentShape();      //текущую фигуру, если это возможно
     void showCurrentShape();        //показать текущую фигуру

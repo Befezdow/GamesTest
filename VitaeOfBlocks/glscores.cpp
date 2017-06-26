@@ -31,6 +31,19 @@ GLScores::paintFigure()
 
         qglColor(color);
         glRecti(x1,y1,x2,y2);
+
+        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glBindTexture(GL_TEXTURE_2D, textureID[0]);
+        glBegin(GL_POLYGON);
+        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+        glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
+        glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
+        glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
+        glEnd();
+
         qglColor(Qt::black);
         glBegin(GL_LINE_LOOP);
             glVertex2i(x1,y1);
@@ -38,10 +51,6 @@ GLScores::paintFigure()
             glVertex2i(x2,y2);
             glVertex2i(x2,y1);
         glEnd();
-
-        glEnable(GL_ALPHA_TEST);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         int quarter=(x2-x1)/4;
 
@@ -98,6 +107,17 @@ void
 GLScores::initializeGL()
 {
     qglClearColor(Qt::white);
+
+    glEnable(GL_TEXTURE_2D);
+
+    glGenTextures(1,textureID);
+    QImage img(":/res/mask.png");
+    img=QGLWidget::convertToGLFormat(img);
+    glBindTexture(GL_TEXTURE_2D, textureID[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 }
 
 void

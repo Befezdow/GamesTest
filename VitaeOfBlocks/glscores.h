@@ -9,6 +9,7 @@ class GLScores : public QGLWidget
     int indexOfFigure;
     int side;
     QColor color;
+    GLuint textureID[1];
 
     void paintFigure();
 
