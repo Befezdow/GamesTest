@@ -6,5 +6,7 @@
         <file>style.qss</file>
         <file>mainBackground.png</file>
         <file>mask.png</file>
+        <file>gameover.png</file>
+        <file>pause.png</file>
     </qresource>
 </RCC>

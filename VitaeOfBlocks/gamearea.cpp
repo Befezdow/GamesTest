@@ -167,8 +167,8 @@ GameArea::initializeGL()
 {
     qglClearColor(Qt::white);               //задаем цвет фона
     glEnable(GL_TEXTURE_2D);
+    glGenTextures(3,textureID);
 
-    glGenTextures(1,textureID);
     QImage img(":/res/mask.png");
     img=QGLWidget::convertToGLFormat(img);
     glBindTexture(GL_TEXTURE_2D, textureID[0]);
@@ -177,13 +177,27 @@ GameArea::initializeGL()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
+    img.load(":/res/pause.png");
+    img=QGLWidget::convertToGLFormat(img);
+    glBindTexture(GL_TEXTURE_2D,textureID[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    img.load(":/res/gameover.png");
+    img=QGLWidget::convertToGLFormat(img);
+    glBindTexture(GL_TEXTURE_2D,textureID[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 }
 
 void
 GameArea::resizeGL(int w, int h)
 {
     float lineWidth=squareSide/15+1;
-    qDebug()<<lineWidth;
     glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
     glLoadIdentity();                       //инициализируем её единичной матрицей
     glViewport(0,0,w,h);                    //устанавливаем все окно вьюпортом
@@ -195,29 +209,29 @@ GameArea::paintGL()
 {
     float lineWidth=squareSide/15;              //определяем толщину линий
 
-    if (pause || gameover)                      //если пауза или конец игры
+    if (pause)                      //если пауза или конец игры
     {
-        QString str="Game Over";                //по умолчанию ставим надпись конца игры
-        if (pause && !gameover)                 //если это пауза
-        {
-            str="Pause";                        //задаем текст паузы
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
-        }
+        int x1=0;
+        int x2=this->width()-lineWidth;
+        int y1=this->height()*0.75;
+        int y2=this->height()*0.25;
 
-        qglColor(Qt::black);                    //задаем цвет текста
+        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
+//        glBlendFunc(GL_DST_COLOR,GL_DST_COLOR);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        QFont font;                             //задаем шрифт
-        font.setBold(true);
-        font.setPixelSize(squareSide*2);
+        glBindTexture(GL_TEXTURE_2D, textureID[1]);
+        glBegin(GL_POLYGON);
+        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+        glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
+        glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
+        glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
+        glEnd();
 
-        QFontMetrics metrics(font);             //определяем положение
-        int width=metrics.width(str);
-        int height=metrics.height();
-        int x=(this->width()-width)/2;
-        int y=(this->height()+height)/2;
+        glDisable(GL_BLEND);                        //выключаем прозрачность
+        glDisable(GL_ALPHA_TEST);
 
-        renderText(x,y,str,font);               //рисуем текст
-        //TODO попробовать прикрутить сюда сглаживание!!!
         return;
     }
 
@@ -264,23 +278,23 @@ GameArea::paintGL()
                     glVertex2i(x2,y1);
                 glEnd();
 
-                int quarter=(x2-x1)/4;                      //четверть стороны квадрата
+//                int quarter=(x2-x1)/4;                      //четверть стороны квадрата
 
-                x1=x1+quarter;                              //точки нового квадрата
-                y1=y1-quarter;
-                x2=x2-quarter;
-                y2=y2+quarter;
+//                x1=x1+quarter;                              //точки нового квадрата
+//                y1=y1-quarter;
+//                x2=x2-quarter;
+//                y2=y2+quarter;
 
-                qglColor(QColor(0,0,0,100));                //ставим черный полупрозрачный цвет
-                glRecti(x1,y1,x2,y2);                       //рисуем квадрат
+//                qglColor(QColor(0,0,0,100));                //ставим черный полупрозрачный цвет
+//                glRecti(x1,y1,x2,y2);                       //рисуем квадрат
 
-                qglColor(QColor(255,255,255,150));          //ставим белый полупрозрачный цвет
-                glBegin(GL_LINE_LOOP);                      //рисуем обводку
-                    glVertex2i(x1,y1);
-                    glVertex2i(x1,y2);
-                    glVertex2i(x2,y2);
-                    glVertex2i(x2,y1);
-                glEnd();
+//                qglColor(QColor(255,255,255,150));          //ставим белый полупрозрачный цвет
+//                glBegin(GL_LINE_LOOP);                      //рисуем обводку
+//                    glVertex2i(x1,y1);
+//                    glVertex2i(x1,y2);
+//                    glVertex2i(x2,y2);
+//                    glVertex2i(x2,y1);
+//                glEnd();
 
                 glDisable(GL_BLEND);                        //выключаем прозрачность
                 glDisable(GL_ALPHA_TEST);

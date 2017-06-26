@@ -1,6 +1,6 @@
 #MAIN
 {
-    border-image: url(:/res/mainBackground.png) center;
+    background: url(:/res/mainBackground.png) center no-repeat;
 }
 
 #ScoreFigure
