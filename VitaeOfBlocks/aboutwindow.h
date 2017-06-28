@@ -43,17 +43,18 @@ public:
         thanks->setTextFormat(Qt::RichText);
         thanks->setText("<b>Special thanks to:</b><br>#Kampfer<br>#Forze<br>"
                         "#Altum Silentium<br>#Lieee.s<br>#DuMaHbl4");
-        thanks->setAlignment(Qt::AlignCenter);
+        thanks->setAlignment(Qt::AlignHCenter);
 
         music = new QLabel;
         music->setTextFormat(Qt::RichText);
         music->setText("<b>Music:</b><br>"
-                       "KFAlisKA - Живой Сталкер (8-bit)<br>"
+                       "KFAlisKA - Живой Сталкер (8 bit)<br>"
                        "KFRock And KFAliska - My Life<br>"
+                       "KFAlisKA - IcyNitro (8 bit)<br>"
                        "Roboctopus - Slow Motion Sunset<br>"
                        "Snork25 - Longboard<br>"
                        "Balloonbear - Forever Online<br>");
-        music->setAlignment(Qt::AlignCenter);
+        music->setAlignment(Qt::AlignHCenter);
 
         developers->setObjectName("l1");
         thanks->setObjectName("l1");

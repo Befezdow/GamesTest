@@ -175,7 +175,6 @@ GameArea::initializeGL()
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
-//    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     img.load(":/res/pause.png");
     img=QGLWidget::convertToGLFormat(img);
@@ -183,7 +182,6 @@ GameArea::initializeGL()
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
-//    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     img.load(":/res/gameover.png");
     img=QGLWidget::convertToGLFormat(img);
@@ -191,7 +189,6 @@ GameArea::initializeGL()
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
-//    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 void
@@ -209,35 +206,9 @@ GameArea::paintGL()
 {
     float lineWidth=squareSide/15;              //определяем толщину линий
 
-    if (pause)                      //если пауза или конец игры
-    {
-        int x1=0;
-        int x2=this->width()-lineWidth;
-        int y1=this->height()*0.75;
-        int y2=this->height()*0.25;
-
-        glEnable(GL_ALPHA_TEST);
-        glEnable(GL_BLEND);
-//        glBlendFunc(GL_DST_COLOR,GL_DST_COLOR);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glBindTexture(GL_TEXTURE_2D, textureID[1]);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBegin(GL_POLYGON);
-        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
-        glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
-        glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
-        glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
-        glEnd();
-
-        glDisable(GL_BLEND);                        //выключаем прозрачность
-        glDisable(GL_ALPHA_TEST);
-
-        return;
-    }
-
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
-    qglColor("#72a495");                                     //ставим серый цвет
+    qglColor("#72a495");                                    //ставим серый цвет
     glLineWidth(lineWidth);                                 //ставим ширину линии
     glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
         glVertex2i(-lineWidth,squareSide*(areaHeight-1));
@@ -264,7 +235,6 @@ GameArea::paintGL()
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
                 glBindTexture(GL_TEXTURE_2D, textureID[0]);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
                 glBegin(GL_POLYGON);
                 glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
                 glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
@@ -280,6 +250,7 @@ GameArea::paintGL()
                     glVertex2i(x2,y1);
                 glEnd();
 
+                //изощренная тестура элементов
 //                int quarter=(x2-x1)/4;                      //четверть стороны квадрата
 
 //                x1=x1+quarter;                              //точки нового квадрата
@@ -300,6 +271,7 @@ GameArea::paintGL()
 
                 glDisable(GL_BLEND);                        //выключаем прозрачность
                 glDisable(GL_ALPHA_TEST);
+
             }
         }
     }
@@ -310,6 +282,53 @@ GameArea::paintGL()
         glVertex2i(squareSide*(areaWidth)+lineWidth,-lineWidth);
         glVertex2i(squareSide*(areaWidth)+lineWidth,squareSide*areaHeight+lineWidth);
     glEnd();
+
+    if (gameover)
+    {
+        int x1=0;
+        int x2=this->width()-lineWidth;
+        int y1=this->height()*0.75;
+        int y2=this->height()*0.25;
+
+        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glBindTexture(GL_TEXTURE_2D, textureID[2]);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        glBegin(GL_POLYGON);
+        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+        glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
+        glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
+        glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
+        glEnd();
+
+        glDisable(GL_BLEND);                        //выключаем прозрачность
+        glDisable(GL_ALPHA_TEST);
+    }
+    else if (pause)                      //если пауза или конец игры
+    {
+        int x1=0;
+        int x2=this->width()-lineWidth;
+        int y1=this->height()*0.75;
+        int y2=this->height()*0.25;
+
+        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glBindTexture(GL_TEXTURE_2D, textureID[1]);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        glBegin(GL_POLYGON);
+        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+        glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
+        glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
+        glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
+        glEnd();
+
+        glDisable(GL_BLEND);                        //выключаем прозрачность
+        glDisable(GL_ALPHA_TEST);
+    }
 }
 
 void GameArea::showCurrentShape()

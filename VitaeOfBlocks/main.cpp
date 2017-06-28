@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     a.setApplicationName("VitaeOfBlocks");
 
 //    QFile file(":/res/style.qss");
-    QFile file ("N:\\Qt Projects\\GamesTest\\VitaeOfBlocks\\style.qss");
+    QFile file ("D:\\NOVA\\Repositories\\GamesTest\\VitaeOfBlocks\\style.qss");
     file.open(QFile::ReadOnly);
     QString str=file.readAll();
     a.setStyleSheet(str);

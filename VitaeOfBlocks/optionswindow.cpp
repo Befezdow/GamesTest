@@ -1,5 +1,6 @@
 #include "optionswindow.h"
 #include "aboutwindow.h"
+#include "inputwidget.h"
 #include <QFile>
 #include <QHeaderView>
 #include <QApplication>
@@ -238,14 +239,11 @@ void OptionsWindow::insertRecord(unsigned int score)
     {
         return;
     }
-    bool check=true;
-    QString playerName=QInputDialog::getText(Q_NULLPTR,"Victory",
-                                             "You have entered the high score table.\nPlease enter your nickname:",
-                                             QLineEdit::Normal,"Winner",&check);
-    playerName.truncate(30);
-    if (check)
+
+    InputWidget input;
+    if (input.exec()==QDialog::Accepted)
     {
-        this->addRecord(score,playerName);
+        this->addRecord(score,input.getText());
         this->writeScores();
     }
 }

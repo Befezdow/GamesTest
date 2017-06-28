@@ -45,7 +45,8 @@ HEADERS  += \
     nextshapeandscore.h \
     mainwindow.h \
     soundcontroller.h \
-    aboutwindow.h
+    aboutwindow.h \
+    inputwidget.h
 
 RESOURCES += \
     resources.qrc

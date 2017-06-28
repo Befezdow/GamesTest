@@ -52,23 +52,24 @@ GLScores::paintFigure()
             glVertex2i(x2,y1);
         glEnd();
 
-        int quarter=(x2-x1)/4;
+        //изощренная тестура элементов
+//        int quarter=(x2-x1)/4;
 
-        x1=x1+quarter;
-        y1=y1-quarter;
-        x2=x2-quarter;
-        y2=y2+quarter;
+//        x1=x1+quarter;
+//        y1=y1-quarter;
+//        x2=x2-quarter;
+//        y2=y2+quarter;
 
-        qglColor(QColor(0,0,0,100));
-        glRecti(x1,y1,x2,y2);
+//        qglColor(QColor(0,0,0,100));
+//        glRecti(x1,y1,x2,y2);
 
-        qglColor(QColor(255,255,255,150));
-        glBegin(GL_LINE_LOOP);                      //рисуем обводку
-            glVertex2i(x1-1,y1);
-            glVertex2i(x1,y2);
-            glVertex2i(x2,y2);
-            glVertex2i(x2+1,y1);                    //WTF is going on with this 1?
-        glEnd();
+//        qglColor(QColor(255,255,255,150));
+//        glBegin(GL_LINE_LOOP);                      //рисуем обводку
+//            glVertex2i(x1-1,y1);
+//            glVertex2i(x1,y2);
+//            glVertex2i(x2,y2);
+//            glVertex2i(x2+1,y1);                    //WTF is going on with this 1?
+//        glEnd();
 
         glDisable(GL_BLEND);
         glDisable(GL_ALPHA_TEST);
