@@ -198,7 +198,7 @@ GameArea::resizeGL(int w, int h)
     glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
     glLoadIdentity();                       //инициализируем её единичной матрицей
     glViewport(0,0,w,h);                    //устанавливаем все окно вьюпортом
-    glOrtho(-lineWidth,areaWidth*squareSide+lineWidth,-lineWidth,areaHeight*squareSide-lineWidth,-1,1);                  //устанавливаем начало координат в (0,0)
+    glOrtho(-lineWidth,areaWidth*squareSide+lineWidth,-lineWidth,areaHeight*squareSide+lineWidth,-1,1);                  //устанавливаем начало координат в (0,0)
 }
 
 void
