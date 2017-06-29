@@ -4,18 +4,18 @@
 #include <QVector>
 class QPoint;
 
-class Shape                 //базовый класс всех фигур
+class Shape                                 //базовый класс всех фигур
 {
 protected:
-    int top;                //верхняя точка фигуры (наибольший y)
-    int bottom;             //нижняя точка фигуры (наименьший y)
-    int left;               //самая левая точка фигуры (наименьший x)
-    int right;              //самая правая точка фигуры (наибольший x)
-    QVector<QPoint> parts;  //координаты верхних левых углов квадратов, из которых состоит фигура
-    bool rotation;          //возможность поворота фигуры
+    int top;                                //верхняя точка фигуры (наибольший y)
+    int bottom;                             //нижняя точка фигуры (наименьший y)
+    int left;                               //самая левая точка фигуры (наименьший x)
+    int right;                              //самая правая точка фигуры (наибольший x)
+    QVector<QPoint> parts;                  //координаты верхних левых углов квадратов, из которых состоит фигура
+    bool rotation;                          //возможность поворота фигуры
 
 public:
-    virtual operator int() const =0;    //это абстрактный класс
+    virtual operator int() const =0;        //это абстрактный класс
     virtual ~Shape();
 
     enum {Square,LittleSquare,Stick,TShape,ZShape,SShape,JShape,LShape};

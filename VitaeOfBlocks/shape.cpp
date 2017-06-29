@@ -54,17 +54,21 @@ Shape::rotateSides()
     int tempB=bottom;
     int tempL=left;
     int tempR=right;
+
     ////////////
+    qDebug()<<"It was:";
     qDebug()<<"   "<<top;
     qDebug()<<left<<"     "<<right;
     qDebug()<<"   "<<bottom;
     ////////////
+
     top=tempR;                      //поворачиваем
     right=-tempB;
     bottom=tempL;
     left=-tempT;
+
     ////////////
-    qDebug()<<"Стало:";
+    qDebug()<<"Has become:";
     qDebug()<<"   "<<top;
     qDebug()<<left<<"     "<<right;
     qDebug()<<"   "<<bottom;

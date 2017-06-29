@@ -29,10 +29,10 @@ class DifficultyWindow: public QDialog
 public:
     DifficultyWindow(int initDiff,QWidget* parent=Q_NULLPTR);
 
-    int getCurrentDifficulty() const;
+    int getCurrentDifficulty() const;           //возвращает выбранную сложность
 
 private slots:
-    void changeResult(int i);
+    void changeResult(int i);                   //изменяем выбранную сложность
 };
 
 #endif // DIFFICULTYWINDOW_H

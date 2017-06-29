@@ -29,10 +29,10 @@ public:
 
         description = new QLabel;
         description->setTextFormat(Qt::RichText);
+        description->setAlignment(Qt::AlignCenter);
         description->setText("This program was written by a couple of<br>"
                              "students in order to test their abilities.<br>"
                              "It uses Qt version 5.8.0.");
-        description->setAlignment(Qt::AlignCenter);
 
         developers = new QLabel;
         developers->setTextFormat(Qt::RichText);
@@ -41,12 +41,13 @@ public:
 
         thanks = new QLabel;
         thanks->setTextFormat(Qt::RichText);
+        thanks->setAlignment(Qt::AlignHCenter);
         thanks->setText("<b>Special thanks to:</b><br>#Kampfer<br>#Forze<br>"
                         "#Altum Silentium<br>#Lieee.s<br>#DuMaHbl4");
-        thanks->setAlignment(Qt::AlignHCenter);
 
         music = new QLabel;
         music->setTextFormat(Qt::RichText);
+        music->setAlignment(Qt::AlignHCenter);
         music->setText("<b>Music:</b><br>"
                        "KFAlisKA - Живой Сталкер (8 bit)<br>"
                        "KFRock And KFAliska - My Life<br>"
@@ -54,9 +55,8 @@ public:
                        "Roboctopus - Slow Motion Sunset<br>"
                        "Snork25 - Longboard<br>"
                        "Balloonbear - Forever Online<br>");
-        music->setAlignment(Qt::AlignHCenter);
 
-        developers->setObjectName("l1");
+        developers->setObjectName("l1");                //устанавливаем именя для файла со стилем
         thanks->setObjectName("l1");
         music->setObjectName("l1");
         description->setObjectName("l2");
@@ -73,12 +73,10 @@ public:
         lay->addWidget(ok,4,0,2,2,Qt::AlignHCenter);
 
         this->setLayout(lay);
+        this->setFixedSize(this->minimumSize());
+        this->setObjectName("About");                   //устанавливаем имя для стиля
 
         connect(ok,SIGNAL(clicked(bool)),this,SLOT(accept()));
-
-        this->setFixedSize(this->minimumSize());
-
-        this->setObjectName("About");
     }
 };
 

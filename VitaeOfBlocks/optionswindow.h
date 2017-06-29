@@ -28,7 +28,7 @@ class OptionsWindow: public QWidget
     {
         QTableWidget* table[5];                             //виджет таблицы
         QPushButton* ok;                                    //кнопка ок
-        QTabWidget* tabs;
+        QTabWidget* tabs;                                   //виджет закладок
 
     public:
         ScoreWidget();

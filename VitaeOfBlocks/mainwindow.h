@@ -13,17 +13,20 @@ public:
         QWidget(parent),
         attachedGameArea(ga)
     {
-        this->setAttribute(Qt::WA_DeleteOnClose);
-        this->setObjectName("MAIN");
+        wgt->setWindowTitle("Vitae Of Blocks");         //устанавливаем название главного окна
+        wgt->setWindowIcon(QIcon(":/res/icon.png"));    //устанавливаем иконку
+
+        this->setAttribute(Qt::WA_DeleteOnClose);       //говорим окну выключаться по закрытии
+        this->setObjectName("MAIN");                    //устанавливаем имя для стиля
     }
 
 protected:
     virtual void closeEvent(QCloseEvent* event)
     {
-        if (!attachedGameArea->isGameOver())
+        if (!attachedGameArea->isGameOver())            //если не конец игры
         {
-            attachedGameArea->setGameOver();
-            event->accept();
+            attachedGameArea->setGameOver();            //делаем конец игры
+            event->accept();                            //говорим, что можно закрываться
         }
     }
 };

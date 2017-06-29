@@ -12,7 +12,6 @@
 class InputWidget:public QDialog
 {
     Q_OBJECT
-
     QLabel* lbl;
     QLineEdit* edit;
     QPushButton* ok;

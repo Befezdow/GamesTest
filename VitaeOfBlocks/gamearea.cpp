@@ -10,37 +10,42 @@ GameArea::randomize()
 {
     nextColor=qrand()%6;
     nextShape=qrand()%8;
-    if (currentShape)           //убираем повторяющиеся подряд фигуры
+    if (currentShape)                                   //убираем повторяющиеся подряд фигуры
     {
         if (nextShape==*currentShape)
             nextShape=(nextShape+1)%8;
     }
-    qDebug()<<"Generated: Color:"<<nextColor<<"; Shape:"<<nextShape;
+    qDebug()<<"Generated: Shape: "<<nextShape<<"; Color: "<<nextColor;
     emit throwNextFigure(nextShape,colors.at(nextColor));
 }
 
-void GameArea::setDifficulty(int d)
+void
+GameArea::setDifficulty(int d)
 {
-    difficulty=d%5;
+    difficulty=d%5;                                     //на всякий случай берем остаток от 5
 }
 
-bool GameArea::isPaused() const
+bool
+GameArea::isPaused() const
 {
     return pause;
 }
 
-bool GameArea::isGameOver() const
+bool
+GameArea::isGameOver() const
 {
     return gameover;
 }
 
-void GameArea::setGameOver()
+void
+GameArea::setGameOver()
 {
-    gameover=true;
-    emit gameOver(this->currentScore);
+    gameover=true;                                      //включаем конец игры
+    emit gameOver(this->currentScore);                  //отправляем текущий счет
 }
 
-void GameArea::upSpeed()
+void
+GameArea::upSpeed()
 {
     if (difficulty!=0 && shapesCount>shapesForSpeedUp)  //увеличиваем скорость падения, если уже можно
     {
@@ -106,15 +111,15 @@ GameArea::GameArea(int side, int width, int height, int numForSpeedUp,int diff, 
 
 {
     //инициализируем пустое поле
-    for (int i=0;i<areaWidth;++i)           //идем по столбцам
+    for (int i=0;i<areaWidth;++i)                           //идем по столбцам
     {
-        QVector<Primitive> vec;             //создаем столбец
-        for (int j=1;j<=areaHeight;++j)     //идем по строкам столбца
+        QVector<Primitive> vec;                             //создаем столбец
+        for (int j=1;j<=areaHeight;++j)                     //идем по строкам столбца
         {
             vec.push_back(Primitive(QPoint(i*squareSide,j*squareSide),Qt::white));
-                                            //заполняем столбец пустыми квадратами
+                                                            //заполняем столбец пустыми квадратами
         }
-        area.push_back(vec);                //добавили столбец
+        area.push_back(vec);                                //добавили столбец
     }
 
     //добавляем цвета для раскраски фигур
@@ -136,7 +141,8 @@ GameArea::~GameArea()
     killTimer(timerId);
 }
 
-Shape *GameArea::generateShape(int typeOfShape)
+Shape*
+GameArea::generateShape(int typeOfShape)
 {
     switch(typeOfShape)
     {
@@ -197,11 +203,10 @@ void
 GameArea::resizeGL(int w, int h)
 {
     float lineWidth=squareSide/15+1;
-    glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
-    glLoadIdentity();                       //инициализируем её единичной матрицей
-    glViewport(0,0,w,h);                    //устанавливаем все окно вьюпортом
-    glOrtho(-lineWidth,areaWidth*squareSide+lineWidth,-lineWidth,areaHeight*squareSide+lineWidth,-1,1);                  //устанавливаем начало координат в (0,0)
-}
+    glMatrixMode(GL_PROJECTION);                                        //начинаем работать с матрицей проекций
+    glLoadIdentity();                                                   //инициализируем её единичной матрицей
+    glViewport(0,0,w,h);                                                //устанавливаем все окно вьюпортом
+    glOrtho(-lineWidth,areaWidth*squareSide+lineWidth,-lineWidth,areaHeight*squareSide+lineWidth,-1,1); //устанавливаем орты
 
 void
 GameArea::paintGL()
@@ -334,7 +339,8 @@ GameArea::paintGL()
     }
 }
 
-void GameArea::showCurrentShape()
+void
+GameArea::showCurrentShape()
 {
     QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
     for (int i=0;i<vec.size();++i)                              //показываем фигуру
@@ -345,7 +351,8 @@ void GameArea::showCurrentShape()
     }
 }
 
-void GameArea::hideCurrentShape()
+void
+GameArea::hideCurrentShape()
 {
     QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
     for (int i=0;i<vec.size();++i)                              //скрываем фигуру
@@ -553,27 +560,27 @@ GameArea::timerEvent(QTimerEvent *event)
 void
 GameArea::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key())
+    switch (event->key())                                           //определяем кнопку
     {
     case Qt::Key_R:
-        if (event->modifiers() & Qt::ControlModifier)
+        if (event->modifiers() & Qt::ControlModifier)               //если Ctrl+R
             {
-                this->start();
+                this->start();                                      //перезапускаем игру
                 return;
             }
         break;
-    case Qt::Key_P:
-        this->switchPause();
+    case Qt::Key_P:                                                 //если P
+        this->switchPause();                                        //переключаем паузу
         return;
-    case Qt::Key_D:
-        emit showDifficulty();
+    case Qt::Key_D:                                                 //если D
+        emit showDifficulty();                                      //открываем окно сложности
         return;
-    case Qt::Key_H:
-        emit showHighScores();
+    case Qt::Key_H:                                                 //если H
+        emit showHighScores();                                      //открываем окно рекордов
         return;
     }
 
-    if (!pause)
+    if (!pause)                                                     //если не пауза
     {
         switch (event->key())                                       //смотрим кнопку
         {
@@ -600,39 +607,42 @@ GameArea::keyPressEvent(QKeyEvent *event)
 void
 GameArea::start()
 {
-    for (int i=0;i<areaWidth;++i)               //очищаем игровую область
+    for (int i=0;i<areaWidth;++i)                                   //очищаем игровую область
         for (int j=0;j<areaHeight;++j)
         {
             area[i][j].setColor(Qt::white);
             area[i][j].hide();
         }
 
-    if (this->timerId)                          //если таймер существует
-        this->killTimer(timerId);               //убиваем его
+    if (this->timerId)                                              //если таймер существует
+        this->killTimer(timerId);                                   //убиваем его
     qsrand(QTime::currentTime().msec());
-    randomize();                                //Получаем цвет и фигуру следующую
-    this->initShape();                          //инициализируем первую фигуру
+    randomize();                                                    //Получаем цвет и фигуру следующую
+    this->initShape();                                              //инициализируем первую фигуру
 
-    shapesCount=0;                              //обнуляем кол-во упавших фигур
-    currentSpeed=500;                           //инициализируем скорость падения
-    timerId=this->startTimer(currentSpeed);     //запускаем новый
+    shapesCount=0;                                                  //обнуляем кол-во упавших фигур
+    currentSpeed=500;                                               //инициализируем скорость падения
+    timerId=this->startTimer(currentSpeed);                         //запускаем новый
 
     currentScore=0;
     emit scoreChanged(currentScore);
 
-    randomize();                                //рандомим следующую
+    randomize();                                                    //рандомим следующую
 
-    pause=false;
-    gameover=false;
+    pause=false;                                                    //выключаем паузу
+    gameover=false;                                                 //выключаем конец игры
 
-    this->updateGL();
+    this->updateGL();                                               //обновляем картинку
 }
 
-void GameArea::switchPause()
+void
+GameArea::switchPause()
 {
-    if (gameover)           //если конец игры, то игнорируем
+    if (gameover)                                                   //если конец игры, то игнорируем
+    {
         return;
+    }
 
-    pause=!pause;           //меняем состояние паузы
-    this->updateGL();       //обновляем картинку
+    pause=!pause;                                                   //меняем состояние паузы
+    this->updateGL();                                               //обновляем картинку
 }

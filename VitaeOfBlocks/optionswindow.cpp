@@ -12,8 +12,8 @@ OptionsWindow::OptionsWindow(GameArea *area,unsigned int initDifficulty, int scr
 {
     gameArea=area;                                                          //прикрепляем игровую зону
 
-    QSettings settings;
-    settings.beginGroup("OptionsWindow");
+    QSettings settings;                                                     //объект настроек
+    settings.beginGroup("OptionsWindow");                                   //читаем инфу из реестра
         currentDifficulty=settings.value("difficulty",QVariant(initDifficulty)).toUInt()%5;
         gameArea->setDifficulty(currentDifficulty);
         bool isMuted=settings.value("isMuted",QVariant(false)).toBool();
@@ -21,25 +21,27 @@ OptionsWindow::OptionsWindow(GameArea *area,unsigned int initDifficulty, int scr
     settings.endGroup();
 
     shapeScore = new NextShapeAndScore(screenWidth/68);                      //создаем виджеты
+
     names = new QLabel("Made by:\n@Befezdow\n@YouCanKeepSilence");
     names->setAlignment(Qt::AlignHCenter);
     names->setObjectName("DevNames");
     names->setMargin(10);
+
     soundWidget = new SoundController(volume,isMuted);
+
     pause = new QPushButton("Pause");
     restart = new QPushButton("Restart");
     difficulty = new QPushButton("Difficulty");
     highScores = new QPushButton("Highscores");
     about = new QPushButton("About");
-    vlay = new QVBoxLayout;
-    buttonLay = new QVBoxLayout;
 
-    pause->setFixedSize(area->width()/3,area->width()/10);
+    pause->setFixedSize(area->width()/3,area->width()/10);                  //фиксируем размеры кнопок
     restart->setFixedSize(area->width()/3,area->width()/10);
     difficulty->setFixedSize(area->width()/3,area->width()/10);
     highScores->setFixedSize(area->width()/3,area->width()/10);
     about->setFixedSize(area->width()/3,area->width()/10);
-    pause->setObjectName("b1");
+
+    pause->setObjectName("b1");                                             //задаем имена для стиля
     restart->setObjectName("b1");
     difficulty->setObjectName("b1");
     highScores->setObjectName("b1");
@@ -49,30 +51,32 @@ OptionsWindow::OptionsWindow(GameArea *area,unsigned int initDifficulty, int scr
     QObject::connect(gameArea,SIGNAL(scoreChanged(unsigned int)),shapeScore,SLOT(changeScore(unsigned int)));
     QObject::connect(gameArea,SIGNAL(gameOver(uint)),this,SLOT(insertRecord(uint)));
     QObject::connect(gameArea,SIGNAL(throwNextFigure(int,QColor)),shapeScore,SLOT(setNextFigure(int,QColor)));
+    QObject::connect(gameArea,SIGNAL(showHighScores()),this,SLOT(showScoreTable()));
+    QObject::connect(gameArea,SIGNAL(showDifficulty()),this,SLOT(showDifficultyWindow()));
+
     QObject::connect(pause,SIGNAL(clicked(bool)),gameArea,SLOT(switchPause()));
     QObject::connect(restart,SIGNAL(clicked(bool)),gameArea,SLOT(start()));
     QObject::connect(difficulty,SIGNAL(clicked(bool)),this,SLOT(showDifficultyWindow()));
     QObject::connect(highScores,SIGNAL(clicked(bool)),this,SLOT(showScoreTable()));
     QObject::connect(about,SIGNAL(clicked(bool)),this,SLOT(aboutProgram()));
 
-    QObject::connect(gameArea,SIGNAL(showHighScores()),this,SLOT(showScoreTable()));
-    QObject::connect(gameArea,SIGNAL(showDifficulty()),this,SLOT(showDifficultyWindow()));
-
     //собираем виджеты в слои
+    buttonLay = new QVBoxLayout;
     buttonLay->addWidget(pause,0,Qt::AlignHCenter);
     buttonLay->addWidget(restart,0,Qt::AlignHCenter);
     buttonLay->addWidget(difficulty,0,Qt::AlignHCenter);
     buttonLay->addWidget(highScores,0,Qt::AlignHCenter);
     buttonLay->addWidget(about,0,Qt::AlignHCenter);
 
+    vlay = new QVBoxLayout;
     vlay->addWidget(shapeScore,0,Qt::AlignHCenter | Qt::AlignTop);
     vlay->addLayout(buttonLay);
     vlay->addWidget(names,1,Qt::AlignHCenter | Qt::AlignBottom);
     vlay->addWidget(soundWidget,0,Qt::AlignHCenter);
 
-    this->setLayout(vlay);                  //устанавливаем слой
+    this->setLayout(vlay);                              //устанавливаем слой
 
-    shapeScore->setFocusProxy(gameArea);    //устанавливаем пренаправление фокуса клавиатуры на игровую зону
+    shapeScore->setFocusProxy(gameArea);                //устанавливаем пренаправление фокуса клавиатуры на игровую зону
     pause->setFocusProxy(gameArea);
     restart->setFocusProxy(gameArea);
     difficulty->setFocusProxy(gameArea);
@@ -81,22 +85,22 @@ OptionsWindow::OptionsWindow(GameArea *area,unsigned int initDifficulty, int scr
     soundWidget->setFocusProxy(gameArea);
     this->setFocusProxy(gameArea);
 
-    scoresView = new ScoreWidget;
-    scoresView->setWindowIcon(QIcon(":/res/icon.png"));
+    scoresView = new ScoreWidget;                       //создаем виджет с таблице рекордов
+    scoresView->setWindowIcon(QIcon(":/res/icon.png"));//ставим ему иконку
 
-    this->attachFile(0,"saves0.svs");
+    this->attachFile(0,"saves0.svs");                   //прикрепляем файлы с сохранениями
     this->attachFile(1,"saves1.svs");
     this->attachFile(2,"saves2.svs");
     this->attachFile(3,"saves3.svs");
     this->attachFile(4,"saves4.svs");
 
-    this->readScores();
+    this->readScores();                                 //читаем сохранения
 }
 
 OptionsWindow::~OptionsWindow()
 {
-    QSettings settings;
-    settings.beginGroup("OptionsWindow");
+    QSettings settings;                                 //объект настроек
+    settings.beginGroup("OptionsWindow");               //записываем инфу в реестр
         settings.setValue("difficulty",QVariant(currentDifficulty));
         settings.setValue("isMuted",QVariant(soundWidget->isMuted()));
         settings.setValue("volume",QVariant(soundWidget->getVolume()));
@@ -141,13 +145,13 @@ void OptionsWindow::readScores()
         scores[i].clear();                                  //очищаем текущие рекорды
 
         QFile file(fileName[i]);                            //сам файл
-        if (!file.open(QIODevice::ReadOnly))                //открываем его
-        {
+        if (!file.open(QIODevice::ReadOnly))                //если не открылся
+        {                                                   //инициализируем стандартными именами
             scores[i].push_back(ScoreTableElement(QDateTime::currentDateTime(),1000,"The Good"));
             scores[i].push_back(ScoreTableElement(QDateTime::currentDateTime(),500,"The Bad"));
             scores[i].push_back(ScoreTableElement(QDateTime::currentDateTime(),100,"The Ugly"));
 
-            scoresView->updateInfo(i,scores[i]);
+            scoresView->updateInfo(i,scores[i]);            //обновляем отображение
 
             continue;
         }
@@ -167,7 +171,7 @@ void OptionsWindow::readScores()
             }
         }
 
-        scoresView->updateInfo(i,scores[i]);
+        scoresView->updateInfo(i,scores[i]);                //обновляем отображение
 
         file.close();                                       //закрываем файл
     }
@@ -187,7 +191,7 @@ void OptionsWindow::writeScores()
 
         for (int j=0;j<scores[i].size();++j)                //идем по списку рекордов
         {
-            ScoreTableElement e=scores[i].at(j);               //получаем элемент
+            ScoreTableElement e=scores[i].at(j);            //получаем элемент
             out<<e.time<<e.score<<e.playerName;             //пишем его в файл
         }
 
@@ -198,50 +202,50 @@ void OptionsWindow::writeScores()
 void OptionsWindow::addRecord(unsigned int score,QString player)
 {
     scores[currentDifficulty].push_back(ScoreTableElement(QDateTime::currentDateTime(),score,player));
-                                                                //добавляем новый рекорд
+                                                            //добавляем новый рекорд
     std::sort(scores[currentDifficulty].begin(),scores[currentDifficulty].end());
-                                                                //сортируем список рекордов
-    if (scores[currentDifficulty].size()>10)                    //если в нем больше 10 элементов
+                                                            //сортируем список рекордов
+    if (scores[currentDifficulty].size()>10)                //если в нем больше 10 элементов
     {
-        scores[currentDifficulty].pop_back();                   //последний выкидываем
+        scores[currentDifficulty].pop_back();               //последний выкидываем
     }
     scoresView->updateInfo(currentDifficulty,scores[currentDifficulty]);
 }
 
 void OptionsWindow::showScoreTable()
 {
-    bool unpause=false;                                 //флаг для снятия паузы
-    if (!gameArea->isPaused())                          //если игра не на паузе
+    bool unpause=false;                                     //флаг для снятия паузы
+    if (!gameArea->isPaused())                              //если игра не на паузе
     {
-        unpause=true;                                   //говорим что нужно будет снять паузу
-        gameArea->switchPause();                        //ставим игру на паузу
+        unpause=true;                                       //говорим что нужно будет снять паузу
+        gameArea->switchPause();                            //ставим игру на паузу
     }
 
-    scoresView->exec();                                 //вызываем окно рекордов
+    scoresView->exec();                                     //вызываем окно рекордов
 
-    if (unpause)                                        //если нужно снять с паузы
+    if (unpause)                                            //если нужно снять с паузы
     {
-        gameArea->switchPause();                        //снимаем игру с паузы
+        gameArea->switchPause();                            //снимаем игру с паузы
     }
 }
 
 void OptionsWindow::insertRecord(unsigned int score)
 {
-    if (score==0)
+    if (score==0)                                           //если прилетел 0, то отваливаемся
     {
         return;
     }
 
-    if (!checkForAdding(score))
+    if (!checkForAdding(score))                             //если не нужно добавлять, то отваливаемся
     {
         return;
     }
 
-    InputWidget input;
-    if (input.exec()==QDialog::Accepted)
+    InputWidget input;                                      //окно ввода имени
+    if (input.exec()==QDialog::Accepted)                    //если все оки
     {
-        this->addRecord(score,input.getText());
-        this->writeScores();
+        this->addRecord(score,input.getText());             //добаляем рекорд
+        this->writeScores();                                //переписываем сохранение
     }
 }
 
@@ -264,30 +268,30 @@ void OptionsWindow::aboutProgram()
         gameArea->switchPause();                        //ставим игру на паузу
     }
 
-    AboutWindow aw;
-    aw.setWindowIcon(QIcon(":/res/icon.png"));
-    aw.exec();
+    AboutWindow aw;                                     //виджет about
+    aw.setWindowIcon(QIcon(":/res/icon.png"));          //ставим ему иконку
+    aw.exec();                                          //запускаем его
 
-    if (unpause)                                    //если нужно снять с паузы
+    if (unpause)                                        //если нужно снять с паузы
     {
-        gameArea->switchPause();                    //снимаем игру с паузы
+        gameArea->switchPause();                        //снимаем игру с паузы
     }
 }
 
 bool OptionsWindow::checkForAdding(unsigned int score)
 {
-    if (scores[currentDifficulty].size()<10)
+    if (scores[currentDifficulty].size()<10)            //если рекордов в таблице меньше 10
     {
-        return true;
+        return true;                                    //говорим да
     }
     else
     {
-        if (scores[currentDifficulty].back().score<score)
+        if (scores[currentDifficulty].back().score<score)//если последний в таблице рекордов меньше добавляемого
         {
-            return true;
+            return true;                                //говорим да
         }
     }
-    return false;
+    return false;                                       //в противном случае говорим нет
 }
 
 OptionsWindow::ScoreTableElement::ScoreTableElement():
@@ -334,7 +338,7 @@ OptionsWindow::ScoreWidget::ScoreWidget()
                                                                 //убираем вертикальный слайдер
         table[i]->horizontalHeader()->setMinimumSectionSize(qApp->desktop()->screen()->width()/15);
                                                                 //устанавливаем минимальную ширину столбца
-        table[i]->setObjectName("ScoreTable");
+        table[i]->setObjectName("ScoreTable");                  //ставим имена для стиля
         table[i]->verticalHeader()->setObjectName("Header");
         table[i]->horizontalHeader()->setObjectName("Header");
    }
@@ -353,7 +357,7 @@ OptionsWindow::ScoreWidget::ScoreWidget()
     tabs->addTab(table[3],"Hard");
     tabs->addTab(table[4],"Master");
 
-    tabs->setObjectName("Tabs");
+    tabs->setObjectName("Tabs");                                //ставим имя для стиля
 
     QVBoxLayout* lay=new QVBoxLayout;                           //создаем слой
 
@@ -363,7 +367,7 @@ OptionsWindow::ScoreWidget::ScoreWidget()
     this->setLayout(lay);                                       //устанавливаем этот слой
     setMinimumWidth(tabs->minimumSizeHint().width());
 
-    this->setObjectName("TableWidget");
+    this->setObjectName("TableWidget");                         //ставим имя для стиля
 }
 
 void OptionsWindow::ScoreWidget::updateInfo(unsigned int dif, QList<OptionsWindow::ScoreTableElement> scoreList)

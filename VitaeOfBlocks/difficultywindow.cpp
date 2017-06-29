@@ -5,7 +5,7 @@ DifficultyWindow::DifficultyWindow(int initDiff, QWidget *parent):
 {
     mapper=new QSignalMapper(this);
 
-    connect(mapper,SIGNAL(mapped(int)),this,SLOT(changeResult(int)));
+    connect(mapper,SIGNAL(mapped(int)),this,SLOT(changeResult(int)));   //соединяем маппер со слотом изменения выбранной сложности
 
     difficulties[0]=new QRadioButton("Free");
     difficulties[1]=new QRadioButton("Easy");
@@ -19,13 +19,13 @@ DifficultyWindow::DifficultyWindow(int initDiff, QWidget *parent):
     difficulties[3]->setObjectName("r1");
     difficulties[4]->setObjectName("r1");
 
-    mapper->setMapping(difficulties[0],0);
+    mapper->setMapping(difficulties[0],0);                              //ассоциируем кнопки с уровнями сложности
     mapper->setMapping(difficulties[1],1);
     mapper->setMapping(difficulties[2],2);
     mapper->setMapping(difficulties[3],3);
     mapper->setMapping(difficulties[4],4);
 
-    connect(difficulties[0],SIGNAL(clicked(bool)),mapper,SLOT(map()));
+    connect(difficulties[0],SIGNAL(clicked(bool)),mapper,SLOT(map()));  //соедиянем кнопки с маппером
     connect(difficulties[1],SIGNAL(clicked(bool)),mapper,SLOT(map()));
     connect(difficulties[2],SIGNAL(clicked(bool)),mapper,SLOT(map()));
     connect(difficulties[3],SIGNAL(clicked(bool)),mapper,SLOT(map()));
@@ -48,6 +48,7 @@ DifficultyWindow::DifficultyWindow(int initDiff, QWidget *parent):
     label=new QLabel("*The game will restart\nafter changing the difficulty.");
     label->setAlignment(Qt::AlignCenter);
     label->setObjectName("l2");
+
     ok=new QPushButton("Accept");
     cancel=new QPushButton("Cancel");
 

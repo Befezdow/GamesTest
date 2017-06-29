@@ -28,17 +28,16 @@ win32{
 
 SOURCES += main.cpp \
     shape.cpp \
-    glscores.cpp \
     gamearea.cpp \
     primitive.cpp \
     difficultywindow.cpp \
     optionswindow.cpp \
-    nextshapeandscore.cpp
+    nextshapeandscore.cpp \
+    nextshapewidget.cpp
 
 HEADERS  += \
     shape.h \
     primitive.h \
-    glscores.h \
     gamearea.h \
     difficultywindow.h \
     optionswindow.h \
@@ -46,7 +45,8 @@ HEADERS  += \
     mainwindow.h \
     soundcontroller.h \
     aboutwindow.h \
-    inputwidget.h
+    inputwidget.h \
+    nextshapewidget.h
 
 RESOURCES += \
     resources.qrc

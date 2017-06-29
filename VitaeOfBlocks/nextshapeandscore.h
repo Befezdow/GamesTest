@@ -1,16 +1,16 @@
 #ifndef SCORETABLE_H
 #define SCORETABLE_H
 
-#include "glscores.h"
+#include "nextshapewidget.h"
 #include <QLabel>
 #include <QLCDNumber>
 
 class NextShapeAndScore : public QWidget
 {
     Q_OBJECT
-    GLScores* window;
-    QLabel* scores;
-    QLCDNumber* number;
+    NexShapeWidget* window;         //окно следующей фигуры
+    QLabel* scores;                 //надпись
+    QLCDNumber* number;             //текущий счет
 
 public:
     explicit NextShapeAndScore(int side, QWidget *parent = 0);
