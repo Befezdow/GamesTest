@@ -194,7 +194,7 @@ GameArea::initializeGL()
 void
 GameArea::resizeGL(int w, int h)
 {
-    float lineWidth=squareSide/15+1;
+    float lineWidth=squareSide/15+2;
     glMatrixMode(GL_PROJECTION);            //начинаем работать с матрицей проекций
     glLoadIdentity();                       //инициализируем её единичной матрицей
     glViewport(0,0,w,h);                    //устанавливаем все окно вьюпортом
