@@ -3,12 +3,9 @@
 #include "optionswindow.h"
 #include "mainwindow.h"
 #include <QApplication>
-#include <QMessageLogContext>
-#include <QString>
 #include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QIcon>
-#include <QPushButton>
 
 void dummyOutput(QtMsgType, const QMessageLogContext&, const QString&)
 {}
@@ -19,13 +16,12 @@ int main(int argc, char *argv[])
     a.setOrganizationName("GameTest");
     a.setApplicationName("VitaeOfBlocks");
 
-//    QFile file(":/res/style.qss");
-    QFile file ("D:\\NOVA\\Repositories\\GamesTest\\VitaeOfBlocks\\style.qss");
+    QFile file(":/res/style.qss");
     file.open(QFile::ReadOnly);
     QString str=file.readAll();
     a.setStyleSheet(str);
 
-//    qInstallMessageHandler(dummyOutput);
+    qInstallMessageHandler(dummyOutput);
 
     int screenWidth=QApplication::desktop()->width();
 

@@ -23,7 +23,7 @@ class GameArea: public QGLWidget
 
     int currentScore;           //текущий счет игрока
 
-    int nextFigure;             //тип следующей фигуры
+    int nextShape;             //тип следующей фигуры
     int nextColor;              //цвет следующей фигуры
 
     QVector<QColor> colors;     //цвета фигур

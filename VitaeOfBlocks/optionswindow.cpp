@@ -3,10 +3,7 @@
 #include "inputwidget.h"
 #include <QFile>
 #include <QHeaderView>
-#include <QApplication>
 #include <QDesktopWidget>
-#include <QInputDialog>
-#include <QMessageBox>
 #include <QSettings>
 
 

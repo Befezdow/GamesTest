@@ -2,7 +2,6 @@
 #define SCORETABLE_H
 
 #include "glscores.h"
-#include <QWidget>
 #include <QLabel>
 #include <QLCDNumber>
 

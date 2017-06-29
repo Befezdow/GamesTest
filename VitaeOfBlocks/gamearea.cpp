@@ -1,7 +1,6 @@
 #include "gamearea.h"
 #include <QTimerEvent>
 #include <QKeyEvent>
-#include <QMessageBox>
 #include <QApplication>
 #include <QTime>
 #include <QImage>
@@ -10,14 +9,14 @@ void
 GameArea::randomize()
 {
     nextColor=qrand()%6;
-    nextFigure=qrand()%8;
+    nextShape=qrand()%8;
     if (currentShape)           //убираем повторяющиеся подряд фигуры
     {
-        if (nextFigure==*currentShape)
-            nextFigure=(nextFigure+1)%8;
+        if (nextShape==*currentShape)
+            nextShape=(nextShape+1)%8;
     }
-    qDebug()<<"Срандомил "<<nextColor<<" "<<nextFigure;
-    emit throwNextFigure(nextFigure,colors.at(nextColor));
+    qDebug()<<"Generated: Color:"<<nextColor<<"; Shape:"<<nextShape;
+    emit throwNextFigure(nextShape,colors.at(nextColor));
 }
 
 void GameArea::setDifficulty(int d)
@@ -61,14 +60,14 @@ GameArea::initShape()
         delete currentShape;
 
     //задаем начальное положение центра движ. фигуры
-    currentX=(areaWidth-1)/2;               //задаем X
-    currentY=areaHeight-1;                  //задаем Y
+    currentX=(areaWidth-1)/2;                               //задаем X
+    currentY=areaHeight-1;                                  //задаем Y
 
-    int colorSeed=nextColor;                    //генерируем начальный цвет движ. фигуры
-    currentColor=colors.at(colorSeed);          //ставим его
+    int colorSeed=nextColor;                                //генерируем начальный цвет движ. фигуры
+    currentColor=colors.at(colorSeed);                      //ставим его
 
-    int shapeSeed=nextFigure;                   //генерируем начальную фигуру
-    currentShape=generateShape(shapeSeed);      //ставим её
+    int shapeSeed=nextShape;                                //генерируем начальную фигуру
+    currentShape=generateShape(shapeSeed);                  //ставим её
 
     QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
     for (int i=0;i<vec.size();++i)
@@ -165,30 +164,33 @@ Shape *GameArea::generateShape(int typeOfShape)
 void
 GameArea::initializeGL()
 {
-    qglClearColor(Qt::white);               //задаем цвет фона
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(3,textureID);
+    qglClearColor(Qt::white);                                           //задаем цвет фона
+    glEnable(GL_TEXTURE_2D);                                            //включаем двумерные текстуры
+    glGenTextures(3,textureID);                                         //создаем текстуры
 
-    QImage img(":/res/mask.png");
-    img=QGLWidget::convertToGLFormat(img);
-    glBindTexture(GL_TEXTURE_2D, textureID[0]);
+    QImage img(":/res/mask.png");                                       //открываем картинку
+    img=QGLWidget::convertToGLFormat(img);                              //преобразуем её в GL формат
+    glBindTexture(GL_TEXTURE_2D, textureID[0]);                         //начинаем работу с 1 текстурой
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
+                                                                        //устанавливаем картинку в текстуру
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   //задана линейная фильтрация вблизи
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   //задана линейная фильтрация вдали
 
-    img.load(":/res/pause.png");
-    img=QGLWidget::convertToGLFormat(img);
-    glBindTexture(GL_TEXTURE_2D,textureID[1]);
+    img.load(":/res/pause.png");                                        //открываем картинку
+    img=QGLWidget::convertToGLFormat(img);                              //преобразуем её в GL формат
+    glBindTexture(GL_TEXTURE_2D,textureID[1]);                          //начинаем работу со 2 текстурой
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
+                                                                        //устанавливаем картинку в текстуру
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   //задана линейная фильтрация вблизи
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   //задана линейная фильтрация вдали
 
-    img.load(":/res/gameover.png");
-    img=QGLWidget::convertToGLFormat(img);
-    glBindTexture(GL_TEXTURE_2D,textureID[2]);
+    img.load(":/res/gameover.png");                                     //открываем картинку
+    img=QGLWidget::convertToGLFormat(img);                              //преобразуем её в GL формат
+    glBindTexture(GL_TEXTURE_2D,textureID[2]);                          //начинаем работу с 3 текстурой
     glTexImage2D(GL_TEXTURE_2D, 0, 4, (GLsizei)img.width(), (GLsizei)img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);// задана линейная фильтрация вблизи
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);// задана линейная фильтрация вдали
+                                                                        //устанавливаем картинку в текстуру
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   //задана линейная фильтрация вблизи
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   //задана линейная фильтрация вдали
 }
 
 void
@@ -204,46 +206,47 @@ GameArea::resizeGL(int w, int h)
 void
 GameArea::paintGL()
 {
-    float lineWidth=squareSide/15;              //определяем толщину линий
+    float lineWidth=squareSide/15;                              //определяем толщину линий
 
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //очищаем поле
-    qglColor("#72a495");                                    //ставим серый цвет
-    glLineWidth(lineWidth);                                 //ставим ширину линии
-    glBegin(GL_LINE_STRIP);                                 //рисуем предельную линию
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);   //устанавливаем особенности отрисовки для текстур на смешивание
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         //очищаем поле
+    qglColor("#72a495");                                        //ставим цвет
+    glLineWidth(lineWidth);                                     //ставим ширину линии
+    glBegin(GL_LINE_STRIP);                                     //рисуем предельную линию
         glVertex2i(-lineWidth,squareSide*(areaHeight-1));
         glVertex2i(squareSide*(areaWidth)+lineWidth,squareSide*(areaHeight-1));
     glEnd();
 
-    for (int i=0;i<area.size();++i)                         //отрисовываем все поле по клеткам
+    for (int i=0;i<area.size();++i)                             //отрисовываем все поле по клеткам
     {
         for (int j=0;j<area.at(i).size();++j)
         {
-            Primitive prim=area.at(i).at(j);                //получаем клетку
-            if (prim.isVisible())                           //если её нужно рисовать
+            Primitive prim=area.at(i).at(j);                    //получаем клетку
+            if (prim.isVisible())                               //если её нужно рисовать
             {
-                QPoint p=prim.getPos();                     //получаем её координаты
-                int x1=p.x();                               //получаем верхний левый угол
+                QPoint p=prim.getPos();                         //получаем её координаты
+                int x1=p.x();                                   //получаем верхний левый угол
                 int y1=p.y();
-                int x2=x1+squareSide;                       //получаем правый нижний угол
+                int x2=x1+squareSide;                           //получаем правый нижний угол
                 int y2=y1-squareSide;
-                qglColor(prim.getColor());                  //ставим клетке её цвет
-                glRecti(x1,y1,x2,y2);                       //рисуем клетку
+                qglColor(prim.getColor());                      //ставим клетке её цвет
+                glRecti(x1,y1,x2,y2);                           //рисуем клетку
 
-                glEnable(GL_ALPHA_TEST);                    //устанавливаем прозрачность
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glEnable(GL_ALPHA_TEST);                        //включаем прозрачность
+                glEnable(GL_BLEND);                             //включаем смешивание
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//настраемаем смешивание
 
-                glBindTexture(GL_TEXTURE_2D, textureID[0]);
-                glBegin(GL_POLYGON);
-                glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+                glBindTexture(GL_TEXTURE_2D, textureID[0]);     //начинаем работу с 1 текстурой
+                glBegin(GL_POLYGON);                            //рисуем её
+                glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);       //каждой точке текстуры сопоставляем точку на примитиве
                 glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
                 glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
                 glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
                 glEnd();
 
-                qglColor(Qt::black);                        //ставим черный цвет
-                glBegin(GL_LINE_LOOP);                      //рисуем обводку
+                qglColor(Qt::black);                            //ставим черный цвет
+                glBegin(GL_LINE_LOOP);                          //рисуем обводку
                     glVertex2i(x1,y1);
                     glVertex2i(x1,y2);
                     glVertex2i(x2,y2);
@@ -251,104 +254,104 @@ GameArea::paintGL()
                 glEnd();
 
                 //изощренная тестура элементов
-//                int quarter=(x2-x1)/4;                      //четверть стороны квадрата
+//                int quarter=(x2-x1)/4;                        //четверть стороны квадрата
 
-//                x1=x1+quarter;                              //точки нового квадрата
+//                x1=x1+quarter;                                //точки нового квадрата
 //                y1=y1-quarter;
 //                x2=x2-quarter;
 //                y2=y2+quarter;
 
-//                qglColor(QColor(0,0,0,100));                //ставим черный полупрозрачный цвет
-//                glRecti(x1,y1,x2,y2);                       //рисуем квадрат
+//                qglColor(QColor(0,0,0,100));                  //ставим черный полупрозрачный цвет
+//                glRecti(x1,y1,x2,y2);                         //рисуем квадрат
 
-//                qglColor(QColor(255,255,255,150));          //ставим белый полупрозрачный цвет
-//                glBegin(GL_LINE_LOOP);                      //рисуем обводку
+//                qglColor(QColor(255,255,255,150));            //ставим белый полупрозрачный цвет
+//                glBegin(GL_LINE_LOOP);                        //рисуем обводку
 //                    glVertex2i(x1,y1);
 //                    glVertex2i(x1,y2);
 //                    glVertex2i(x2,y2);
 //                    glVertex2i(x2,y1);
 //                glEnd();
 
-                glDisable(GL_BLEND);                        //выключаем прозрачность
-                glDisable(GL_ALPHA_TEST);
+                glDisable(GL_BLEND);                            //выключаем смешивание
+                glDisable(GL_ALPHA_TEST);                       //выключаем прозрачность
 
             }
         }
     }
-    qglColor("#72a495");                                    //ставим серый цвет
-    glBegin(GL_LINE_STRIP);                                 //рисуем контур
+    qglColor("#72a495");                                        //ставим цвет
+    glBegin(GL_LINE_STRIP);                                     //рисуем контур
         glVertex2i(-lineWidth,squareSide*areaHeight+lineWidth);
         glVertex2i(-lineWidth,-lineWidth);
         glVertex2i(squareSide*(areaWidth)+lineWidth,-lineWidth);
         glVertex2i(squareSide*(areaWidth)+lineWidth,squareSide*areaHeight+lineWidth);
     glEnd();
 
-    if (gameover)
+    if (gameover)                                               //если конец игры
     {
-        int x1=0;
+        int x1=0;                                               //определяем положение текстуры gameover
         int x2=this->width()-lineWidth;
         int y1=this->height()*0.75;
         int y2=this->height()*0.25;
 
-        glEnable(GL_ALPHA_TEST);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_ALPHA_TEST);                                //включаем прозрачность
+        glEnable(GL_BLEND);                                     //включаем смешивание
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);      //настраемаем смешивание
 
-        glBindTexture(GL_TEXTURE_2D, textureID[2]);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBegin(GL_POLYGON);
-        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+        glBindTexture(GL_TEXTURE_2D, textureID[2]);             //начинаем работу с 3 текстурой
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);//устанавливаем особенности отрисовки для текстур на замену
+        glBegin(GL_POLYGON);                                    //рисуем её
+        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);               //каждой точке текстуры сопоставляем точку на примитиве
         glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
         glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
         glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
         glEnd();
 
-        glDisable(GL_BLEND);                        //выключаем прозрачность
-        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND);                                    //выключаем смешивание
+        glDisable(GL_ALPHA_TEST);                               //выключаем прозрачность
     }
-    else if (pause)                      //если пауза или конец игры
+    else if (pause)                                             //если пауза
     {
-        int x1=0;
+        int x1=0;                                               //определяем положение текстуры pause
         int x2=this->width()-lineWidth;
         int y1=this->height()*0.75;
         int y2=this->height()*0.25;
 
-        glEnable(GL_ALPHA_TEST);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_ALPHA_TEST);                                //включаем прозрачность
+        glEnable(GL_BLEND);                                     //включаем смешивание
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);      //настраемаем смешивание
 
-        glBindTexture(GL_TEXTURE_2D, textureID[1]);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-        glBegin(GL_POLYGON);
-        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);
+        glBindTexture(GL_TEXTURE_2D, textureID[1]);             //начинаем работу со 2 текстурой
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);//устанавливаем особенности отрисовки для текстур на замену
+        glBegin(GL_POLYGON);                                    //рисуем её
+        glTexCoord2d(0.0,0.0); glVertex2i(x1,y2);               //каждой точке текстуры сопоставляем точку на примитиве
         glTexCoord2d(1.0,0.0); glVertex2i(x2,y2);
         glTexCoord2d(1.0,1.0); glVertex2i(x2,y1);
         glTexCoord2d(0.0,1.0); glVertex2i(x1,y1);
         glEnd();
 
-        glDisable(GL_BLEND);                        //выключаем прозрачность
-        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND);                                    //выключаем смешивание
+        glDisable(GL_ALPHA_TEST);                               //выключаем прозрачность
     }
 }
 
 void GameArea::showCurrentShape()
 {
-    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
-    for (int i=0;i<vec.size();++i)                          //показываем фигуру
+    QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                              //показываем фигуру
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         area[x][y].show();
     }
 }
 
 void GameArea::hideCurrentShape()
 {
-    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
-    for (int i=0;i<vec.size();++i)                          //скрываем фигуру
+    QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                              //скрываем фигуру
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         area[x][y].hide();
     }
 }
@@ -356,13 +359,13 @@ void GameArea::hideCurrentShape()
 bool
 GameArea::moveCurrentShapeDown()
 {
-    this->hideCurrentShape();                               //скрываем текущую фигуру
+    this->hideCurrentShape();                                   //скрываем текущую фигуру
 
-    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
-    for (int i=0;i<vec.size();++i)                          //проверяем, можем ли двигать
+    QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                              //проверяем, можем ли двигать
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         if (y-1<0 || area.at(x).at(y-1).isVisible())
         {
             this->showCurrentShape();
@@ -370,27 +373,27 @@ GameArea::moveCurrentShapeDown()
         }
     }
     currentY--;
-    for (int i=0;i<vec.size();++i)                          //двигаем вниз
+    for (int i=0;i<vec.size();++i)                              //двигаем вниз
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         area[x][y].setColor(currentColor);
         area[x][y].show();
     }
-    this->updateGL();                                       //обновляем картинку
+    this->updateGL();                                           //обновляем картинку
     return true;
 }
 
 bool
 GameArea::moveCurrentShapeLeft()
 {
-    this->hideCurrentShape();                               //скрываем текущую фигуру
+    this->hideCurrentShape();                                   //скрываем текущую фигуру
 
-    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
-    for (int i=0;i<vec.size();++i)                          //проверяем, можем ли двигать
+    QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                              //проверяем, можем ли двигать
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         if (x-1<0 || area.at(x-1).at(y).isVisible())
         {
             this->showCurrentShape();
@@ -398,27 +401,27 @@ GameArea::moveCurrentShapeLeft()
         }
     }
     currentX--;
-    for (int i=0;i<vec.size();++i)                          //двигаем влево
+    for (int i=0;i<vec.size();++i)                              //двигаем влево
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         area[x][y].setColor(currentColor);
         area[x][y].show();
     }
-    this->updateGL();                                       //обновляем картинку
+    this->updateGL();                                           //обновляем картинку
     return true;
 }
 
 bool
 GameArea::moveCurrentShapeRight()
 {
-    this->hideCurrentShape();                               //скрываем текущую фигуру
+    this->hideCurrentShape();                                   //скрываем текущую фигуру
 
-    QVector<QPoint> vec=currentShape->getParts();           //получаем детали фигуры
-    for (int i=0;i<vec.size();++i)                          //проверяем, можем ли двигать
+    QVector<QPoint> vec=currentShape->getParts();               //получаем детали фигуры
+    for (int i=0;i<vec.size();++i)                              //проверяем, можем ли двигать
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         if (x+1>=areaWidth || area.at(x+1).at(y).isVisible())
         {
             this->showCurrentShape();
@@ -426,14 +429,14 @@ GameArea::moveCurrentShapeRight()
         }
     }
     currentX++;
-    for (int i=0;i<vec.size();++i)                          //двигаем вправо
+    for (int i=0;i<vec.size();++i)                              //двигаем вправо
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         area[x][y].setColor(currentColor);
         area[x][y].show();
     }
-    this->updateGL();                                       //обновляем картинку
+    this->updateGL();                                           //обновляем картинку
     return true;
 }
 
@@ -443,13 +446,13 @@ GameArea::rotateCurrentShape()
     hideCurrentShape();
     QVector<QPoint> vec(currentShape->rotatedParts());
     bool rotate=true;
-    for (int i=0;i<vec.size();++i)                          //двигаем вправо
+    for (int i=0;i<vec.size();++i)                              //двигаем вправо
     {
-        int x=currentX+vec.at(i).x();                       //переводим относительные координаты
-        int y=currentY+vec.at(i).y();                       //в абсолютные
+        int x=currentX+vec.at(i).x();                           //переводим относительные координаты
+        int y=currentY+vec.at(i).y();                           //в абсолютные
         if( areaWidth <= x || x < 0 || y > areaHeight - 1 || y < 0 || area.at(x).at(y).isVisible())
         {
-            qDebug()<<"Нельзя повернуть";
+            qDebug()<<"Can't rotate";
             rotate = false;
             showCurrentShape();
             return;
@@ -516,11 +519,11 @@ GameArea::timerEvent(QTimerEvent *event)
                     bottomLine++;
                 }
             }
-            for (int i=0;i<areaWidth;++i)                   //очищаем deletedLines верхних линий
+            for (int i=0;i<areaWidth;++i)                           //очищаем deletedLines верхних линий
                 for (int j=areaHeight-deletedLines;j<areaHeight;++j)
                     area[i][j].hide();
 
-            switch (deletedLines)                           //добавление очков
+            switch (deletedLines)                                   //добавление очков
             {
             case 1:
                 currentScore+=100;
@@ -537,12 +540,12 @@ GameArea::timerEvent(QTimerEvent *event)
             }
             emit scoreChanged(currentScore);
 
-            this->initShape();              //инициализируем новую фигуру
-            this->randomize();              //Получаем данные следующей фигуры
+            this->initShape();                                      //инициализируем новую фигуру
+            this->randomize();                                      //Получаем данные следующей фигуры
 
-            this->upSpeed();
+            this->upSpeed();                                        //увеличиваем скорость
 
-            this->updateGL();               //обновляем картинку
+            this->updateGL();                                       //обновляем картинку
         }
     }
 }
@@ -591,7 +594,7 @@ GameArea::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    this->updateGL();                                           //обновляем картинку
+    this->updateGL();                                               //обновляем картинку
 }
 
 void

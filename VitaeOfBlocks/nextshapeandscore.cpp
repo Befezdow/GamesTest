@@ -16,9 +16,6 @@ NextShapeAndScore::NextShapeAndScore(int side, QWidget *parent) :
     number->setSegmentStyle(QLCDNumber::Flat);
     number->setFixedSize(5*side,2*side);
 
-//    QPalette pal;
-//    pal.setColor(QPalette::Background,Qt::black);
-//    number->setPalette(pal);
     QWidget* wgt=new QWidget;
     QVBoxLayout* lay=new QVBoxLayout;
     lay->addWidget(scores,0,Qt::AlignHCenter);
@@ -30,7 +27,6 @@ NextShapeAndScore::NextShapeAndScore(int side, QWidget *parent) :
 
     vertical->addWidget(window,0,Qt::AlignHCenter);
     vertical->addWidget(wgt,0,Qt::AlignHCenter);
-//    vertical->addWidget(number,0,Qt::AlignHCenter);
     this->setLayout(vertical);
 }
 
@@ -44,7 +40,7 @@ NextShapeAndScore::changeScore(unsigned int score)
 void
 NextShapeAndScore::setNextFigure(int figureNum, QColor color)
 {
-    qDebug()<<"Поймал "<<figureNum<<" "<<color;
+    qDebug()<<"Catched"<<figureNum<<" "<<color;
     window->setIndexOfFigure(figureNum);
     window->setColorOfFigure(color);
     window->update();
