@@ -207,6 +207,7 @@ GameArea::resizeGL(int w, int h)
     glLoadIdentity();                                                   //инициализируем её единичной матрицей
     glViewport(0,0,w,h);                                                //устанавливаем все окно вьюпортом
     glOrtho(-lineWidth,areaWidth*squareSide+lineWidth,-lineWidth,areaHeight*squareSide+lineWidth,-1,1); //устанавливаем орты
+}
 
 void
 GameArea::paintGL()

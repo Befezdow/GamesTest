@@ -13,8 +13,8 @@ public:
         QWidget(parent),
         attachedGameArea(ga)
     {
-        wgt->setWindowTitle("Vitae Of Blocks");         //устанавливаем название главного окна
-        wgt->setWindowIcon(QIcon(":/res/icon.png"));    //устанавливаем иконку
+        this->setWindowTitle("Vitae Of Blocks");        //устанавливаем название главного окна
+        this->setWindowIcon(QIcon(":/res/icon.png"));   //устанавливаем иконку
 
         this->setAttribute(Qt::WA_DeleteOnClose);       //говорим окну выключаться по закрытии
         this->setObjectName("MAIN");                    //устанавливаем имя для стиля
