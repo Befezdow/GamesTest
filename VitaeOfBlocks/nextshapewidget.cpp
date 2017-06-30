@@ -112,7 +112,7 @@ NexShapeWidget::update()
 void
 NexShapeWidget::initializeGL()
 {
-    qglClearColor(Qt::white);                                           //ставим цвет очистки
+    qglClearColor("#e6dab1");                                           //ставим цвет очистки
 
     glEnable(GL_TEXTURE_2D);                                            //включаем двумерные текстуры
 

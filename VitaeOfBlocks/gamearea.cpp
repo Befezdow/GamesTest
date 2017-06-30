@@ -170,7 +170,7 @@ GameArea::generateShape(int typeOfShape)
 void
 GameArea::initializeGL()
 {
-    qglClearColor(Qt::white);                                           //задаем цвет фона
+    qglClearColor("#e6dab1");                                           //задаем цвет фона
     glEnable(GL_TEXTURE_2D);                                            //включаем двумерные текстуры
     glGenTextures(3,textureID);                                         //создаем текстуры
 
