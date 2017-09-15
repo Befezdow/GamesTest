@@ -1,11 +1,12 @@
-#include "glwidget.h"
+#include "generator.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    GlWidget w;
-    w.show();
+
+    Generator gen;
+    gen.show();
 
     return a.exec();
 }
