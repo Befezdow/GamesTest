@@ -28,4 +28,5 @@ SOURCES += \
     generator.cpp
 
 HEADERS += \
-    generator.h
+    generator.h \
+    positiveintvalidator.h

@@ -2,6 +2,7 @@
 #define GENERTOR_H
 
 #include <QtWidgets>
+#include "positiveintvalidator.h"
 
 class Generator: public QWidget
 {
@@ -42,6 +43,16 @@ class Generator: public QWidget
     QLineEdit* intelligenceLine;
     QLineEdit* adaptabilityLine;
     QLineEdit* nameOfIconLine;
+
+    PositiveIntValidator* costVal;
+    PositiveIntValidator* maxCountVal;
+    PositiveIntValidator* levelVal;
+    PositiveIntValidator* attackDamageVal;
+    QIntValidator* enduranceVal;
+    QIntValidator* wisdomVal;
+    QIntValidator* charismaVal;
+    QIntValidator* intelligenceVal;
+    QIntValidator* adaptabilityVal;
 
     QPushButton* button;
 

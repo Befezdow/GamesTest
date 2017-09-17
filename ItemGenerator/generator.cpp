@@ -9,20 +9,20 @@ Generator::Generator(QWidget *parent):
     pathLine = new QLineEdit;
     browse = new QPushButton("...");
 
-    costLabel = new QLabel("Cost of item:");
-    titleLabel = new QLabel("Title of item:");
-    descriptionLabel = new QLabel("Description:");
-    maxCountLabel = new QLabel("Count in stack:");
-    levelLabel = new QLabel("Necessary level:");
-    rarityLabel = new QLabel("Rarity of item:");
-    typeLabel = new QLabel("Type of Item:");
-    attackDamageLabel = new QLabel("Attack Damage:");
-    enduranceLabel = new QLabel("Endurance bonus:");
-    wisdomLabel = new QLabel("Wisdom bonus:");
-    charismaLabel = new QLabel("Charisma bonus:");
-    intelligenceLabel = new QLabel("Intelligence bonus:");
-    adaptabilityLabel = new QLabel("Adaptability bonus:");
-    nameOfIconLabel = new QLabel("Name of icon:");
+    costLabel = new QLabel          ("Cost of item:");
+    titleLabel = new QLabel         ("Title of item:");
+    descriptionLabel = new QLabel   ("Description:");
+    maxCountLabel = new QLabel      ("Count in stack:");
+    levelLabel = new QLabel         ("Necessary level:");
+    rarityLabel = new QLabel        ("Rarity of item:");
+    typeLabel = new QLabel          ("Type of Item:");
+    attackDamageLabel = new QLabel  ("Attack Damage:");
+    enduranceLabel = new QLabel     ("Endurance bonus:");
+    wisdomLabel = new QLabel        ("Wisdom bonus:");
+    charismaLabel = new QLabel      ("Charisma bonus:");
+    intelligenceLabel = new QLabel  ("Intelligence bonus:");
+    adaptabilityLabel = new QLabel  ("Adaptability bonus:");
+    nameOfIconLabel = new QLabel    ("Name of icon:");
 
     costLine = new QLineEdit;
     titleLine = new QLineEdit;
@@ -39,6 +39,26 @@ Generator::Generator(QWidget *parent):
     adaptabilityLine = new QLineEdit(QString::number(0));
     nameOfIconLine = new QLineEdit;
 
+    costVal         = new PositiveIntValidator(this);
+    maxCountVal     = new PositiveIntValidator(this);
+    levelVal        = new PositiveIntValidator(this);
+    attackDamageVal = new PositiveIntValidator(this);
+    enduranceVal    = new QIntValidator(this);
+    wisdomVal       = new QIntValidator(this);
+    charismaVal     = new QIntValidator(this);
+    intelligenceVal = new QIntValidator(this);
+    adaptabilityVal = new QIntValidator(this);
+
+    costLine->setValidator(costVal);
+    maxCountLine->setValidator(maxCountVal);
+    levelLine->setValidator(levelVal);
+    attackDamageLine->setValidator(attackDamageVal);
+    enduranceLine->setValidator(enduranceVal);
+    wisdomLine->setValidator(wisdomVal);
+    charismaLine->setValidator(charismaVal);
+    intelligenceLine->setValidator(intelligenceVal);
+    adaptabilityLine->setValidator(adaptabilityVal);
+
     button = new QPushButton("Add into the file");
     button->setMinimumSize(100,50);
 
@@ -49,34 +69,34 @@ Generator::Generator(QWidget *parent):
     typeBox->addItems(typeList);
 
     QGridLayout* gridLayout = new QGridLayout;
-    gridLayout->addWidget(titleLabel,0,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(titleLine,0,1,1,1);
-    gridLayout->addWidget(descriptionLabel,1,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(descriptionText,1,1,1,1);
-    gridLayout->addWidget(typeLabel,2,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(typeBox,2,1,1,1);
-    gridLayout->addWidget(rarityLabel,3,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(rarityBox,3,1,1,1);
-    gridLayout->addWidget(levelLabel,4,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(levelLine,4,1,1,1);
-    gridLayout->addWidget(costLabel,5,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(costLine,5,1,1,1);
-    gridLayout->addWidget(nameOfIconLabel,6,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(nameOfIconLine,6,1,1,1);
-    gridLayout->addWidget(maxCountLabel,7,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(maxCountLine,7,1,1,1);
+    gridLayout->addWidget(titleLabel,       0,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(titleLine,        0,1,1,1);
+    gridLayout->addWidget(descriptionLabel, 1,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(descriptionText,  1,1,1,1);
+    gridLayout->addWidget(typeLabel,        2,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(typeBox,          2,1,1,1);
+    gridLayout->addWidget(rarityLabel,      3,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(rarityBox,        3,1,1,1);
+    gridLayout->addWidget(levelLabel,       4,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(levelLine,        4,1,1,1);
+    gridLayout->addWidget(costLabel,        5,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(costLine,         5,1,1,1);
+    gridLayout->addWidget(nameOfIconLabel,  6,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(nameOfIconLine,   6,1,1,1);
+    gridLayout->addWidget(maxCountLabel,    7,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(maxCountLine,     7,1,1,1);
     gridLayout->addWidget(attackDamageLabel,8,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(attackDamageLine,8,1,1,1);
-    gridLayout->addWidget(enduranceLabel,9,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(enduranceLine,9,1,1,1);
-    gridLayout->addWidget(wisdomLabel,10,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(wisdomLine,10,1,1,1);
-    gridLayout->addWidget(charismaLabel,11,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(charismaLine,11,1,1,1);
+    gridLayout->addWidget(attackDamageLine, 8,1,1,1);
+    gridLayout->addWidget(enduranceLabel,   9,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(enduranceLine,    9,1,1,1);
+    gridLayout->addWidget(wisdomLabel,      10,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(wisdomLine,       10,1,1,1);
+    gridLayout->addWidget(charismaLabel,    11,0,1,1,Qt::AlignLeft);
+    gridLayout->addWidget(charismaLine,     11,1,1,1);
     gridLayout->addWidget(intelligenceLabel,12,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(intelligenceLine,12,1,1,1);
+    gridLayout->addWidget(intelligenceLine, 12,1,1,1);
     gridLayout->addWidget(adaptabilityLabel,13,0,1,1,Qt::AlignLeft);
-    gridLayout->addWidget(adaptabilityLine,13,1,1,1);
+    gridLayout->addWidget(adaptabilityLine, 13,1,1,1);
 
     QLabel* separator = new QLabel("--------------------------------------------");
     separator->setAlignment(Qt::AlignCenter);
@@ -180,6 +200,21 @@ Generator::AppendItem()
     file.close();
 
     nextID++;
+
+    costLine->clear();
+    titleLine->clear();
+    descriptionText->clear();
+    maxCountLine->setText(QString::number(1));
+    levelLine->clear();
+    rarityBox->setCurrentIndex(0);
+    typeBox->setCurrentIndex(0);
+    attackDamageLine->setText(QString::number(0));
+    enduranceLine->setText(QString::number(0));
+    wisdomLine->setText(QString::number(0));
+    charismaLine->setText(QString::number(0));
+    intelligenceLine->setText(QString::number(0));
+    adaptabilityLine->setText(QString::number(0));
+    nameOfIconLine->clear();
 }
 
 void
